@@ -2,7 +2,7 @@
 
 public class Group
 {
-    public Guid Id { get; init; } = Guid.NewGuid();
+    public Guid Id { get; } = Guid.NewGuid();
     public string Code { get; private set; }
     
     public Group(string code) =>

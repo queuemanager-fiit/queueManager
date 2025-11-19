@@ -2,8 +2,7 @@
 
 namespace Domain.Interfaces;
 
-public interface IGroupRepository
+public interface IGroupRepository : IRepository<Group>
 {
     Task<Group?> GetByCodeAsync(string code, CancellationToken ct);
-    Task AddAsync(Group group, CancellationToken ct);
 }

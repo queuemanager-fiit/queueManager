@@ -2,7 +2,7 @@
 
 public class User
 {
-    public Guid Id { get; init; } = Guid.NewGuid();
+    public Guid Id { get; } = Guid.NewGuid();
     public Guid GroupId { get; private set; }
     public string FullName { get; private set; }
     public string Username { get; private set; }

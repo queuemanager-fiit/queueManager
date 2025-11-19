@@ -6,7 +6,7 @@ using Domain.Entities;
 namespace WebApi.Controllers;
 
 [ApiController]
-[Route("api/bot")]
+[Route("api/users")]
 public sealed class BotUserController : ControllerBase
 {
     private readonly IUserRepository users;
