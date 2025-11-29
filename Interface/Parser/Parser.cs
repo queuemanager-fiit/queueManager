@@ -1,11 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using OfficeOpenXml;
+﻿using OfficeOpenXml;
 
-namespace Interface;
-
+namespace Parser.Parser;
 
 public class Lesson(string name, DateTime dateTime)
 {
