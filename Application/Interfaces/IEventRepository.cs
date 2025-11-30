@@ -1,6 +1,6 @@
 ﻿using Domain.Entities;
 
-namespace Domain.Interfaces;
+namespace Application.Interfaces;
 
 public interface IEventRepository : IRepository<Event>
 {
@@ -10,6 +10,8 @@ public interface IEventRepository : IRepository<Event>
     Task<List<Event>> GetDueAsync(DateTimeOffset now, CancellationToken ct);
     
     Task<List<Event>> GetForUserAsync(long telegramId, CancellationToken ct);
+    
+    Task<Event?> GetByIdAsync(Guid eventId, CancellationToken ct);
     
     Task MarkAsNotifiedAsync(IEnumerable<Guid> ids, DateTimeOffset now, CancellationToken ct);
 }

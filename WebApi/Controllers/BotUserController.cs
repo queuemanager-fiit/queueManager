@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
-using Domain.Interfaces;
+using Application.Interfaces;
 using Domain.Entities;
 
 namespace WebApi.Controllers;
@@ -51,5 +51,11 @@ public sealed class BotUserController : ControllerBase
 
         await uow.SaveChangesAsync(ct);
         return NoContent();
+    }
+    
+    [HttpPost("add-user")]
+    public async Task<IActionResult> AddUser(CancellationToken ct)
+    {
+        throw new NotImplementedException();
     }
 }

@@ -1,5 +1,5 @@
 ﻿using Domain.Entities;
-using Domain.Interfaces;
+using Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers;
@@ -8,11 +8,13 @@ namespace WebApi.Controllers;
 [Route("api/events")]
 public class BotEventController : ControllerBase
 {
+    private readonly IUserRepository users;
     private readonly IEventRepository events;
     private readonly IUnitOfWork uow;
 
-    public BotEventController(IEventRepository events, IUnitOfWork uow)
+    public BotEventController(IUserRepository users, IEventRepository events, IUnitOfWork uow)
     {
+        this.users = users;
         this.events = events;
         this.uow = uow;
     }
@@ -29,20 +31,22 @@ public class BotEventController : ControllerBase
 
     public sealed record MarkNotifiedEvents(List<Guid> Ids);
 
-    [HttpGet("due")]
-    public async Task<ActionResult<List<BotEventDto>>> GetDue(CancellationToken ct)
+    private List<BotEventDto> ToDtoList(List<Event> list)
     {
-        var dueEvents = await events.GetDueAsync(DateTimeOffset.UtcNow, ct);
-
-        return Ok(dueEvents
+        return list
             .Select(e =>
-                new BotEventDto(e.Users
+                new BotEventDto(e.Participants
                         .Select(u => u.TelegramId)
                         .ToArray(),
                     e.OccurredOn,
                     e.Category,
-                    e.Id)));
+                    e.Id))
+            .ToList();
     }
+
+    [HttpGet("due-events")]
+    public async Task<ActionResult<List<BotEventDto>>> GetDue(CancellationToken ct) =>
+        Ok(ToDtoList(await events.GetDueAsync(DateTimeOffset.UtcNow, ct)));
 
     [HttpPost("mark-notified")]
     public async Task<IActionResult> MarkNotified(
@@ -59,23 +63,26 @@ public class BotEventController : ControllerBase
 
         return NoContent();
     }
-    
-    //[HttpPost("confirm")]
+
+    [HttpPost("confirm")]
+    public async Task<IActionResult> Confirm([FromBody] ParticipationDto dto, CancellationToken ct)
+    {
+        var user = await users.GetByTelegramIdAsync(dto.TelegramId, ct);
+        var ev = await events.GetByIdAsync(dto.EventId, ct);
+        
+        ev.AddParticipant(user);
+        
+        await events.UpdateAsync(ev, ct);
+        await uow.SaveChangesAsync(ct);
+        
+        return NoContent();
+    }
 
     [HttpGet("events-list-for-user")]
-    public async Task<ActionResult<List<BotEventDto>>> GetEventsForUser([FromQuery] long telegramId, CancellationToken ct)
-    {
-        var userEvents = await events.GetForUserAsync(telegramId, ct);
-        
-        return Ok(userEvents
-            .Select(e =>
-                new BotEventDto(e.Users
-                        .Select(u => u.TelegramId)
-                        .ToArray(),
-                    e.OccurredOn,
-                    e.Category,
-                    e.Id)));
-    }
+    public async Task<ActionResult<List<BotEventDto>>> GetEventsForUser(
+        [FromQuery] long telegramId,
+        CancellationToken ct) =>
+        Ok(ToDtoList(await events.GetForUserAsync(telegramId, ct)));
 
     [HttpGet("events-list-created-by")]
     public async Task<ActionResult<List<BotEventDto>>> GetEventsCreatedBy(
@@ -93,12 +100,6 @@ public class BotEventController : ControllerBase
     
     [HttpPost("add-category")]
     public async Task<IActionResult> AddCategory(CancellationToken ct)
-    {
-        throw new NotImplementedException();
-    }
-    
-    [HttpPost("add-user")]
-    public async Task<IActionResult> AddUser(CancellationToken ct)
     {
         throw new NotImplementedException();
     }

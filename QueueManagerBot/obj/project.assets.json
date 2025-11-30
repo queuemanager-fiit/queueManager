@@ -476,32 +476,34 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\user\\.nuget\\packages\\": {}
+    "C:\\Users\\1\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\user\\RiderProjects\\QueueManagerBot\\queueM\\queueManager\\QueueManagerBot\\QueueManagerBot.csproj",
+      "projectUniqueName": "C:\\Users\\1\\source\\repos\\QueueManager\\queueManager\\QueueManagerBot\\QueueManagerBot.csproj",
       "projectName": "QueueManagerBot",
-      "projectPath": "C:\\Users\\user\\RiderProjects\\QueueManagerBot\\queueM\\queueManager\\QueueManagerBot\\QueueManagerBot.csproj",
-      "packagesPath": "C:\\Users\\user\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\user\\RiderProjects\\QueueManagerBot\\queueM\\queueManager\\QueueManagerBot\\obj\\",
+      "projectPath": "C:\\Users\\1\\source\\repos\\QueueManager\\queueManager\\QueueManagerBot\\QueueManagerBot.csproj",
+      "packagesPath": "C:\\Users\\1\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\1\\source\\repos\\QueueManager\\queueManager\\QueueManagerBot\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\user\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\1\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
       ],
       "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "C:\\Users\\user\\RiderProjects\\QueueManagerBot\\queueM\\queueManager\\Domain\\Domain.csproj": {
-              "projectPath": "C:\\Users\\user\\RiderProjects\\QueueManagerBot\\queueM\\queueManager\\Domain\\Domain.csproj"
+            "C:\\Users\\1\\source\\repos\\QueueManager\\queueManager\\Domain\\Domain.csproj": {
+              "projectPath": "C:\\Users\\1\\source\\repos\\QueueManager\\queueManager\\Domain\\Domain.csproj"
             }
           }
         }
@@ -542,16 +544,8 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.401/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.404/PortableRuntimeIdentifierGraph.json"
       }
     }
-  },
-  "logs": [
-    {
-      "code": "NU1900",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "Error occurred while getting package vulnerability data: Unable to load the service index for source https://api.nuget.org/v3/index.json."
-    }
-  ]
+  }
 }

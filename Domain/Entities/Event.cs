@@ -4,6 +4,7 @@ public class Event
 {
     public Guid Id { get; } = Guid.NewGuid();
     public EventCategory Category { get; private set; }
+<<<<<<< HEAD
     public List<User> Users { get; private set; } = new();
     public DateTimeOffset OccurredOn { get; private set; }
     public DateTimeOffset FormationTime { get; private set; }
@@ -30,6 +31,12 @@ public class Event
     {
         return user.GroupId == GroupId;
     }
+=======
+    public List<User> Participants { get; private set; }
+    public DateTimeOffset OccurredOn { get; private set; }
+
+    public void AddParticipant(User user) => Participants.Add(user);
+>>>>>>> c5e9abedc922183debb304344d1068661b27f329
 }
 
 public class EventCategory
