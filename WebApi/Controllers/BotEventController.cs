@@ -12,8 +12,9 @@ public class BotEventController : ControllerBase
     private readonly IEventRepository events;
     private readonly IUnitOfWork uow;
 
-    public BotEventController(IEventRepository events, IUnitOfWork uow)
+    public BotEventController(IUserRepository users, IEventRepository events, IUnitOfWork uow)
     {
+        this.users = users;
         this.events = events;
         this.uow = uow;
     }
