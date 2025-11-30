@@ -9,5 +9,7 @@ public interface IEventRepository : IRepository<Event>
     /// </summary>
     Task<List<Event>> GetDueAsync(DateTimeOffset now, CancellationToken ct);
     
+    Task<List<Event>> GetForUserAsync(long telegramId, CancellationToken ct);
+    
     Task MarkAsNotifiedAsync(IEnumerable<Guid> ids, DateTimeOffset now, CancellationToken ct);
 }
