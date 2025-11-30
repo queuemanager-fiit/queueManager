@@ -8,6 +8,12 @@ public class User
     public string Username { get; private set; }
     public long TelegramId { get; private set; }
     public DateTimeOffset CreatedAt { get; init; } = DateTimeOffset.UtcNow;
+    public UserPreference Preference { get; private set; }
+    
+    public void SetPreference(UserPreference preference)
+    {
+        Preference = preference;
+    }
 
     public User(string fullName, string userName, long telegramId, Guid groupId)
     {
@@ -23,4 +29,12 @@ public class User
         Username = newUsername;
         GroupId = newGroupId;
     }
+}
+
+public enum UserPreference
+{
+    Start,
+    End,
+    NearPerson,
+    NoPreference
 }
