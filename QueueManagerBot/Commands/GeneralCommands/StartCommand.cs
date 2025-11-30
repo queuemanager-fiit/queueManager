@@ -32,7 +32,7 @@ namespace QueueManagerBot
             //      await Bot.SendMessage(msg.Chat, "Вы уже зарегистрированы, для получения списка команд введите /help")
             await Bot.SendMessage(msg.Chat, 
                 "Добро пожаловать!\nДля регистрации в боте введите @fiitobot [Ваши Фамилия Имя] и нажмите на всплывающее окно\n\nПример: @fiitobot Иванов Иван");
-            StateManager.SetState(msg.Chat.Username!, UserState.WaitingForStudentData);
+            StateManager.SetState(msg.Chat.Id, UserState.WaitingForStudentData);
         }
     }
 }

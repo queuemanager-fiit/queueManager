@@ -8,6 +8,6 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = QueueManagerBot
-build_property.ProjectDir = C:\Users\user\RiderProjects\QueueManagerBot\QueueManagerBot\
+build_property.ProjectDir = C:\Users\user\RiderProjects\QueueManagerBot\queueM\queueManager\QueueManagerBot\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 

@@ -1,24 +1,25 @@
 {
   "version": 2,
-  "dgSpecHash": "fGcAKVe2aU4=",
-  "success": true,
-  "projectFilePath": "C:\\Users\\1\\source\\repos\\QueueManager\\queueManager\\Interface\\Interface.csproj",
-  "expectedPackageFiles": [
-    "C:\\Users\\1\\.nuget\\packages\\epplus\\8.3.1\\epplus.8.3.1.nupkg.sha512",
-    "C:\\Users\\1\\.nuget\\packages\\epplus.interfaces\\8.1.0\\epplus.interfaces.8.1.0.nupkg.sha512",
-    "C:\\Users\\1\\.nuget\\packages\\microsoft.extensions.configuration\\8.0.0\\microsoft.extensions.configuration.8.0.0.nupkg.sha512",
-    "C:\\Users\\1\\.nuget\\packages\\microsoft.extensions.configuration.abstractions\\8.0.0\\microsoft.extensions.configuration.abstractions.8.0.0.nupkg.sha512",
-    "C:\\Users\\1\\.nuget\\packages\\microsoft.extensions.configuration.fileextensions\\8.0.1\\microsoft.extensions.configuration.fileextensions.8.0.1.nupkg.sha512",
-    "C:\\Users\\1\\.nuget\\packages\\microsoft.extensions.configuration.json\\8.0.1\\microsoft.extensions.configuration.json.8.0.1.nupkg.sha512",
-    "C:\\Users\\1\\.nuget\\packages\\microsoft.extensions.fileproviders.abstractions\\8.0.0\\microsoft.extensions.fileproviders.abstractions.8.0.0.nupkg.sha512",
-    "C:\\Users\\1\\.nuget\\packages\\microsoft.extensions.fileproviders.physical\\8.0.0\\microsoft.extensions.fileproviders.physical.8.0.0.nupkg.sha512",
-    "C:\\Users\\1\\.nuget\\packages\\microsoft.extensions.filesystemglobbing\\8.0.0\\microsoft.extensions.filesystemglobbing.8.0.0.nupkg.sha512",
-    "C:\\Users\\1\\.nuget\\packages\\microsoft.extensions.primitives\\8.0.0\\microsoft.extensions.primitives.8.0.0.nupkg.sha512",
-    "C:\\Users\\1\\.nuget\\packages\\microsoft.io.recyclablememorystream\\3.0.1\\microsoft.io.recyclablememorystream.3.0.1.nupkg.sha512",
-    "C:\\Users\\1\\.nuget\\packages\\system.componentmodel.annotations\\5.0.0\\system.componentmodel.annotations.5.0.0.nupkg.sha512",
-    "C:\\Users\\1\\.nuget\\packages\\system.security.cryptography.pkcs\\8.0.1\\system.security.cryptography.pkcs.8.0.1.nupkg.sha512",
-    "C:\\Users\\1\\.nuget\\packages\\system.security.cryptography.xml\\8.0.2\\system.security.cryptography.xml.8.0.2.nupkg.sha512",
-    "C:\\Users\\1\\.nuget\\packages\\system.text.encoding.codepages\\8.0.0\\system.text.encoding.codepages.8.0.0.nupkg.sha512"
-  ],
-  "logs": []
+  "dgSpecHash": "D/fvdOHsQus=",
+  "success": false,
+  "projectFilePath": "C:\\Users\\user\\RiderProjects\\QueueManagerBot\\queueM\\queueManager\\Interface\\Interface.csproj",
+  "expectedPackageFiles": [],
+  "logs": [
+    {
+      "code": "NU1801",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Unable to load the service index for source https://api.nuget.org/v3/index.json.",
+      "libraryId": "EPPlus"
+    },
+    {
+      "code": "NU1101",
+      "level": "Error",
+      "message": "Unable to find package EPPlus. No packages exist with this id in source(s): nuget.org",
+      "libraryId": "EPPlus",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    }
+  ]
 }

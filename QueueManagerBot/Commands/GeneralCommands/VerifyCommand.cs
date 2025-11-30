@@ -2,6 +2,7 @@ using Telegram.Bot;
 using Telegram.Bot.Types;
 using System.Text.RegularExpressions;
 using System.Data;
+using Domain.Entities;
 
 namespace QueueManagerBot
 {
@@ -30,15 +31,14 @@ namespace QueueManagerBot
 
         public async Task Execute(Message msg)
         {
-            var data = GetStudentData(msg.Text);
-            if (data != null && data.username == "@" + msg.Chat.Username && msg.ViaBot != null && msg.ViaBot!.Username == "fiitobot")
+            var data = GetStudentData(msg.Text, msg.Chat.Id);
+            if (data != null && data.Username == "@" + msg.Chat.Username && msg.ViaBot != null && msg.ViaBot!.Username == "fiitobot")
             {
-                data.telegramID = msg.Chat.Id;
                 // db.Add(data)
                 await Bot.SendMessage(msg.Chat.Id, "Ваши данные приняты");
                 await Bot.SendMessage(msg.Chat.Id, "Если хотите узнать список команд, введите /help");
                 await Bot.SendMessage("699010737", $"Новый пользователь @{msg.Chat.Username}");
-                StateManager.SetState(msg.Chat.Username!, UserState.None);
+                StateManager.SetState(msg.Chat.Id, UserState.None);
             }
             else
             {
@@ -46,7 +46,7 @@ namespace QueueManagerBot
             }
         }
 
-        private static StudentData? GetStudentData(string input)
+        private static Domain.Entities.User? GetStudentData(string input, long tgID)
         {
             var namePattern = @"^([А-ЯЁ][а-яё]+)\s+([А-ЯЁ][а-яё]+)";
             var nameMatch = Regex.Match(input, namePattern, RegexOptions.Multiline);
@@ -63,7 +63,7 @@ namespace QueueManagerBot
             if (group == null || fullName == null || username == null)
                 return null;
 
-            return new StudentData(fullName, group, username);
+            return new Domain.Entities.User(fullName, username, tgID, Guid.Parse(group));
         }
     }
 }
