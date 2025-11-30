@@ -1,25 +1,91 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\user\\RiderProjects\\QueueManagerBot\\queueM\\queueManager\\WebApi\\WebApi.csproj": {}
+    "C:\\Users\\1\\source\\repos\\QueueManager\\queueManager\\WebApi\\WebApi.csproj": {}
   },
   "projects": {
-    "C:\\Users\\user\\RiderProjects\\QueueManagerBot\\queueM\\queueManager\\Domain\\Domain.csproj": {
+    "C:\\Users\\1\\source\\repos\\QueueManager\\queueManager\\Application\\Application.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\user\\RiderProjects\\QueueManagerBot\\queueM\\queueManager\\Domain\\Domain.csproj",
-        "projectName": "Domain",
-        "projectPath": "C:\\Users\\user\\RiderProjects\\QueueManagerBot\\queueM\\queueManager\\Domain\\Domain.csproj",
-        "packagesPath": "C:\\Users\\user\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\user\\RiderProjects\\QueueManagerBot\\queueM\\queueManager\\Domain\\obj\\",
+        "projectUniqueName": "C:\\Users\\1\\source\\repos\\QueueManager\\queueManager\\Application\\Application.csproj",
+        "projectName": "Application",
+        "projectPath": "C:\\Users\\1\\source\\repos\\QueueManager\\queueManager\\Application\\Application.csproj",
+        "packagesPath": "C:\\Users\\1\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\1\\source\\repos\\QueueManager\\queueManager\\Application\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\user\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\1\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "C:\\Users\\1\\source\\repos\\QueueManager\\queueManager\\Domain\\Domain.csproj": {
+                "projectPath": "C:\\Users\\1\\source\\repos\\QueueManager\\queueManager\\Domain\\Domain.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.404/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\1\\source\\repos\\QueueManager\\queueManager\\Domain\\Domain.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\1\\source\\repos\\QueueManager\\queueManager\\Domain\\Domain.csproj",
+        "projectName": "Domain",
+        "projectPath": "C:\\Users\\1\\source\\repos\\QueueManager\\queueManager\\Domain\\Domain.csproj",
+        "packagesPath": "C:\\Users\\1\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\1\\source\\repos\\QueueManager\\queueManager\\Domain\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\1\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -58,34 +124,39 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.401/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.404/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\user\\RiderProjects\\QueueManagerBot\\queueM\\queueManager\\WebApi\\WebApi.csproj": {
+    "C:\\Users\\1\\source\\repos\\QueueManager\\queueManager\\WebApi\\WebApi.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\user\\RiderProjects\\QueueManagerBot\\queueM\\queueManager\\WebApi\\WebApi.csproj",
+        "projectUniqueName": "C:\\Users\\1\\source\\repos\\QueueManager\\queueManager\\WebApi\\WebApi.csproj",
         "projectName": "WebApi",
-        "projectPath": "C:\\Users\\user\\RiderProjects\\QueueManagerBot\\queueM\\queueManager\\WebApi\\WebApi.csproj",
-        "packagesPath": "C:\\Users\\user\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\user\\RiderProjects\\QueueManagerBot\\queueM\\queueManager\\WebApi\\obj\\",
+        "projectPath": "C:\\Users\\1\\source\\repos\\QueueManager\\queueManager\\WebApi\\WebApi.csproj",
+        "packagesPath": "C:\\Users\\1\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\1\\source\\repos\\QueueManager\\queueManager\\WebApi\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\user\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\1\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\user\\RiderProjects\\QueueManagerBot\\queueM\\queueManager\\Domain\\Domain.csproj": {
-                "projectPath": "C:\\Users\\user\\RiderProjects\\QueueManagerBot\\queueM\\queueManager\\Domain\\Domain.csproj"
+              "C:\\Users\\1\\source\\repos\\QueueManager\\queueManager\\Application\\Application.csproj": {
+                "projectPath": "C:\\Users\\1\\source\\repos\\QueueManager\\queueManager\\Application\\Application.csproj"
+              },
+              "C:\\Users\\1\\source\\repos\\QueueManager\\queueManager\\Domain\\Domain.csproj": {
+                "projectPath": "C:\\Users\\1\\source\\repos\\QueueManager\\queueManager\\Domain\\Domain.csproj"
               }
             }
           }
@@ -133,7 +204,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.401/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.404/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

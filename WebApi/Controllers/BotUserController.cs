@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
-using Domain.Interfaces;
+using Application.Interfaces;
 using Domain.Entities;
 
 namespace WebApi.Controllers;
