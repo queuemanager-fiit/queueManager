@@ -52,4 +52,10 @@ public sealed class BotUserController : ControllerBase
         await uow.SaveChangesAsync(ct);
         return NoContent();
     }
+    
+    [HttpPost("add-user")]
+    public async Task<IActionResult> AddUser(CancellationToken ct)
+    {
+        throw new NotImplementedException();
+    }
 }
