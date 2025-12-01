@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("QueueManagerBot")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+74c548da11dc4c56af6c39cd103ecc92ac1ed0f8")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0f42f543a34bb7c2ab8bd37fbaecfd33bcf6ee88")]
 [assembly: System.Reflection.AssemblyProductAttribute("QueueManagerBot")]
 [assembly: System.Reflection.AssemblyTitleAttribute("QueueManagerBot")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

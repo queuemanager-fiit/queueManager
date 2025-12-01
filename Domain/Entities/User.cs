@@ -2,13 +2,15 @@
 
 public class User
 {
-    public Guid Id { get; } = Guid.NewGuid();
+    public Guid Id { get; set;} = Guid.NewGuid();
     public Guid GroupId { get; private set; }
     public string FullName { get; private set; }
     public string Username { get; private set; }
     public long TelegramId { get; private set; }
     public DateTimeOffset CreatedAt { get; init; } = DateTimeOffset.UtcNow;
     public UserPreference Preference { get; private set; }
+    
+    public User() { }
     
     public void SetPreference(UserPreference preference)
     {

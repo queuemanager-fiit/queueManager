@@ -1,4 +1,4 @@
-public class QueueService : IQueueService
+/*public class QueueService : IQueueService
 {
     private const int FormationOffsetHours = 24;
     private const int DeletionOffsetHours = 24;
@@ -100,3 +100,4 @@ public class QueueService : IQueueService
         }
     }
 }
+*/

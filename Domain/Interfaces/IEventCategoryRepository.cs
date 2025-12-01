@@ -1,3 +1,6 @@
+using Application.Interfaces;
+using Domain.Entities;
+
 namespace Domain.Interfaces;
 
 public interface IEventCategoryRepository : IRepository<EventCategory>
