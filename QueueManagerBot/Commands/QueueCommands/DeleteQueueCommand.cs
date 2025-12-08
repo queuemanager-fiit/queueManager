@@ -1,5 +1,6 @@
 using Telegram.Bot;
 using Telegram.Bot.Types;
+using Microsoft.Extensions.Configuration;
 
 namespace QueueManagerBot
 {
@@ -9,8 +10,15 @@ namespace QueueManagerBot
         public TelegramBotClient Bot { get; }
         public UserState[] AllowedStates { get; }
         public StateManager StateManager { get; }
+        private readonly HttpClient httpClient;
+        private readonly string apiBaseUrl;
 
-        public DeleteQueueCommand(string name, TelegramBotClient tgBot, StateManager stateManager)
+        public DeleteQueueCommand(
+            string name, 
+            TelegramBotClient tgBot, 
+            StateManager stateManager,
+            IHttpClientFactory httpClientFactory,
+            IConfiguration configuration)
         {
             Name = name;
             Bot = tgBot;
@@ -20,6 +28,9 @@ namespace QueueManagerBot
                 UserState.None,
                 UserState.WaitingForQueueNameToDelete,
             };
+
+            httpClient = httpClientFactory.CreateClient("ApiClient");
+            apiBaseUrl = configuration["ApiBaseUrl"] ?? "https://localhost:5001";
         }
 
         public bool CanExecute(Message msg, UserState state)

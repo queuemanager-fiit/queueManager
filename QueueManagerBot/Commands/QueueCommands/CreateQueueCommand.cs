@@ -1,6 +1,7 @@
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
+using Microsoft.Extensions.Configuration;
 
 namespace QueueManagerBot
 {
@@ -11,8 +12,15 @@ namespace QueueManagerBot
         public UserState[] AllowedStates { get; }
         public StateManager StateManager { get; }
         public Dictionary<long, Dictionary<string, string>> QueuesData { get; } = new Dictionary<long, Dictionary<string, string>>();
+        private readonly HttpClient httpClient;
+        private readonly string apiBaseUrl;
 
-        public CreateQueueCommand(string name, TelegramBotClient tgBot, StateManager stateManager)
+        public CreateQueueCommand(
+            string name, 
+            TelegramBotClient tgBot, 
+            StateManager stateManager,
+            IHttpClientFactory httpClientFactory,
+            IConfiguration configuration)
         {
             Name = name;
             Bot = tgBot;
@@ -23,6 +31,9 @@ namespace QueueManagerBot
                 UserState.WaitingForQueueName,
                 UserState.WaitingForQueueCategory
             };
+
+            httpClient = httpClientFactory.CreateClient("ApiClient");
+            apiBaseUrl = configuration["ApiBaseUrl"] ?? "https://localhost:5001";
         }
 
         public bool CanExecute(Message msg, UserState state)

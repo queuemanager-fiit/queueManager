@@ -1,9 +1,6 @@
-﻿using System;
-using Telegram.Bot;
-using Telegram.Bot.Polling;
-using Telegram.Bot.Types;
-using Telegram.Bot.Types.Enums;
-using Telegram.Bot.Types.ReplyMarkups;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using QueueManagerBot;
 
 namespace QueueManagerBot
 {
@@ -11,9 +8,26 @@ namespace QueueManagerBot
     {
         static void Main()
         {
-            var bot = new TelegramBot("8239008677:AAEvfak7nVlO4zCWCgUQvbsqXHAdBsf7blA");
+            var configuration = new ConfigurationBuilder()
+                .AddInMemoryCollection(new Dictionary<string, string>
+                {
+                    ["ApiBaseUrl"] = "http://localhost:5134",
+                    ["TelegramBotToken"] = "8239008677:AAEvfak7nVlO4zCWCgUQvbsqXHAdBsf7blA"
+                })
+                .Build();
+            
+            var services = new ServiceCollection();
+            services.AddHttpClient();
+            var serviceProvider = services.BuildServiceProvider();
+            
+            var httpClientFactory = serviceProvider.GetRequiredService<IHttpClientFactory>();
+            
+            var bot = new TelegramBot(
+                configuration["TelegramBotToken"],
+                httpClientFactory,
+                configuration);
+            
             Console.ReadLine();
         }
     }
-
 }

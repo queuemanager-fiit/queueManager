@@ -21,10 +21,10 @@ public sealed class BotUserController : ControllerBase
     }
 
     public sealed record BotUserDto(
-        [property: Required] string FullName,
-        [property: Required, StringLength(32)] string Username,
-        [property: Required] string GroupCode,
-        [property: Required] long TelegramId);
+        [Required] string FullName,
+        [Required, StringLength(32)] string Username,
+        [Required] string GroupCode,
+        [Required] long TelegramId);
 
     [HttpPost("update-userinfo")]
     public async Task<IActionResult> UpdateUserInfo([FromBody] BotUserDto dto, CancellationToken ct)
