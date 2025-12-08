@@ -8,7 +8,7 @@ public class Lesson(string name, DateTime dateTime)
     public DateTime DateTime { get; } = dateTime;
 }
 
-public class Group(string name, List<Lesson> lessons)
+public class GroupInfo(string name, List<Lesson> lessons)
 {
     public readonly string name = name;
     public readonly List<Lesson> Lessons = lessons;
@@ -39,18 +39,18 @@ public class Schedule
     }
 
 
-    public List<Group> CollectGroupInfo(DateTime dateTime = default)
+    public List<GroupInfo> CollectGroupInfo(DateTime dateTime = default)
     {
         if (dateTime == default)
             dateTime = DateTime.Now;
-        var groups = new List<Group>();
+        var groups = new List<GroupInfo>();
         var worksheet = package.Workbook.Worksheets[3];
         var groupPositionsList = FindGroupPositions(worksheet).ToList();
         var parity = DetermineParity(DateTime.Now) is Parity.Even ? 1 : 0;
         foreach (var position in groupPositionsList)
         {
             var lessons = new List<Lesson>();
-            groups.Add(new Group(worksheet.Cells[position.Item1, position.Item2].Text.Split(",")[0], lessons));
+            groups.Add(new GroupInfo(worksheet.Cells[position.Item1, position.Item2].Text.Split(",")[0], lessons));
             for (var i = position.Item1 + 1 + parity; i < worksheet.Dimension.End.Row;)
             {
                 var text = FindTextCell(worksheet, (i, position.Item2));
