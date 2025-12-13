@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QueueManagerBot", "QueueMan
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApi", "WebApi\WebApi.csproj", "{BE6C0D75-76F0-4A88-8A04-8024F44F3054}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{58558B1F-6F85-47D4-907B-208A738ABE1D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,18 @@ Global
 		{BE6C0D75-76F0-4A88-8A04-8024F44F3054}.Release|x64.Build.0 = Release|Any CPU
 		{BE6C0D75-76F0-4A88-8A04-8024F44F3054}.Release|x86.ActiveCfg = Release|Any CPU
 		{BE6C0D75-76F0-4A88-8A04-8024F44F3054}.Release|x86.Build.0 = Release|Any CPU
+		{58558B1F-6F85-47D4-907B-208A738ABE1D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{58558B1F-6F85-47D4-907B-208A738ABE1D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{58558B1F-6F85-47D4-907B-208A738ABE1D}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{58558B1F-6F85-47D4-907B-208A738ABE1D}.Debug|x64.Build.0 = Debug|Any CPU
+		{58558B1F-6F85-47D4-907B-208A738ABE1D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{58558B1F-6F85-47D4-907B-208A738ABE1D}.Debug|x86.Build.0 = Debug|Any CPU
+		{58558B1F-6F85-47D4-907B-208A738ABE1D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{58558B1F-6F85-47D4-907B-208A738ABE1D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{58558B1F-6F85-47D4-907B-208A738ABE1D}.Release|x64.ActiveCfg = Release|Any CPU
+		{58558B1F-6F85-47D4-907B-208A738ABE1D}.Release|x64.Build.0 = Release|Any CPU
+		{58558B1F-6F85-47D4-907B-208A738ABE1D}.Release|x86.ActiveCfg = Release|Any CPU
+		{58558B1F-6F85-47D4-907B-208A738ABE1D}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
