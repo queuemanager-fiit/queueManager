@@ -2,41 +2,56 @@
 
 public class User
 {
-    public Guid Id { get; set;} = Guid.NewGuid();
-    public Guid GroupId { get; private set; }
-    public string FullName { get; private set; }
-    public string Username { get; private set; }
-    public long TelegramId { get; private set; }
-    public DateTimeOffset CreatedAt { get; init; } = DateTimeOffset.UtcNow;
-    public UserPreference Preference { get; private set; }
-    
-    public User() { }
-    
-    public void SetPreference(UserPreference preference)
-    {
-        Preference = preference;
-    }
+    public Guid Id { get; } = Guid.NewGuid();
+    public long TelegramId { get; }
+    public string FullName { get; }
+    public string Username { get; }
+    public string GroupCode { get; }
+    public int SubgroupNumber { get; }
+    public bool IsAdmin { get; private set; }
+    public double AveragePosition { get; private set; } = 0.0;
+    public int ParticipationCount { get; private set; } = 0;
 
-    public User(string fullName, string userName, long telegramId, Guid groupId)
+    public User(long telegramId, string fullName, string username, string groupCode, int subgroupNumber)
     {
-        FullName = fullName;
-        Username = userName;
         TelegramId = telegramId;
-        GroupId = groupId;
+        FullName = fullName;
+        Username = username;
+        GroupCode = groupCode;
+        SubgroupNumber = subgroupNumber;
+        IsAdmin = false;
     }
 
-    public void UpdateInfo(string newFullName, string newUsername, Guid newGroupId)
+    public void UpdateAveragePosition(int currentPosition)
     {
-        FullName = newFullName;
-        Username = newUsername;
-        GroupId = newGroupId;
+        if (currentPosition <= 0)
+            throw new ArgumentOutOfRangeException(nameof(currentPosition), "Позиция должна быть положительной.");
+
+        if (ParticipationCount == 0)
+        {
+            AveragePosition = currentPosition;
+        }
+        else
+        {
+            AveragePosition = (AveragePosition * ParticipationCount + currentPosition) / (ParticipationCount + 1);
+        }
+
+        ParticipationCount++;
     }
+
+    public void ResetStatistics()
+    {
+        AveragePosition = 0.0;
+        ParticipationCount = 0;
+    }
+
+    public void SetAdminStatus(bool isAdmin) => IsAdmin = isAdmin;
+    public bool IsAdministrator() => IsAdmin;
 }
 
 public enum UserPreference
 {
     Start,
     End,
-    NearPerson,
     NoPreference
 }
