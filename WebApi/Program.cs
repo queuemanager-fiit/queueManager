@@ -8,8 +8,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddControllers();
-builder.Services.AddScoped<Application.Interfaces.IUserRepository, Domain.Repositories.UserRepository>();
-builder.Services.AddScoped<Application.Interfaces.IGroupRepository, Domain.Repositories.GroupRepository>();
+builder.Services.AddScoped<Application.Interfaces.IUserRepository, Infrastructure.Repositories.UserRepository>();
+builder.Services.AddScoped<Application.Interfaces.IGroupRepository, Infrastructure.Repositories.GroupRepository>();
 builder.Services.AddScoped<Application.Interfaces.IUnitOfWork, Infrastructure.Repositories.UnitOfWork>();
 var app = builder.Build();
 

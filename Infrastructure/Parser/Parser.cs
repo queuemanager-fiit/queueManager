@@ -1,6 +1,6 @@
 ﻿using OfficeOpenXml;
 
-namespace Parser.Parser;
+namespace Infrastructure.Parser;
 
 public class Lesson(string name, DateTime dateTime)
 {

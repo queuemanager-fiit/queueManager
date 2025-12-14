@@ -1,9 +1,8 @@
 ﻿using Application.Interfaces;
 using Domain.Entities;
-using Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace Domain.Repositories;
+namespace Infrastructure.Repositories;
 
 public class GroupRepository : BaseRepository<Group>, IGroupRepository
 {

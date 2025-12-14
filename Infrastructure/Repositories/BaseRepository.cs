@@ -1,8 +1,7 @@
 ﻿using Application.Interfaces;
-using Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace Domain.Repositories;
+namespace Infrastructure.Repositories;
 
 public abstract class BaseRepository<T> : IRepository<T>
     where T : class
