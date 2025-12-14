@@ -24,8 +24,10 @@ public sealed class BotUserController : ControllerBase
         [Required] string FullName,
         [Required, StringLength(32)] string Username,
         [Required] string GroupCode,
+        [Required] string SubGroupCode,
         [Required] long TelegramId);
 
+    //вызывается при первом обращении пользователя, чтобы зарегистрировать, затем раз в определенный срок для обновления информации (смена ника в тг, смена группы и т.д.)
     [HttpPost("update-userinfo")]
     public async Task<IActionResult> UpdateUserInfo([FromBody] BotUserDto dto, CancellationToken ct)
     {
@@ -34,28 +36,25 @@ public sealed class BotUserController : ControllerBase
         if (group is null)
         {
             group = new Group(dto.GroupCode);
+            var subGroup = new Group(dto.SubGroupCode);
             await groups.AddAsync(group, ct);
+            await groups.AddAsync(subGroup, ct);
         }
         
         var user = await users.GetByTelegramIdAsync(dto.TelegramId, ct);
         if (user is null)
         {
-            user = new User(dto.FullName, dto.Username, dto.TelegramId, group.Id);
+            user = new User(dto.TelegramId, dto.FullName, dto.Username,
+                new List<string> { dto.GroupCode, dto.SubGroupCode });
             await users.AddAsync(user, ct);
         }
         else
         {
-            user.UpdateInfo(dto.FullName, dto.Username, group.Id);
+            user.UpdateInfo(dto.FullName, dto.Username, new List<string> { dto.GroupCode, dto.SubGroupCode });
             await users.UpdateAsync(user, ct);
         }
 
         await uow.SaveChangesAsync(ct);
         return NoContent();
-    }
-    
-    [HttpPost("add-user")]
-    public async Task<IActionResult> AddUser(CancellationToken ct)
-    {
-        throw new NotImplementedException();
     }
 }

@@ -1,13 +1,19 @@
 ﻿namespace Domain.Entities;
 
-public abstract class GroupBase
+public class Group
 {
+    public Guid Id { get; } = Guid.NewGuid();
+    public string Code { get; }
     private readonly List<EventCategory> categories = new();
     private readonly List<Event> events = new();
-
-    public IReadOnlyList<EventCategory> Categories => categories;
     public IReadOnlyList<Event> Events => events;
-
+    
+    public IReadOnlyList<EventCategory> GetCategories() => categories;
+    
+    public Group(string code)
+    {
+        Code = code ?? throw new ArgumentNullException(nameof(code));
+    }
 
     public bool AddCategory(EventCategory category)
     {
@@ -37,7 +43,7 @@ public abstract class GroupBase
 }
 
 
-public class Group : GroupBase
+/*public class Group : GroupBase
 {
     public Guid Id { get; } = Guid.NewGuid();
     public string Code { get; }
@@ -87,4 +93,4 @@ public class Subgroup : GroupBase
     }
 
     public bool RemoveUser(User user) => users.Remove(user);
-}
+}*/

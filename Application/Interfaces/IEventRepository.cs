@@ -13,5 +13,5 @@ public interface IEventRepository : IRepository<Event>
     
     Task<Event?> GetByIdAsync(Guid eventId, CancellationToken ct);
     
-    Task MarkAsNotifiedAsync(IEnumerable<Guid> ids, DateTimeOffset now, CancellationToken ct);
+    Task<List<Event>> GetCreatedByAsync(long telegramId, CancellationToken ct);
 }

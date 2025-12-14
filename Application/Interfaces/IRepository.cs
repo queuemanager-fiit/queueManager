@@ -5,4 +5,5 @@ public interface IRepository<T>
 {
     Task AddAsync(T entity, CancellationToken ct);
     Task UpdateAsync(T entity, CancellationToken ct);
+    Task DeleteAsync(T entity, CancellationToken ct);
 }

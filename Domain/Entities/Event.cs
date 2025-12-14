@@ -14,7 +14,8 @@ public class Event
     public DateTimeOffset OccurredOn { get; private set; }
     public DateTimeOffset FormationTime { get; private set; }
     public DateTimeOffset DeletionTime { get; private set; }
-    public bool IsFormed { get; private set; } = false;
+    private DateTimeOffset NotifiedAt {get; set;}
+    public bool IsFormed { get; private set; }
     public string GroupCode { get; private set; }
 
     public Event(
@@ -56,13 +57,8 @@ public class Event
         return true;
     }
 
-    public bool CanUserJoin(User user)
-    {
-        if (user == null) return false;
-        if (user.GroupCode != GroupCode) return false;
-
-        return !Category.IsForSubgroup || user.SubgroupNumber == Category.SubgroupNumber;
-    }
+    public bool CanUserJoin(User user) =>
+        user is not null && user.GroupCodes.Contains(GroupCode);
 
     public void FormQueue()
     {
@@ -78,6 +74,9 @@ public class Event
         participants.AddRange(sorted);
         IsFormed = true;
     }
+
+    public void MarkAsNotified(DateTimeOffset time) =>
+        NotifiedAt = time;
 }
 
 public class EventCategory
@@ -85,9 +84,7 @@ public class EventCategory
     public Guid Id { get; } = Guid.NewGuid();
     public string SubjectName { get; }
     public bool IsAutoCreate { get; }
-    public bool IsForSubgroup { get; }
     public string GroupCode { get; }
-    public int? SubgroupNumber { get; }
 
     private readonly List<User> unfinishedUsers = new();
 
@@ -96,24 +93,11 @@ public class EventCategory
     public EventCategory(
         string subjectName,
         bool isAutoCreate,
-        bool isForSubgroup,
-        string groupCode,
-        int? subgroupNumber = null)
+        string groupCode)
     {
         SubjectName = subjectName ?? throw new ArgumentNullException(nameof(subjectName));
         IsAutoCreate = isAutoCreate;
-        IsForSubgroup = isForSubgroup;
         GroupCode = groupCode ?? throw new ArgumentNullException(nameof(groupCode));
-
-        if (IsForSubgroup)
-        {
-            SubgroupNumber = subgroupNumber ??
-                throw new ArgumentException("Для подгруппы требуется subgroupNumber");
-        }
-        else
-        {
-            SubgroupNumber = null;
-        }
     }
 
     public void UpdateUnfinishedUsers(IReadOnlyList<User> queue, int position, bool isIndex = false)

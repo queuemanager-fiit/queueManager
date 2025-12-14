@@ -4,22 +4,27 @@ public class User
 {
     public Guid Id { get; } = Guid.NewGuid();
     public long TelegramId { get; }
-    public string FullName { get; }
-    public string Username { get; }
-    public string GroupCode { get; }
-    public int SubgroupNumber { get; }
+    public string FullName { get; private set; }
+    public string Username { get; private set; }
+    public List<string> GroupCodes { get; private set; }
     public bool IsAdmin { get; private set; }
     public double AveragePosition { get; private set; } = 0.0;
     public int ParticipationCount { get; private set; } = 0;
 
-    public User(long telegramId, string fullName, string username, string groupCode, int subgroupNumber)
+    public User(long telegramId, string fullName, string username, List<string> groupCodes)
     {
         TelegramId = telegramId;
         FullName = fullName;
         Username = username;
-        GroupCode = groupCode;
-        SubgroupNumber = subgroupNumber;
+        GroupCodes = groupCodes;
         IsAdmin = false;
+    }
+
+    public void UpdateInfo(string fullName, string username, List<string> groupCodes)
+    {
+        FullName = fullName;
+        Username = username;
+        GroupCodes = groupCodes;
     }
 
     public void UpdateAveragePosition(int currentPosition)
