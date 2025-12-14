@@ -14,7 +14,7 @@ public class Event
     public DateTimeOffset OccurredOn { get; private set; }
     public DateTimeOffset FormationTime { get; private set; }
     public DateTimeOffset DeletionTime { get; private set; }
-    private DateTimeOffset NotifiedAt {get; set;}
+    public DateTimeOffset NotifiedAt {get; private set;}
     public bool IsFormed { get; private set; }
     public string GroupCode { get; private set; }
 
