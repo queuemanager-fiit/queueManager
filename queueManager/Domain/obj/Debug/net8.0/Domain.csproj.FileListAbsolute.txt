@@ -1,0 +1,60 @@
+C:\Users\User\RiderProjects\queueManager1\queueManager\Domain\obj\Debug\net8.0\Domain.csproj.AssemblyReference.cache
+C:\Users\User\RiderProjects\queueManager1\queueManager\Domain\obj\Debug\net8.0\Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\User\RiderProjects\queueManager1\queueManager\Domain\obj\Debug\net8.0\Domain.AssemblyInfoInputs.cache
+C:\Users\User\RiderProjects\queueManager1\queueManager\Domain\obj\Debug\net8.0\Domain.AssemblyInfo.cs
+C:\Users\User\RiderProjects\queueManager1\queueManager\Domain\obj\Debug\net8.0\Domain.csproj.CoreCompileInputs.cache
+C:\Users\User\RiderProjects\queueManager1\queueManager\Domain\obj\Debug\net8.0\Domain.sourcelink.json
+C:\Users\User\RiderProjects\queueManager1\queueManager\Domain\bin\Debug\net8.0\Domain.deps.json
+C:\Users\User\RiderProjects\queueManager1\queueManager\Domain\bin\Debug\net8.0\Domain.dll
+C:\Users\User\RiderProjects\queueManager1\queueManager\Domain\bin\Debug\net8.0\Domain.pdb
+C:\Users\User\RiderProjects\queueManager1\queueManager\Domain\obj\Debug\net8.0\Domain.dll
+C:\Users\User\RiderProjects\queueManager1\queueManager\Domain\obj\Debug\net8.0\refint\Domain.dll
+C:\Users\User\RiderProjects\queueManager1\queueManager\Domain\obj\Debug\net8.0\Domain.pdb
+C:\Users\User\RiderProjects\queueManager1\queueManager\Domain\obj\Debug\net8.0\ref\Domain.dll
+C:\Users\User\RiderProjects\queueManager1\queueManager\Domain\bin\Debug\net8.0\Domain.runtimeconfig.json
+C:\Users\User\RiderProjects\queueManager1\queueManager\Domain\obj\Debug\net8.0\Domain.genruntimeconfig.cache
+C:\qiqiq\queueManager\Domain\bin\Debug\net8.0\Domain.deps.json
+C:\qiqiq\queueManager\Domain\bin\Debug\net8.0\Domain.runtimeconfig.json
+C:\qiqiq\queueManager\Domain\bin\Debug\net8.0\Domain.dll
+C:\qiqiq\queueManager\Domain\bin\Debug\net8.0\Domain.pdb
+C:\qiqiq\queueManager\Domain\obj\Debug\net8.0\Domain.csproj.AssemblyReference.cache
+C:\qiqiq\queueManager\Domain\obj\Debug\net8.0\Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\qiqiq\queueManager\Domain\obj\Debug\net8.0\Domain.AssemblyInfoInputs.cache
+C:\qiqiq\queueManager\Domain\obj\Debug\net8.0\Domain.AssemblyInfo.cs
+C:\qiqiq\queueManager\Domain\obj\Debug\net8.0\Domain.csproj.CoreCompileInputs.cache
+C:\qiqiq\queueManager\Domain\obj\Debug\net8.0\Domain.sourcelink.json
+C:\qiqiq\queueManager\Domain\obj\Debug\net8.0\Domain.dll
+C:\qiqiq\queueManager\Domain\obj\Debug\net8.0\refint\Domain.dll
+C:\qiqiq\queueManager\Domain\obj\Debug\net8.0\Domain.pdb
+C:\qiqiq\queueManager\Domain\obj\Debug\net8.0\Domain.genruntimeconfig.cache
+C:\qiqiq\queueManager\Domain\obj\Debug\net8.0\ref\Domain.dll
+C:\Users\User\Desktop\Новая папка (3)\queueManager\Domain\bin\Debug\net8.0\Domain.deps.json
+C:\Users\User\Desktop\Новая папка (3)\queueManager\Domain\bin\Debug\net8.0\Domain.runtimeconfig.json
+C:\Users\User\Desktop\Новая папка (3)\queueManager\Domain\bin\Debug\net8.0\Domain.dll
+C:\Users\User\Desktop\Новая папка (3)\queueManager\Domain\bin\Debug\net8.0\Domain.pdb
+C:\Users\User\Desktop\Новая папка (3)\queueManager\Domain\obj\Debug\net8.0\Domain.csproj.AssemblyReference.cache
+C:\Users\User\Desktop\Новая папка (3)\queueManager\Domain\obj\Debug\net8.0\Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\User\Desktop\Новая папка (3)\queueManager\Domain\obj\Debug\net8.0\Domain.AssemblyInfoInputs.cache
+C:\Users\User\Desktop\Новая папка (3)\queueManager\Domain\obj\Debug\net8.0\Domain.AssemblyInfo.cs
+C:\Users\User\Desktop\Новая папка (3)\queueManager\Domain\obj\Debug\net8.0\Domain.csproj.CoreCompileInputs.cache
+C:\Users\User\Desktop\Новая папка (3)\queueManager\Domain\obj\Debug\net8.0\Domain.sourcelink.json
+C:\Users\User\Desktop\Новая папка (3)\queueManager\Domain\obj\Debug\net8.0\Domain.dll
+C:\Users\User\Desktop\Новая папка (3)\queueManager\Domain\obj\Debug\net8.0\refint\Domain.dll
+C:\Users\User\Desktop\Новая папка (3)\queueManager\Domain\obj\Debug\net8.0\Domain.pdb
+C:\Users\User\Desktop\Новая папка (3)\queueManager\Domain\obj\Debug\net8.0\Domain.genruntimeconfig.cache
+C:\Users\User\Desktop\Новая папка (3)\queueManager\Domain\obj\Debug\net8.0\ref\Domain.dll
+C:\Users\User\Desktop\QueueManager\queueManager\Domain\bin\Debug\net8.0\Domain.deps.json
+C:\Users\User\Desktop\QueueManager\queueManager\Domain\bin\Debug\net8.0\Domain.runtimeconfig.json
+C:\Users\User\Desktop\QueueManager\queueManager\Domain\bin\Debug\net8.0\Domain.dll
+C:\Users\User\Desktop\QueueManager\queueManager\Domain\bin\Debug\net8.0\Domain.pdb
+C:\Users\User\Desktop\QueueManager\queueManager\Domain\obj\Debug\net8.0\Domain.csproj.AssemblyReference.cache
+C:\Users\User\Desktop\QueueManager\queueManager\Domain\obj\Debug\net8.0\Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\User\Desktop\QueueManager\queueManager\Domain\obj\Debug\net8.0\Domain.AssemblyInfoInputs.cache
+C:\Users\User\Desktop\QueueManager\queueManager\Domain\obj\Debug\net8.0\Domain.AssemblyInfo.cs
+C:\Users\User\Desktop\QueueManager\queueManager\Domain\obj\Debug\net8.0\Domain.csproj.CoreCompileInputs.cache
+C:\Users\User\Desktop\QueueManager\queueManager\Domain\obj\Debug\net8.0\Domain.sourcelink.json
+C:\Users\User\Desktop\QueueManager\queueManager\Domain\obj\Debug\net8.0\Domain.dll
+C:\Users\User\Desktop\QueueManager\queueManager\Domain\obj\Debug\net8.0\refint\Domain.dll
+C:\Users\User\Desktop\QueueManager\queueManager\Domain\obj\Debug\net8.0\Domain.pdb
+C:\Users\User\Desktop\QueueManager\queueManager\Domain\obj\Debug\net8.0\Domain.genruntimeconfig.cache
+C:\Users\User\Desktop\QueueManager\queueManager\Domain\obj\Debug\net8.0\ref\Domain.dll
