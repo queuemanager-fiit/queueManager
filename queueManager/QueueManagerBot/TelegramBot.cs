@@ -75,7 +75,7 @@ namespace QueueManagerBot
         {
             var command = Commands
                 .FirstOrDefault(command => command.CanExecute(msg, stateManager.GetState(msg.Chat.Id)));
-
+            await bot.SendMessage(msg.Chat.Id, $"{stateManager.GetState(msg.Chat.Id)}");
             if (command != null)
                 await command.Execute(msg);
         }
