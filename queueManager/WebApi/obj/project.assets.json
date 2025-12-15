@@ -4118,45 +4118,38 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\User\\.nuget\\packages\\": {},
-    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
+    "C:\\Users\\user\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\User\\Desktop\\QueueManager\\queueManager\\WebApi\\WebApi.csproj",
+      "projectUniqueName": "C:\\proje\\queueManager\\queueManager\\WebApi\\WebApi.csproj",
       "projectName": "WebApi",
-      "projectPath": "C:\\Users\\User\\Desktop\\QueueManager\\queueManager\\WebApi\\WebApi.csproj",
-      "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\User\\Desktop\\QueueManager\\queueManager\\WebApi\\obj\\",
+      "projectPath": "C:\\proje\\queueManager\\queueManager\\WebApi\\WebApi.csproj",
+      "packagesPath": "C:\\Users\\user\\.nuget\\packages\\",
+      "outputPath": "C:\\proje\\queueManager\\queueManager\\WebApi\\obj\\",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-      ],
       "configFilePaths": [
-        "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "C:\\Users\\user\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
       ],
       "sources": {
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "C:\\Users\\User\\Desktop\\QueueManager\\queueManager\\Application\\Application.csproj": {
-              "projectPath": "C:\\Users\\User\\Desktop\\QueueManager\\queueManager\\Application\\Application.csproj"
+            "C:\\proje\\queueManager\\queueManager\\Application\\Application.csproj": {
+              "projectPath": "C:\\proje\\queueManager\\queueManager\\Application\\Application.csproj"
             },
-            "C:\\Users\\User\\Desktop\\QueueManager\\queueManager\\Domain\\Domain.csproj": {
-              "projectPath": "C:\\Users\\User\\Desktop\\QueueManager\\queueManager\\Domain\\Domain.csproj"
+            "C:\\proje\\queueManager\\queueManager\\Domain\\Domain.csproj": {
+              "projectPath": "C:\\proje\\queueManager\\queueManager\\Domain\\Domain.csproj"
             },
-            "C:\\Users\\User\\Desktop\\QueueManager\\queueManager\\Infrastructure\\Infrastructure.csproj": {
-              "projectPath": "C:\\Users\\User\\Desktop\\QueueManager\\queueManager\\Infrastructure\\Infrastructure.csproj"
+            "C:\\proje\\queueManager\\queueManager\\Infrastructure\\Infrastructure.csproj": {
+              "projectPath": "C:\\proje\\queueManager\\queueManager\\Infrastructure\\Infrastructure.csproj"
             }
           }
         }
@@ -4171,7 +4164,7 @@
         "auditLevel": "low",
         "auditMode": "direct"
       },
-      "SdkAnalysisLevel": "9.0.200"
+      "SdkAnalysisLevel": "9.0.300"
     },
     "frameworks": {
       "net8.0": {
@@ -4207,6 +4200,24 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
+        "downloadDependencies": [
+          {
+            "name": "Microsoft.AspNetCore.App.Ref",
+            "version": "[8.0.20, 8.0.20]"
+          },
+          {
+            "name": "Microsoft.NETCore.App.Host.win-x64",
+            "version": "[8.0.20, 8.0.20]"
+          },
+          {
+            "name": "Microsoft.NETCore.App.Ref",
+            "version": "[8.0.20, 8.0.20]"
+          },
+          {
+            "name": "Microsoft.WindowsDesktop.App.Ref",
+            "version": "[8.0.20, 8.0.20]"
+          }
+        ],
         "frameworkReferences": {
           "Microsoft.AspNetCore.App": {
             "privateAssets": "none"
@@ -4215,7 +4226,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.201/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.305/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

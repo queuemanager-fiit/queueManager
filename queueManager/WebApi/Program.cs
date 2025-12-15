@@ -11,6 +11,7 @@ builder.Services.AddControllers();
 builder.Services.AddScoped<Application.Interfaces.IUserRepository, Infrastructure.Repositories.UserRepository>();
 builder.Services.AddScoped<Application.Interfaces.IGroupRepository, Infrastructure.Repositories.GroupRepository>();
 builder.Services.AddScoped<Application.Interfaces.IUnitOfWork, Infrastructure.Repositories.UnitOfWork>();
+builder.Services.AddScoped<Application.Interfaces.IEventRepository, Infrastructure.Repositories.EventRepository>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

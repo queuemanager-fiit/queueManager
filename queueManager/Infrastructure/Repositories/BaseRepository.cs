@@ -26,7 +26,7 @@ public abstract class BaseRepository<T> : IRepository<T>
     
     public virtual async Task DeleteAsync(T entity, CancellationToken ct)
     {
-        dbContext.Set<T>().Remove(entity);
-        await dbContext.SaveChangesAsync(ct);
+        Context.Set<T>().Remove(entity);
+        await Context.SaveChangesAsync(ct);
     }
 }

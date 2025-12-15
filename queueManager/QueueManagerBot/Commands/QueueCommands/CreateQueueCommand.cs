@@ -52,11 +52,7 @@ namespace QueueManagerBot
                     break;  
                 case UserState.WaitingForQueueName:
                     // cats = db.GetCategories()
-                    await Bot.SendMessage(msg.Chat.Id, "Введите название категории", replyMarkup: new InlineKeyboardButton[][]
-    {
-        [("1.1", "11"), ("1.2", "12")], // two buttons on first row
-        [("2.1", "21"), ("2.2", "22")]  // two buttons on second row
-    });
+                    await Bot.SendMessage(msg.Chat.Id, "Введите название категории");
                     StateManager.SetState(msg.Chat.Id, UserState.WaitingForQueueCategory);
                     QueuesData[msg.Chat.Id]["QueueName"] = msg.Text!;
                     break;

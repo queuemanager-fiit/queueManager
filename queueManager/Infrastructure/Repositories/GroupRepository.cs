@@ -15,10 +15,6 @@ public class GroupRepository : BaseRepository<Group>, IGroupRepository
 
     public async Task<List<Group>> GetGroupsByCategoryAsync(Guid categoryId, CancellationToken ct)
     {
-        var category = await Context.EventCategories
-            .FirstOrDefaultAsync(c => c.Id == categoryId, ct);
-        if (category?.GroupCode == null) return null;
-        return await Context.Groups
-            .FirstOrDefaultAsync(g => g.Code == category.GroupCode, ct);
+        return new List<Group>();
     }
 }

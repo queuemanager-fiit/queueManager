@@ -101,7 +101,7 @@ namespace QueueManagerBot
             if (group == null || fullName == null || username == null)
                 return null;
             Console.WriteLine($"{fullName}, {group}, {username}");
-            return new WebApi.Controllers.BotUserController.BotUserDto(fullName, username, group, tgID);
+            return new WebApi.Controllers.BotUserController.BotUserDto(fullName, username, group.Substring(0, group.Length - 2), group, tgID);
         }
     }
 }
