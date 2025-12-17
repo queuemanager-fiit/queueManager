@@ -2,7 +2,6 @@
 
 public class Group
 {
-    public Guid Id { get; } = Guid.NewGuid();
     public string Code { get; }
     private readonly List<EventCategory> categories = new();
     private readonly List<Event> events = new();

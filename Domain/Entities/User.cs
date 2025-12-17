@@ -2,7 +2,6 @@
 
 public class User
 {
-    public Guid Id { get; } = Guid.NewGuid();
     public long TelegramId { get; }
     public string FullName { get; private set; }
     public string Username { get; private set; }
