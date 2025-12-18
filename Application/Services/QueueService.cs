@@ -68,7 +68,7 @@ public class EventSchedulerService : IEventSchedulerService
         DateTimeOffset now,
         CancellationToken ct)
     {
-        var dueEvents = await _eventRepo.GetDueAsync(now, ct);
+        var dueEvents = await _eventRepo.GetDueNotificationAsync(now, ct);
 
         foreach (var evt in dueEvents)
         {

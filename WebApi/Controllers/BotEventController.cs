@@ -54,6 +54,8 @@ public class BotEventController : ControllerBase
     
 
     public sealed record MarkNotifiedEvents(List<Guid> Ids);
+    
+    public sealed record MarkUnfinishedUsers(Guid EventId, int FirstUnfinishedPosition);
 
     private List<BotEventDto> ToDtoList(List<Event> list)
     {
@@ -69,9 +71,14 @@ public class BotEventController : ControllerBase
     }
 
     //вызывается раз в определенный срок, чтобы узнать, есть ли события, по которым пора выслать уведомление
-    [HttpGet("due-events")]
-    public async Task<ActionResult<List<BotEventDto>>> GetDue(CancellationToken ct) =>
-        Ok(ToDtoList(await events.GetDueAsync(DateTimeOffset.UtcNow, ct)));
+    [HttpGet("due-events-notification")]
+    public async Task<ActionResult<List<BotEventDto>>> GetDueNotification(CancellationToken ct) =>
+        Ok(ToDtoList(await events.GetDueNotificationAsync(DateTimeOffset.UtcNow, ct)));
+    
+    //вызывается раз в определенный срок, чтобы узнать, есть ли события, по которым сформировалась очередь
+    [HttpGet("due-events-formation")]
+    public async Task<ActionResult<List<BotEventDto>>> GetDueFormation(CancellationToken ct) =>
+        Ok(ToDtoList(await events.GetDueFormationAsync(DateTimeOffset.UtcNow, ct)));
 
     //используется, чтобы отметить события, по которым были высланы уведомления
     [HttpPost("mark-notified")]
@@ -166,5 +173,18 @@ public class BotEventController : ControllerBase
     {
         var group = await groups.GetByCodeAsync(groupCode, ct);
         return Ok(ToDtoList(group.GetEvents().ToList()));
+    }
+    
+    //используется, чтобы отметить неуспевших пользователей
+    [HttpPost("mark-unfinished")]
+    public async Task<IActionResult> MarkUnfinished([FromBody] MarkUnfinishedUsers request, CancellationToken ct)
+    {
+        var ev = await events.GetByIdAsync(request.EventId, ct);
+        var category = ev.Category;
+        category.UpdateUnfinishedUsers(ev.Participants, request.FirstUnfinishedPosition);
+
+        await eventCategories.UpdateAsync(category, ct);
+        await uow.SaveChangesAsync(ct);
+        return NoContent();
     }
 }

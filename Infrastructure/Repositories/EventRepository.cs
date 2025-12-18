@@ -8,7 +8,7 @@ public class EventRepository : BaseRepository<Event>, IEventRepository
 {
     public EventRepository(ApplicationDbContext context) : base(context) { }
 
-    public async Task<List<Event>> GetDueAsync(DateTimeOffset now, CancellationToken ct)
+    public async Task<List<Event>> GetDueNotificationAsync(DateTimeOffset now, CancellationToken ct)
     {
         return await Context.Events
             .Where(e => e.OccurredOn <= now)
