@@ -11,13 +11,19 @@ public class BotEventController : ControllerBase
     private readonly IUserRepository users;
     private readonly IEventRepository events;
     private readonly IEventCategoryRepository eventCategories;
+    private readonly IGroupRepository groups;
     private readonly IUnitOfWork uow;
 
-    public BotEventController(IUserRepository users, IEventRepository events, IEventCategoryRepository eventCategories, IUnitOfWork uow)
+    public BotEventController(IUserRepository users,
+        IEventRepository events,
+        IEventCategoryRepository eventCategories,
+        IGroupRepository groups,
+        IUnitOfWork uow)
     {
         this.users = users;
         this.events = events;
         this.eventCategories = eventCategories;
+        this.groups = groups;
         this.uow = uow;
     }
 
@@ -41,6 +47,10 @@ public class BotEventController : ControllerBase
         string CategoryName,
         DateTimeOffset OccurredOn
         );
+
+    public sealed record DeletionDto(
+        string GroupCode,
+        Guid EventId);
     
 
     public sealed record MarkNotifiedEvents(List<Guid> Ids);
@@ -117,15 +127,20 @@ public class BotEventController : ControllerBase
     [HttpPost("create-queue")]
     public async Task<ActionResult<Guid>> CreateQueue([FromBody] CreationDto dto, CancellationToken ct)
     {
+        var group = await groups.GetByCodeAsync(dto.GroupCode, ct);
         var category = await eventCategories.GetByGroupIdAndNameAsync(
             dto.GroupCode,
             dto.CategoryName,
             ct);
+        
         var ev = new Event(
             category,
             dto.OccurredOn,
             dto.GroupCode);
         await events.AddAsync(ev, ct);
+        
+        group.AddEvent(ev);
+        await groups.UpdateAsync(group, ct);
         
         await uow.SaveChangesAsync(ct);
         return Ok(ev.Id);
@@ -133,12 +148,23 @@ public class BotEventController : ControllerBase
     
     //используется, чтобы удалить очередь
     [HttpPost("delete-queue")]
-    public async Task<IActionResult> DeleteQueue([FromQuery] Guid eventId, CancellationToken ct)
+    public async Task<IActionResult> DeleteQueue([FromBody] DeletionDto dto, CancellationToken ct)
     {
-        var ev = await events.GetByIdAsync(eventId, ct);
+        var group = await groups.GetByCodeAsync(dto.GroupCode, ct);
+        var ev = await events.GetByIdAsync(dto.EventId, ct);
+        group.RemoveEvent(ev);
+        await groups.UpdateAsync(group, ct);
         await events.DeleteAsync(ev, ct);
         
         await uow.SaveChangesAsync(ct);
         return NoContent();
+    }
+
+    //возвращает все активные очереди для группы
+    [HttpGet("events-for-group")]
+    public async Task<ActionResult<List<BotEventDto>>> GetForGroup([FromQuery] string groupCode, CancellationToken ct)
+    {
+        var group = await groups.GetByCodeAsync(groupCode, ct);
+        return Ok(ToDtoList(group.GetEvents().ToList()));
     }
 }

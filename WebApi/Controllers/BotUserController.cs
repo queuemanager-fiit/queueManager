@@ -21,11 +21,20 @@ public sealed class BotUserController : ControllerBase
     }
 
     public sealed record BotUserDto(
-        [Required] string FullName,
-        [Required, StringLength(32)] string Username,
-        [Required] string GroupCode,
-        [Required] string SubGroupCode,
-        [Required] long TelegramId);
+        string FullName,
+        string Username,
+        string GroupCode,
+        string SubGroupCode,
+        long TelegramId);
+
+    public sealed record InfoUserDto(
+        string FullName,
+        string Username,
+        string GroupCode,
+        string SubGroupCode,
+        bool IsAdmin,
+        double AveragePosition,
+        int ParticipationCount);
 
     public sealed record DeletionUserDto(
         long telegramId,
@@ -104,5 +113,20 @@ public sealed class BotUserController : ControllerBase
         
         await uow.SaveChangesAsync(ct);
         return NoContent();
+    }
+    
+    //возвращает всю информацию о пользователе
+    [HttpGet("user-info")]
+    public async Task<ActionResult<InfoUserDto>> GetUserInfo([FromQuery] long telegramId, CancellationToken ct)
+    {
+        var user = await users.GetByTelegramIdAsync(telegramId, ct);
+        return Ok(new InfoUserDto(
+            user.FullName,
+            user.Username,
+            user.GroupCodes.First(),
+            user.GroupCodes.Last(),
+            user.IsAdmin,
+            user.AveragePosition,
+            user.ParticipationCount));
     }
 }
