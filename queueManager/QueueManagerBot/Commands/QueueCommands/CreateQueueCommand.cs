@@ -34,6 +34,7 @@ namespace QueueManagerBot
             {
                 UserState.None,
                 UserState.WaitingForQueueCategory,
+                UserState.WaitingForGroupId,
                 UserState.WaitingForQueueDate
             };
 
@@ -53,6 +54,7 @@ namespace QueueManagerBot
             {
                 QueuesData.Add(msg.Chat.Id, new Dictionary<string, string>());
                 QueuesData[msg.Chat.Id].Add("QueueCategory", "");
+                QueuesData[msg.Chat.Id].Add("GroupId", "");
                 QueuesData[msg.Chat.Id].Add("QueueDate", "");   
             }
             var date = new DateTimeOffset();
@@ -63,8 +65,31 @@ namespace QueueManagerBot
                     StateManager.SetState(msg.Chat.Id, UserState.WaitingForQueueCategory);
                     break;  
                 case UserState.WaitingForQueueCategory:
-                    // cats = db.GetCategories()
                     QueuesData[msg.Chat.Id]["QueueCategory"] = msg.Text;
+                    await Bot.SendMessage(
+                        msg.Chat.Id, 
+                        "Для кого вы хотите создать очередь?", 
+                        replyMarkup : new string[] { "Для всей группы", "Для своей половинки" }
+                        );
+                    StateManager.SetState(msg.Chat.Id, UserState.WaitingForGroupId);
+                    break;
+
+                case UserState.WaitingForGroupId:
+                    var tgID = new { msg.Chat.Id };
+                    var userResponse = await httpClient.PostAsJsonAsync($"{apiBaseUrl}/api/users/get-user", tgID);
+
+                    if (!userResponse.IsSuccessStatusCode)
+                    {
+                        await Bot.SendMessage(msg.Chat.Id, "Ошибка при получении данных пользователя");
+                        return;
+                    }
+
+                    var user = await userResponse.Content.ReadFromJsonAsync<WebApi.Controllers.BotUserController.BotUserDto>();
+
+                    if (msg.Text == "Для всей группы")
+                        QueuesData[msg.Chat.Id]["GroupId"] = user.GroupCode;
+                    else if (msg.Text == "Для своей половинки")
+                        QueuesData[msg.Chat.Id]["GroupId"] = user.SubGroupCode;
                     await Bot.SendMessage(msg.Chat.Id, "Введите дату категории в формате ДД.ММ");
                     StateManager.SetState(msg.Chat.Id, UserState.WaitingForQueueDate);
                     break;
@@ -90,7 +115,7 @@ namespace QueueManagerBot
                     try
                     {
                         var queue = new WebApi.Controllers.BotEventController.CreationDto(
-                            "ФТ-203-1",
+                            QueuesData[msg.Chat.Id]["GroupId"],
                             QueuesData[msg.Chat.Id]["QueueCategory"],
                             date);
                         var response = await httpClient.PostAsJsonAsync($"{apiBaseUrl}/api/events/create-queue", queue);
@@ -106,10 +131,6 @@ namespace QueueManagerBot
                             var errorContent = await response.Content.ReadAsStringAsync();
                             await Bot.SendMessage(msg.Chat.Id, $"Ошибка сохранения: {response.StatusCode}\n{errorContent}");
                         }
-                    }
-                    catch (HttpRequestException ex)
-                    {
-                        await Bot.SendMessage(msg.Chat.Id, "Ошибка подключения к серверу. Попробуйте позже.");
                     }
                     catch (Exception ex)
                     {
