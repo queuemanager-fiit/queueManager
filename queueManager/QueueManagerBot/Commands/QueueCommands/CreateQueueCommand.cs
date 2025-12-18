@@ -137,7 +137,35 @@ namespace QueueManagerBot
                         await Bot.SendMessage(msg.Chat.Id, "Произошла непредвиденная ошибка");
                         Console.WriteLine(ex.Message);
                     }
+                    // NotifyStudents(
+                    //     msg.Chat.Id,
+                    //     QueuesData[msg.Chat.Id]["GroupId"],
+                    //     queueIDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD,
+                    //     QueuesData[msg.Chat.Id]["QueueCategory"],
+                    //     QueuesData[msg.Chat.Id]["QueueCategory"],
+                    //     date
+                    //     );
                     break;
+            }
+        }
+
+        public async void NotifyStudents(long userId, string groupCode, string queueId, string QueueCategory, DateTimeOffset queueDate)
+        {
+            var studentsListResponse = await httpClient.PostAsJsonAsync($"{apiBaseUrl}/api/groups/students-list", new { groupCode });
+            if (!studentsListResponse.IsSuccessStatusCode)
+            {
+                await Bot.SendMessage(userId, "Ошибка при получении данных о студентах");
+                return;
+            }
+
+            var studentsList = await studentsListResponse.Content.ReadFromJsonAsync<List<WebApi.Controllers.BotUserController.BotUserDto>>();
+            foreach (var student in studentsList)
+            {
+                await Bot.SendMessage(
+                    student.TelegramId, 
+                    $"Запись в очередь {QueueCategory} на {queueDate}", 
+                    replyMarkup: new InlineKeyboardButton("Записаться", $"confirm_queue_from_{userId}_to_{queueId}")
+                    );
             }
         }
     }
