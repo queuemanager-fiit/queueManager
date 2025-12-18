@@ -9,6 +9,9 @@ public interface IEventRepository : IRepository<Event>
     /// </summary>
     Task<List<Event>> GetDueNotificationAsync(DateTimeOffset now, CancellationToken ct);
     
+    /// <summary>
+    /// Возвращает все события, по которым сформировалась очередь.
+    /// </summary>
     Task<List<Event>> GetDueFormationAsync(DateTimeOffset now, CancellationToken ct);
     
     Task<Event?> GetByIdAsync(Guid eventId, CancellationToken ct);
