@@ -14,21 +14,21 @@ public class Event
     public DateTimeOffset OccurredOn { get; private set; }
     public DateTimeOffset FormationTime { get; private set; }
     public DateTimeOffset DeletionTime { get; private set; }
-    public DateTimeOffset NotifiedAt {get; private set;}
+    public DateTimeOffset NotificationTime {get; private set;}
+    public bool IsNotified { get; private set; }
     public bool IsFormed { get; private set; }
     public string GroupCode { get; private set; }
 
     public Event(
         EventCategory category,
         DateTimeOffset occurredOn,
-        TimeSpan formationOffset,
-        TimeSpan deletionOffset,
         string groupCode)
     {
         Category = category ?? throw new ArgumentNullException(nameof(category));
         OccurredOn = occurredOn;
-        FormationTime = occurredOn.Subtract(formationOffset);
-        DeletionTime = occurredOn.Add(deletionOffset);
+        FormationTime = occurredOn.Subtract(TimeSpan.FromDays(1));
+        NotificationTime = FormationTime.Subtract(TimeSpan.FromDays(1));
+        DeletionTime = occurredOn.Add(TimeSpan.FromDays(1));
         GroupCode = groupCode ?? throw new ArgumentNullException(nameof(groupCode));
     }
 
@@ -75,8 +75,8 @@ public class Event
         IsFormed = true;
     }
 
-    public void MarkAsNotified(DateTimeOffset time) =>
-        NotifiedAt = time;
+    public void MarkAsNotified() =>
+        IsNotified = true;
 }
 
 public class EventCategory

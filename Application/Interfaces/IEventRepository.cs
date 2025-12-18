@@ -9,9 +9,5 @@ public interface IEventRepository : IRepository<Event>
     /// </summary>
     Task<List<Event>> GetDueAsync(DateTimeOffset now, CancellationToken ct);
     
-    Task<List<Event>> GetForUserAsync(long telegramId, CancellationToken ct);
-    
     Task<Event?> GetByIdAsync(Guid eventId, CancellationToken ct);
-    
-    Task<List<Event>> GetCreatedByAsync(long telegramId, CancellationToken ct);
 }

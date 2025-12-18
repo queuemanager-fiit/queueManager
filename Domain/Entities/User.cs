@@ -5,7 +5,8 @@ public class User
     public long TelegramId { get; }
     public string FullName { get; private set; }
     public string Username { get; private set; }
-    public List<string> GroupCodes { get; private set; }
+    private List<string> groupCodes = new();
+    public IReadOnlyCollection<string> GroupCodes => groupCodes;
     public bool IsAdmin { get; private set; }
     public double AveragePosition { get; private set; } = 0.0;
     public int ParticipationCount { get; private set; } = 0;
@@ -15,7 +16,7 @@ public class User
         TelegramId = telegramId;
         FullName = fullName;
         Username = username;
-        GroupCodes = groupCodes;
+        this.groupCodes = groupCodes;
         IsAdmin = false;
     }
 
@@ -23,8 +24,11 @@ public class User
     {
         FullName = fullName;
         Username = username;
-        GroupCodes = groupCodes;
+        this.groupCodes = groupCodes;
     }
+
+    public void DeleteGroup(string groupCode) =>
+        groupCodes.Remove(groupCode);
 
     public void UpdateAveragePosition(int currentPosition)
     {

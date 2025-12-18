@@ -27,17 +27,27 @@ public sealed class BotUserController : ControllerBase
         [Required] string SubGroupCode,
         [Required] long TelegramId);
 
-    //вызывается при первом обращении пользователя, чтобы зарегистрировать, затем раз в определенный срок для обновления информации (смена ника в тг, смена группы и т.д.)
+    public sealed record DeletionUserDto(
+        long telegramId,
+        string groupCode);
+
+    //вызывается для регистрации пользователя или обновлении информации о нем
     [HttpPost("update-userinfo")]
     public async Task<IActionResult> UpdateUserInfo([FromBody] BotUserDto dto, CancellationToken ct)
     {
         var group = await groups.GetByCodeAsync(dto.GroupCode, ct);
+        var subGroup = await groups.GetByCodeAsync(dto.SubGroupCode, ct);
         
         if (group is null)
         {
             group = new Group(dto.GroupCode);
-            var subGroup = new Group(dto.SubGroupCode);
+            subGroup = new Group(dto.SubGroupCode);
             await groups.AddAsync(group, ct);
+            await groups.AddAsync(subGroup, ct);
+        }
+        else if (subGroup is null)
+        {
+            subGroup = new Group(dto.SubGroupCode);
             await groups.AddAsync(subGroup, ct);
         }
         
@@ -47,13 +57,51 @@ public sealed class BotUserController : ControllerBase
             user = new User(dto.TelegramId, dto.FullName, dto.Username,
                 new List<string> { dto.GroupCode, dto.SubGroupCode });
             await users.AddAsync(user, ct);
+            group.AddUser(user);
+            subGroup.AddUser(user);
         }
         else
         {
+            var oldGroup = await groups.GetByCodeAsync(user.GroupCodes.First(), ct);
+            var oldSubGroup = await groups.GetByCodeAsync(user.GroupCodes.Last(), ct);
+            if (!user.GroupCodes.Contains(dto.GroupCode))
+            {
+                oldGroup.RemoveUser(user);
+                group.AddUser(user);
+            }
+            
+            if (!user.GroupCodes.Contains(dto.SubGroupCode))
+            {
+                oldSubGroup.RemoveUser(user);
+                subGroup.AddUser(user);
+            }
+            
             user.UpdateInfo(dto.FullName, dto.Username, new List<string> { dto.GroupCode, dto.SubGroupCode });
             await users.UpdateAsync(user, ct);
+            await groups.UpdateAsync(oldSubGroup, ct);
+            await groups.UpdateAsync(oldGroup, ct);
         }
+        
+        await groups.UpdateAsync(subGroup, ct);
+        await groups.UpdateAsync(group, ct);
+        
+        await uow.SaveChangesAsync(ct);
+        return NoContent();
+    }
+    
+    //вызывается для удаления пользователя из группы
+    [HttpPost("delete-user")]
+    public async Task<IActionResult> DeleteUserInfo([FromBody] DeletionUserDto dto, CancellationToken ct)
+    {
+        var user = await users.GetByTelegramIdAsync(dto.telegramId, ct);
+        var group = await groups.GetByCodeAsync(dto.groupCode, ct);
+        
+        user.DeleteGroup(dto.groupCode);
+        group.RemoveUser(user);
 
+        await groups.UpdateAsync(group, ct);
+        await users.UpdateAsync(user, ct);
+        
         await uow.SaveChangesAsync(ct);
         return NoContent();
     }

@@ -10,12 +10,14 @@ public class BotEventController : ControllerBase
 {
     private readonly IUserRepository users;
     private readonly IEventRepository events;
+    private readonly IEventCategoryRepository eventCategories;
     private readonly IUnitOfWork uow;
 
-    public BotEventController(IUserRepository users, IEventRepository events, IUnitOfWork uow)
+    public BotEventController(IUserRepository users, IEventRepository events, IEventCategoryRepository eventCategories, IUnitOfWork uow)
     {
         this.users = users;
         this.events = events;
+        this.eventCategories = eventCategories;
         this.uow = uow;
     }
 
@@ -30,12 +32,15 @@ public class BotEventController : ControllerBase
         Guid EventId,
         UserPreference UserPreference);
     
+    public sealed record CancellationDto(
+        long TelegramId,
+        Guid EventId);
+    
     public sealed record CreationDto(
         string GroupCode,
         string CategoryName,
         DateTimeOffset OccurredOn
         );
-    
     
 
     public sealed record MarkNotifiedEvents(List<Guid> Ids);
@@ -70,7 +75,7 @@ public class BotEventController : ControllerBase
         foreach (var id in request.Ids)
         {
             var ev =  await events.GetByIdAsync(id, ct);
-            ev.MarkAsNotified(DateTimeOffset.UtcNow);
+            ev.MarkAsNotified();
             await events.UpdateAsync(ev, ct);
         }
         
@@ -93,32 +98,47 @@ public class BotEventController : ControllerBase
         
         return NoContent();
     }
-
-    //возвращает список очередй, в которых участвует данный студент
-    [HttpGet("events-list-for-user")]
-    public async Task<ActionResult<List<BotEventDto>>> GetEventsForUser(
-        [FromQuery] long telegramId,
-        CancellationToken ct) =>
-        Ok(ToDtoList(await events.GetForUserAsync(telegramId, ct)));
-
-    //возвращает список очередей, созданных данным пользователем
-    [HttpGet("events-list-created-by")]
-    public async Task<ActionResult<List<BotEventDto>>> GetEventsCreatedBy(
-        [FromQuery] long telegramId,
-        CancellationToken ct) =>
-        Ok(ToDtoList(await events.GetCreatedByAsync(telegramId, ct)));
     
     //используется, чтобы отменить участие в очереди для пользователя
     [HttpPost("quit-queue")]
-    public async Task<IActionResult> QuitQueue([FromBody] ParticipationDto dto, CancellationToken ct)
+    public async Task<IActionResult> QuitQueue([FromBody] CancellationDto dto, CancellationToken ct)
     {
-        throw new NotImplementedException();
+        var ev =  await events.GetByIdAsync(dto.EventId, ct);
+        var user = await users.GetByTelegramIdAsync(dto.TelegramId, ct);
+        ev.RemoveParticipant(user);
+        
+        await events.UpdateAsync(ev, ct);
+        await uow.SaveChangesAsync(ct);
+        
+        return NoContent();
     }
     
-    //используется, чтобы создать очередь
+    //используется, чтобы создать очередь. возвращает айди очереди
     [HttpPost("create-queue")]
-    public async Task<IActionResult> CreateQueue([FromBody] CreationDto dto, CancellationToken ct)
+    public async Task<ActionResult<Guid>> CreateQueue([FromBody] CreationDto dto, CancellationToken ct)
     {
-        throw new NotImplementedException();
+        var category = await eventCategories.GetByGroupIdAndNameAsync(
+            dto.GroupCode,
+            dto.CategoryName,
+            ct);
+        var ev = new Event(
+            category,
+            dto.OccurredOn,
+            dto.GroupCode);
+        await events.AddAsync(ev, ct);
+        
+        await uow.SaveChangesAsync(ct);
+        return Ok(ev.Id);
+    }
+    
+    //используется, чтобы удалить очередь
+    [HttpPost("delete-queue")]
+    public async Task<IActionResult> DeleteQueue([FromQuery] Guid eventId, CancellationToken ct)
+    {
+        var ev = await events.GetByIdAsync(eventId, ct);
+        await events.DeleteAsync(ev, ct);
+        
+        await uow.SaveChangesAsync(ct);
+        return NoContent();
     }
 }
