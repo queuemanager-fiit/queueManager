@@ -3626,19 +3626,24 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\1\\.nuget\\packages\\": {}
+    "C:\\Users\\Пользователь\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\1\\source\\repos\\QueueManager\\queueManager\\Infrastructure\\Infrastructure.csproj",
+      "projectUniqueName": "C:\\Users\\Пользователь\\queueManager\\Infrastructure\\Infrastructure.csproj",
       "projectName": "Infrastructure",
-      "projectPath": "C:\\Users\\1\\source\\repos\\QueueManager\\queueManager\\Infrastructure\\Infrastructure.csproj",
-      "packagesPath": "C:\\Users\\1\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\1\\source\\repos\\QueueManager\\queueManager\\Infrastructure\\obj\\",
+      "projectPath": "C:\\Users\\Пользователь\\queueManager\\Infrastructure\\Infrastructure.csproj",
+      "packagesPath": "C:\\Users\\Пользователь\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Пользователь\\queueManager\\Infrastructure\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
       "configFilePaths": [
-        "C:\\Users\\1\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Пользователь\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -3652,11 +3657,11 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "C:\\Users\\1\\source\\repos\\QueueManager\\queueManager\\Application\\Application.csproj": {
-              "projectPath": "C:\\Users\\1\\source\\repos\\QueueManager\\queueManager\\Application\\Application.csproj"
+            "C:\\Users\\Пользователь\\queueManager\\Application\\Application.csproj": {
+              "projectPath": "C:\\Users\\Пользователь\\queueManager\\Application\\Application.csproj"
             },
-            "C:\\Users\\1\\source\\repos\\QueueManager\\queueManager\\Domain\\Domain.csproj": {
-              "projectPath": "C:\\Users\\1\\source\\repos\\QueueManager\\queueManager\\Domain\\Domain.csproj"
+            "C:\\Users\\Пользователь\\queueManager\\Domain\\Domain.csproj": {
+              "projectPath": "C:\\Users\\Пользователь\\queueManager\\Domain\\Domain.csproj"
             }
           }
         }
@@ -3670,7 +3675,8 @@
         "enableAudit": "true",
         "auditLevel": "low",
         "auditMode": "direct"
-      }
+      },
+      "SdkAnalysisLevel": "9.0.300"
     },
     "frameworks": {
       "net8.0": {
@@ -3707,7 +3713,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.404/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.306/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

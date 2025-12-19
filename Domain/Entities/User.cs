@@ -60,6 +60,6 @@ public class User
 public enum UserPreference
 {
     Start,
-    End,
-    NoPreference
+    NoPreference,
+    End
 }

@@ -64,15 +64,38 @@ public class Event
     {
         if (IsFormed) return;
 
-        var sorted = preferences
+        var unfinished = Category.UnfinishedUsers;
+
+        Category.ClearUnfinishedUsers();
+
+        var sortedParticipants = preferences
             .OrderBy(p => p.Value)
             .ThenBy(p => p.Key.AveragePosition)
             .Select(p => p.Key)
             .ToList();
 
+        var finalQueue = new List<User>();
+
+        foreach (var user in unfinished)
+        {
+            if (preferences.ContainsKey(user) && preferences[user] != UserPreference.End)
+            {
+                finalQueue.Add(user);
+                sortedParticipants.Remove(user);
+            }
+        }
+
+        finalQueue.AddRange(sortedParticipants);
+
         participants.Clear();
-        participants.AddRange(sorted);
+        participants.AddRange(finalQueue);
         IsFormed = true;
+
+        for (int i = 0; i < participants.Count; i++)
+        {
+            var user = participants[i];
+            user.UpdateAveragePosition(i + 1);
+        }
     }
 
     public void MarkAsNotified() =>
@@ -100,19 +123,17 @@ public class EventCategory
         GroupCode = groupCode ?? throw new ArgumentNullException(nameof(groupCode));
     }
 
-    public void UpdateUnfinishedUsers(IReadOnlyList<User> queue, int position, bool isIndex = false)
+    public void UpdateUnfinishedUsers(IReadOnlyList<User> queue, int position)
     {
         if (queue == null)
             throw new ArgumentNullException(nameof(queue));
 
-        int cutoffPosition = isIndex ? position : position - 1;
+        int cutoffPosition = position - 1;
 
         if (cutoffPosition < 0)
             throw new ArgumentOutOfRangeException(
                 nameof(position),
-                isIndex
-                    ? "Индекс позиции не может быть отрицательным."
-                    : "Номер позиции должен быть положительным целым числом."
+                "Номер позиции должен быть положительным целым числом."
             );
 
         unfinishedUsers.Clear();
@@ -123,5 +144,10 @@ public class EventCategory
             if (user != null)
                 unfinishedUsers.Add(user);
         }
+    }
+
+    public void ClearUnfinishedUsers()
+    {
+        unfinishedUsers.Clear();
     }
 }

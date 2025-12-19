@@ -4446,19 +4446,24 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\1\\.nuget\\packages\\": {}
+    "C:\\Users\\Пользователь\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\1\\source\\repos\\QueueManager\\queueManager\\QueueManagerBot\\QueueManagerBot.csproj",
+      "projectUniqueName": "C:\\Users\\Пользователь\\queueManager\\QueueManagerBot\\QueueManagerBot.csproj",
       "projectName": "QueueManagerBot",
-      "projectPath": "C:\\Users\\1\\source\\repos\\QueueManager\\queueManager\\QueueManagerBot\\QueueManagerBot.csproj",
-      "packagesPath": "C:\\Users\\1\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\1\\source\\repos\\QueueManager\\queueManager\\QueueManagerBot\\obj\\",
+      "projectPath": "C:\\Users\\Пользователь\\queueManager\\QueueManagerBot\\QueueManagerBot.csproj",
+      "packagesPath": "C:\\Users\\Пользователь\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Пользователь\\queueManager\\QueueManagerBot\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
       "configFilePaths": [
-        "C:\\Users\\1\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Пользователь\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -4472,8 +4477,8 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "C:\\Users\\1\\source\\repos\\QueueManager\\queueManager\\WebApi\\WebApi.csproj": {
-              "projectPath": "C:\\Users\\1\\source\\repos\\QueueManager\\queueManager\\WebApi\\WebApi.csproj"
+            "C:\\Users\\Пользователь\\queueManager\\WebApi\\WebApi.csproj": {
+              "projectPath": "C:\\Users\\Пользователь\\queueManager\\WebApi\\WebApi.csproj"
             }
           }
         }
@@ -4487,7 +4492,8 @@
         "enableAudit": "true",
         "auditLevel": "low",
         "auditMode": "direct"
-      }
+      },
+      "SdkAnalysisLevel": "9.0.300"
     },
     "frameworks": {
       "net8.0": {
@@ -4536,7 +4542,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.404/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.306/PortableRuntimeIdentifierGraph.json"
       }
     }
   },
@@ -4544,7 +4550,7 @@
     {
       "code": "NU1605",
       "level": "Error",
-      "message": "Warning As Error: Detected package downgrade: Microsoft.Extensions.Configuration.Json from 8.0.1 to 8.0.0. Reference the package directly from the project to select a different version. \r\n QueueManagerBot -> WebApi -> Infrastructure -> EPPlus 8.3.1 -> Microsoft.Extensions.Configuration.Json (>= 8.0.1) \r\n QueueManagerBot -> Microsoft.Extensions.Configuration.Json (>= 8.0.0)",
+      "message": "Предупреждение как ошибка: Обнаружено понижение версии пакета Microsoft.Extensions.Configuration.Json с 8.0.1 на 8.0.0. Чтобы выбрать другую версию, создайте ссылку на пакет напрямую из проекта. \r\n QueueManagerBot -> WebApi -> Infrastructure -> EPPlus 8.3.1 -> Microsoft.Extensions.Configuration.Json (>= 8.0.1) \r\n QueueManagerBot -> Microsoft.Extensions.Configuration.Json (>= 8.0.0)",
       "libraryId": "Microsoft.Extensions.Configuration.Json",
       "targetGraphs": [
         "net8.0"
