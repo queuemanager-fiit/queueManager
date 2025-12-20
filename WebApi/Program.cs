@@ -13,7 +13,7 @@ builder.Services.AddScoped<Application.Interfaces.IUserRepository, Infrastructur
 builder.Services.AddScoped<Application.Interfaces.IGroupRepository, Infrastructure.Repositories.GroupRepository>();
 builder.Services.AddScoped<Application.Interfaces.IUnitOfWork, Infrastructure.Repositories.UnitOfWork>();
 builder.Services.AddScoped<Application.Interfaces.IEventRepository, Infrastructure.Repositories.EventRepository>(); // Ваша реализация
-builder.Services.AddHostedService<QueueFormationService>();
+builder.Services.AddHostedService<Infrastructure.Services.QueueFormationService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

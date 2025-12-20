@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
+namespace Infrastructure.Services;
+
 public class QueueFormationService : IHostedService, IDisposable
 {
     private Timer? timer;
