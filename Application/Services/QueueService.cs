@@ -1,81 +1,74 @@
 using Application.Interfaces;
 using Domain.Entities;
+using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-public class EventSchedulerService : IEventSchedulerService
+public class QueueFormationService : IHostedService, IDisposable
 {
-    private readonly IEventCategoryRepository _categoryRepo;
-    private readonly IEventRepository _eventRepo;
-    private readonly IGroupRepository _groupRepo;
-    private readonly IUnitOfWork _uow;
+    private Timer? timer;
+    private readonly IEventRepository eventRepository;
+    private readonly TimeSpan checkInterval = TimeSpan.FromSeconds(60);
 
-    public EventSchedulerService(
-        IEventCategoryRepository categoryRepo,
-        IEventRepository eventRepo,
-        IGroupRepository groupRepo,
-        IUnitOfWork uow)
+    public QueueFormationService(IEventRepository eventRepository)
     {
-        _categoryRepo = categoryRepo;
-        _eventRepo = eventRepo;
-        _groupRepo = groupRepo;
-        _uow = uow;
+        this.eventRepository = eventRepository ?? throw new ArgumentNullException(nameof(eventRepository));
     }
 
-    public async Task CreateEventsFromScheduleAsync(
-        IEnumerable<ScheduleEntry> scheduleEntries,
-        CancellationToken ct)
+    public Task StartAsync(CancellationToken cancellationToken)
     {
-        foreach (var entry in scheduleEntries)
+        timer = new Timer(
+            CheckAndProcessQueuesAsync,
+            null,
+            TimeSpan.Zero,
+            checkInterval
+        );
+
+        return Task.CompletedTask;
+    }
+
+    private async void CheckAndProcessQueuesAsync(object? state)
+    {
+        try
         {
-            var group = await _groupRepo.GetByCodeAsync(entry.GroupCode, ct);
-            if (group == null) continue;
+            var now = DateTimeOffset.UtcNow;
 
-            var category = await _categoryRepo.GetByGroupIdAndNameAsync(
-                group.Id,
-                entry.SubjectName,
-                ct);
+            var pendingFormation = await eventRepository.GetDueFormationAsync(now, CancellationToken.None);
 
-            if (category == null || !category.IsAutoCreate)
-                continue;
-
-            if (entry.SubgroupNumber.HasValue)
+            foreach (var eventItem in pendingFormation)
             {
-                var subgroup = group.Subgroups
-                    .FirstOrDefault(s => s.SubgroupNumber == entry.SubgroupNumber);
-                if (subgroup == null)
-                    continue;
+                if (!eventItem.IsFormed)
+                {
+                    eventItem.FormQueue();
+                    await eventRepository.UpdateAsync(eventItem, CancellationToken.None);
+                }
             }
 
-            var evt = new Event(
-                category: category,
-                occurredOn: entry.OccurredOn,
-                formationOffset: TimeSpan.FromHours(12),
-                deletionOffset: TimeSpan.FromHours(12),
-                groupCode: entry.GroupCode
-            );
+            var expiredEvents = pendingFormation
+                .Where(e => e.DeletionTime <= now)
+                .ToList();
 
-            await _eventRepo.AddAsync(evt, ct);
+            foreach (var eventItem in expiredEvents)
+            {
+                await eventRepository.DeleteAsync(eventItem, CancellationToken.None);
+            }
         }
-
-        await _uow.SaveChangesAsync(ct);
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Ошибка при обработке очередей: {ex.Message}");
+        }
     }
 
-    public async Task FormQueuesForDueEventsAsync(
-        DateTimeOffset now,
-        CancellationToken ct)
+    public Task StopAsync(CancellationToken cancellationToken)
     {
-        var dueEvents = await _eventRepo.GetDueNotificationAsync(now, ct);
+        timer?.Change(Timeout.Infinite, 0);
+        return Task.CompletedTask;
+    }
 
-        foreach (var evt in dueEvents)
-        {
-            evt.FormQueue();
-            await _eventRepo.UpdateAsync(evt, ct);
-        }
-
-        await _uow.SaveChangesAsync(ct);
+    public void Dispose()
+    {
+        timer?.Dispose();
     }
 }
