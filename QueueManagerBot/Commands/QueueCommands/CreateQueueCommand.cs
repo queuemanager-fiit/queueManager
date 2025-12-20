@@ -44,7 +44,6 @@ namespace QueueManagerBot
 
         public bool CanExecute(Message msg, UserState state)
         {
-            // var isAdmin = db.IsAdmin(msg.Chat.Id);
             return (msg.Text == Name && state == UserState.None) || (state != UserState.None && AllowedStates.Contains(state));
         }
 
@@ -57,15 +56,22 @@ namespace QueueManagerBot
                 QueuesData[msg.Chat.Id].Add("GroupId", "");
                 QueuesData[msg.Chat.Id].Add("QueueDate", "");   
             }
+
             var date = new DateTimeOffset();
+
+            var userResponse = await httpClient.GetAsync($"{apiBaseUrl}/api/users/user-info?telegramId={msg.Chat.Id}");
+
+            if (!userResponse.IsSuccessStatusCode)
+            {
+                await Bot.SendMessage(msg.Chat.Id, "Ошибка при получении данных пользователя");
+                return;
+            }
+
+            var user = await userResponse.Content.ReadFromJsonAsync<WebApi.Controllers.BotUserController.InfoUserDto>();
+
             switch (StateManager.GetState(msg.Chat.Id))
             {
                 case UserState.None:
-                    await Bot.SendMessage(msg.Chat.Id, "Введите название категории");
-                    StateManager.SetState(msg.Chat.Id, UserState.WaitingForQueueCategory);
-                    break;  
-                case UserState.WaitingForQueueCategory:
-                    QueuesData[msg.Chat.Id]["QueueCategory"] = msg.Text;
                     await Bot.SendMessage(
                         msg.Chat.Id, 
                         "Для кого вы хотите создать очередь?", 
@@ -73,25 +79,66 @@ namespace QueueManagerBot
                         );
                     StateManager.SetState(msg.Chat.Id, UserState.WaitingForGroupId);
                     break;
+                    
 
                 case UserState.WaitingForGroupId:
-                    var tgID = new { msg.Chat.Id };
-                    var userResponse = await httpClient.PostAsJsonAsync($"{apiBaseUrl}/api/users/get-user", tgID);
-
-                    if (!userResponse.IsSuccessStatusCode)
-                    {
-                        await Bot.SendMessage(msg.Chat.Id, "Ошибка при получении данных пользователя");
-                        return;
-                    }
-
-                    var user = await userResponse.Content.ReadFromJsonAsync<WebApi.Controllers.BotUserController.BotUserDto>();
-
                     if (msg.Text == "Для всей группы")
                         QueuesData[msg.Chat.Id]["GroupId"] = user.GroupCode;
                     else if (msg.Text == "Для своей половинки")
                         QueuesData[msg.Chat.Id]["GroupId"] = user.SubGroupCode;
-                    await Bot.SendMessage(msg.Chat.Id, "Введите дату категории в формате ДД.ММ");
-                    StateManager.SetState(msg.Chat.Id, UserState.WaitingForQueueDate);
+
+
+                    var categoriesResponse = await httpClient.GetAsync($"{apiBaseUrl}/api/groups/category-list?groupCode={QueuesData[msg.Chat.Id]["GroupId"]}");
+    
+                    if (!categoriesResponse.IsSuccessStatusCode)
+                    {
+                        await Bot.SendMessage(msg.Chat.Id, "Ошибка при получении категорий");
+                        return;
+                    }
+                    
+                    var categories = await categoriesResponse.Content.ReadFromJsonAsync<List<string>>();
+                    
+                    if (categories == null || !categories.Any())
+                    {
+                        await Bot.SendMessage(msg.Chat.Id, "Для вашей группы нет доступных категорий");
+                        return;
+                    }
+                    
+                    var buttons = new List<InlineKeyboardButton>();
+                    
+                    foreach (var category in categories)
+                    {
+                        buttons.Add(InlineKeyboardButton.WithCallbackData(
+                            text: category,
+                            callbackData: $"select_category_{category}"
+                        ));
+                    }
+                    
+                    var rows = new List<List<InlineKeyboardButton>>();
+                    for (int i = 0; i < buttons.Count; i += 2)
+                    {
+                        var row = new List<InlineKeyboardButton>();
+                        row.Add(buttons[i]);
+                        
+                        if (i + 1 < buttons.Count)
+                            row.Add(buttons[i + 1]);
+                        
+                        rows.Add(row);
+                    }
+                    
+                    var keyboard = new InlineKeyboardMarkup(rows);
+                    
+                    await Bot.SendMessage(
+                        msg.Chat.Id,
+                        "Выберите категорию для очереди:",
+                        replyMarkup: keyboard
+                    );
+                    StateManager.SetState(msg.Chat.Id, UserState.WaitingForQueueCategory);
+                    break;
+                    
+
+                case UserState.WaitingForQueueCategory:
+
                     break;
 
                 case UserState.WaitingForQueueDate:
@@ -120,6 +167,7 @@ namespace QueueManagerBot
                             date);
                         var response = await httpClient.PostAsJsonAsync($"{apiBaseUrl}/api/events/create-queue", queue);
 
+
                         if (response.IsSuccessStatusCode)
                         {
                             QueuesData.Remove(msg.Chat.Id);
@@ -137,36 +185,16 @@ namespace QueueManagerBot
                         await Bot.SendMessage(msg.Chat.Id, "Произошла непредвиденная ошибка");
                         Console.WriteLine(ex.Message);
                     }
-                    // NotifyStudents(
-                    //     msg.Chat.Id,
-                    //     QueuesData[msg.Chat.Id]["GroupId"],
-                    //     queueIDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD,
-                    //     QueuesData[msg.Chat.Id]["QueueCategory"],
-                    //     QueuesData[msg.Chat.Id]["QueueCategory"],
-                    //     date
-                    //     );
                     break;
             }
         }
 
-        public async void NotifyStudents(long userId, string groupCode, string queueId, string QueueCategory, DateTimeOffset queueDate)
+        public async Task HandleCategoryCallback(string categoryCallback, long tgId)
         {
-            var studentsListResponse = await httpClient.PostAsJsonAsync($"{apiBaseUrl}/api/groups/students-list", new { groupCode });
-            if (!studentsListResponse.IsSuccessStatusCode)
-            {
-                await Bot.SendMessage(userId, "Ошибка при получении данных о студентах");
-                return;
-            }
-
-            var studentsList = await studentsListResponse.Content.ReadFromJsonAsync<List<WebApi.Controllers.BotUserController.BotUserDto>>();
-            foreach (var student in studentsList)
-            {
-                await Bot.SendMessage(
-                    student.TelegramId, 
-                    $"Запись в очередь {QueueCategory} на {queueDate}", 
-                    replyMarkup: new InlineKeyboardButton("Записаться", $"confirm_queue_from_{userId}_to_{queueId}")
-                    );
-            }
+            var categoryName = categoryCallback.Remove(0, "select_category_".Length);
+            QueuesData[tgId]["QueueCategory"] = categoryName;
+            await Bot.SendMessage(tgId, "Введите дату категории в формате ДД.ММ");
+            StateManager.SetState(tgId, UserState.WaitingForQueueDate);
         }
     }
 }

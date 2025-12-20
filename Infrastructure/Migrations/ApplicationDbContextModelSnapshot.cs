@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace Domain.Migrations
+namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     partial class ApplicationDbContextModelSnapshot : ModelSnapshot
@@ -36,14 +36,21 @@ namespace Domain.Migrations
                     b.Property<DateTimeOffset>("FormationTime")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid>("GroupId")
-                        .HasColumnType("uuid");
+                    b.Property<string>("GroupCode")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsFormed")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsNotified")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTimeOffset>("NotificationTime")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTimeOffset>("OccurredOn")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("State")
-                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -58,8 +65,9 @@ namespace Domain.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("GroupId")
-                        .HasColumnType("uuid");
+                    b.Property<string>("GroupCode")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<bool>("IsAutoCreate")
                         .HasColumnType("boolean");
@@ -75,56 +83,40 @@ namespace Domain.Migrations
 
             modelBuilder.Entity("Domain.Entities.Group", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
                     b.Property<string>("Code")
-                        .IsRequired()
                         .HasColumnType("text");
 
-                    b.HasKey("Id");
+                    b.HasKey("Code");
 
                     b.ToTable("Groups");
                 });
 
             modelBuilder.Entity("Domain.Entities.User", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<long>("TelegramId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("bigint");
 
-                    b.Property<DateTimeOffset>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("TelegramId"));
 
-                    b.Property<Guid?>("EventCategoryId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("EventId")
-                        .HasColumnType("uuid");
+                    b.Property<double>("AveragePosition")
+                        .HasColumnType("double precision");
 
                     b.Property<string>("FullName")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid>("GroupId")
-                        .HasColumnType("uuid");
+                    b.Property<bool>("IsAdmin")
+                        .HasColumnType("boolean");
 
-                    b.Property<int>("Preference")
+                    b.Property<int>("ParticipationCount")
                         .HasColumnType("integer");
-
-                    b.Property<long>("TelegramId")
-                        .HasColumnType("bigint");
 
                     b.Property<string>("Username")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.HasKey("Id");
-
-                    b.HasIndex("EventCategoryId");
-
-                    b.HasIndex("EventId");
+                    b.HasKey("TelegramId");
 
                     b.ToTable("Users");
                 });
@@ -134,36 +126,25 @@ namespace Domain.Migrations
                     b.Property<Guid>("EventId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("UsersId")
-                        .HasColumnType("uuid");
+                    b.Property<long>("ParticipantsTelegramId")
+                        .HasColumnType("bigint");
 
-                    b.HasKey("EventId", "UsersId");
+                    b.HasKey("EventId", "ParticipantsTelegramId");
 
-                    b.HasIndex("UsersId");
+                    b.HasIndex("ParticipantsTelegramId");
 
-                    b.ToTable("EventUser");
+                    b.ToTable("EventParticipants", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.Event", b =>
                 {
                     b.HasOne("Domain.Entities.EventCategory", "Category")
-                        .WithMany("Events")
+                        .WithMany()
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Category");
-                });
-
-            modelBuilder.Entity("Domain.Entities.User", b =>
-                {
-                    b.HasOne("Domain.Entities.EventCategory", null)
-                        .WithMany("UnfinishedUsers")
-                        .HasForeignKey("EventCategoryId");
-
-                    b.HasOne("Domain.Entities.Event", null)
-                        .WithMany("Participants")
-                        .HasForeignKey("EventId");
                 });
 
             modelBuilder.Entity("EventUser", b =>
@@ -176,21 +157,9 @@ namespace Domain.Migrations
 
                     b.HasOne("Domain.Entities.User", null)
                         .WithMany()
-                        .HasForeignKey("UsersId")
+                        .HasForeignKey("ParticipantsTelegramId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("Domain.Entities.Event", b =>
-                {
-                    b.Navigation("Participants");
-                });
-
-            modelBuilder.Entity("Domain.Entities.EventCategory", b =>
-                {
-                    b.Navigation("Events");
-
-                    b.Navigation("UnfinishedUsers");
                 });
 #pragma warning restore 612, 618
         }

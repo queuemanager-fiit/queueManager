@@ -59,7 +59,7 @@ public class QueueFormationService : IHostedService, IDisposable
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Ошибка при обработке очередей: {ex.Message}");
+            Console.WriteLine($"пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ: {ex.Message}");
         }
     }
 

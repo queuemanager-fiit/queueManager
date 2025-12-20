@@ -12,18 +12,23 @@ public class EventRepository : BaseRepository<Event>, IEventRepository
     {
         return await Context.Events
             .Where(e => e.OccurredOn <= now)
-            .Include(e => e.Users)
+            .Include(e => e.Participants)
             .ToListAsync(ct);
     }
 
-    public Task<List<Event>> GetForUserAsync(long telegramId, CancellationToken ct)
+    public async Task<List<Event>> GetDueFormationAsync(DateTimeOffset now, CancellationToken ct)
     {
-        throw new NotImplementedException();
+        return await Context.Events
+            .Where(e => e.FormationTime <= now)
+            .Include(e => e.Participants)
+            .ToListAsync(ct);
     }
 
-    public Task<Event?> GetByIdAsync(Guid eventId, CancellationToken ct)
+    public async Task<Event?> GetByIdAsync(Guid eventId, CancellationToken ct)
     {
-        throw new NotImplementedException();
+        return await Context.Events
+            .Include(e => e.Participants)
+            .FirstOrDefaultAsync(e => e.Id == eventId, ct);
     }
 
     public async Task MarkAsNotifiedAsync(IEnumerable<Guid> ids, DateTimeOffset now, CancellationToken ct)
@@ -32,6 +37,25 @@ public class EventRepository : BaseRepository<Event>, IEventRepository
             .Where(e => ids.Contains(e.Id))
             .ToListAsync(ct);
             
-        Context.Events.RemoveRange(events);
+        foreach (var eventItem in events)
+        {
+            eventItem.MarkAsNotified(now); // ← ИСПОЛЬЗУЙ МЕТОД!
+        }
+        
+        Context.Events.UpdateRange(events);
+    }
+    
+    public async Task MarkAsFormedAsync(IEnumerable<Guid> ids, DateTimeOffset now, CancellationToken ct)
+    {
+        var events = await Context.Events
+            .Where(e => ids.Contains(e.Id))
+            .ToListAsync(ct);
+            
+        foreach (var eventItem in events)
+        {
+            eventItem.MarkAsFormed(now); // ← ИСПОЛЬЗУЙ МЕТОД!
+        }
+        
+        Context.Events.UpdateRange(events);
     }
 }

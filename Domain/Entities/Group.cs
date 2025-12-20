@@ -1,16 +1,15 @@
-﻿namespace Domain.Entities;
+﻿using System.ComponentModel.DataAnnotations;
+namespace Domain.Entities;
 
 public class Group
 {
-    public string Code { get; }
-    private readonly List<EventCategory> categories = new();
-    private readonly List<Event> events = new();
-    private readonly List<User> users = new();
-    public IReadOnlyList<Event> GetEvents() => events;
+    [Key]
+    public string Code { get; private set;}
+    public List<EventCategory> Categories = new();
+    public List<Event> Events = new();
+    public List<User> Users = new();
     
-    public IReadOnlyList<EventCategory> GetCategories() => categories;
-    public IReadOnlyList<User> GetUsers() => users;
-    
+    protected Group() { } 
     public Group(string code)
     {
         Code = code ?? throw new ArgumentNullException(nameof(code));
@@ -19,39 +18,39 @@ public class Group
     public bool AddCategory(EventCategory category)
     {
         if (category == null) return false;
-        categories.Add(category);
+        Categories.Add(category);
         return true;
     }
 
     public bool RemoveCategory(EventCategory category)
     {
         if (category == null) return false;
-        return categories.Remove(category);
+        return Categories.Remove(category);
     }
 
     public bool AddEvent(Event evt)
     {
         if (evt == null) return false;
-        events.Add(evt);
+        Events.Add(evt);
         return true;
     }
 
     public bool RemoveEvent(Event evt)
     {
         if (evt == null) return false;
-        return events.Remove(evt);
+        return Events.Remove(evt);
     }
     
     public bool AddUser(User user)
     {
         if (user == null) return false;
-        users.Add(user);
+        Users.Add(user);
         return true;
     }
 
     public bool RemoveUser(User user)
     {
         if (user == null) return false;
-        return users.Remove(user);
+        return Users.Remove(user);
     }
 }

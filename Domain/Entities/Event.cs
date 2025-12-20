@@ -1,23 +1,22 @@
-﻿namespace Domain.Entities;
+﻿using System.ComponentModel.DataAnnotations;
+namespace Domain.Entities;
 
 public class Event
 {
-    public Guid Id { get; } = Guid.NewGuid();
-    public EventCategory Category { get; private set; }
+    [Key]
+    public Guid Id { get; set;} = Guid.NewGuid();
+    public EventCategory Category { get;  set; }
+    public List<User> Participants = new();
+    public Dictionary<User, UserPreference> Preferences = new();
+    public DateTimeOffset OccurredOn { get; set; }
+    public DateTimeOffset FormationTime { get; set; }
+    public DateTimeOffset DeletionTime { get; set; }
+    public DateTimeOffset NotificationTime {get; set;}
+    public bool IsNotified { get;  set; }
+    public bool IsFormed { get;  set; }
+    public string GroupCode { get;set; }
 
-    private readonly List<User> participants = new();
-    private readonly Dictionary<User, UserPreference> preferences = new();
-
-    public IReadOnlyList<User> Participants => participants;
-    public IReadOnlyDictionary<User, UserPreference> Preferences => preferences;
-
-    public DateTimeOffset OccurredOn { get; private set; }
-    public DateTimeOffset FormationTime { get; private set; }
-    public DateTimeOffset DeletionTime { get; private set; }
-    public DateTimeOffset NotificationTime {get; private set;}
-    public bool IsNotified { get; private set; }
-    public bool IsFormed { get; private set; }
-    public string GroupCode { get; private set; }
+     protected Event() { } 
 
     public Event(
         EventCategory category,
@@ -36,23 +35,34 @@ public class Event
     {
         if (user == null) throw new ArgumentNullException(nameof(user));
         if (!CanUserJoin(user)) return false;
-        if (preferences.ContainsKey(user)) return false;
+        if (Preferences.ContainsKey(user)) return false;
 
-        preferences[user] = preference;
-        participants.Add(user);
+        Preferences[user] = preference;
+        Participants.Add(user);
         return true;
+    }
+    public void MarkAsNotified(DateTimeOffset time)
+    {
+        IsNotified = true;
+        NotificationTime = time;
+    }
+    
+    public void MarkAsFormed(DateTimeOffset time)
+    {
+        IsFormed = true;
+        FormationTime = time;
     }
 
     public bool RemoveParticipant(User user)
     {
         if (user == null) return false;
-        if (!preferences.ContainsKey(user)) return false;
+        if (!Preferences.ContainsKey(user)) return false;
 
-        int index = participants.IndexOf(user);
+        int index = Participants.IndexOf(user);
         if (index == -1) return false;
 
-        preferences.Remove(user);
-        participants.RemoveAt(index);
+        Preferences.Remove(user);
+        Participants.RemoveAt(index);
 
         return true;
     }
@@ -66,9 +76,7 @@ public class Event
 
         var unfinished = Category.UnfinishedUsers;
 
-        Category.ClearUnfinishedUsers();
-
-        var sortedParticipants = preferences
+        var sortedParticipants = Preferences
             .OrderBy(p => p.Value)
             .ThenBy(p => p.Key.AveragePosition)
             .Select(p => p.Key)
@@ -78,7 +86,7 @@ public class Event
 
         foreach (var user in unfinished)
         {
-            if (preferences.ContainsKey(user) && preferences[user] != UserPreference.End)
+            if (Preferences.ContainsKey(user) && Preferences[user] != UserPreference.End)
             {
                 finalQueue.Add(user);
                 sortedParticipants.Remove(user);
@@ -87,15 +95,17 @@ public class Event
 
         finalQueue.AddRange(sortedParticipants);
 
-        participants.Clear();
-        participants.AddRange(finalQueue);
+        Participants.Clear();
+        Participants.AddRange(finalQueue);
         IsFormed = true;
 
-        for (int i = 0; i < participants.Count; i++)
+        for (int i = 0; i < Participants.Count; i++)
         {
-            var user = participants[i];
+            var user = Participants[i];
             user.UpdateAveragePosition(i + 1);
         }
+
+        Category.UnfinishedUsers.Clear();
     }
 
     public void MarkAsNotified() =>
@@ -104,14 +114,11 @@ public class Event
 
 public class EventCategory
 {
-    public Guid Id { get; } = Guid.NewGuid();
-    public string SubjectName { get; }
-    public bool IsAutoCreate { get; }
-    public string GroupCode { get; }
-
-    private readonly List<User> unfinishedUsers = new();
-
-    public IReadOnlyList<User> UnfinishedUsers => unfinishedUsers;
+    public Guid Id { get; private set;} = Guid.NewGuid();
+    public string SubjectName { get; private set;}
+    public bool IsAutoCreate { get; private set;}
+    public string GroupCode { get; private set;}
+    public List<User> UnfinishedUsers = new();
 
     public EventCategory(
         string subjectName,
@@ -136,18 +143,14 @@ public class EventCategory
                 "Номер позиции должен быть положительным целым числом."
             );
 
-        unfinishedUsers.Clear();
+        UnfinishedUsers.Clear();
+
 
         for (int i = cutoffPosition; i < queue.Count; i++)
         {
             var user = queue[i];
             if (user != null)
-                unfinishedUsers.Add(user);
+                UnfinishedUsers.Add(user);
         }
-    }
-
-    public void ClearUnfinishedUsers()
-    {
-        unfinishedUsers.Clear();
     }
 }

@@ -101,6 +101,7 @@ public class BotEventController : ControllerBase
         return NoContent();
     }
 
+
     //используется, чтобы отметить, что данный студент желает участвовать в данной очереди
     [HttpPost("confirm")]
     public async Task<IActionResult> Confirm([FromBody] ParticipationDto dto, CancellationToken ct)
@@ -172,7 +173,7 @@ public class BotEventController : ControllerBase
     public async Task<ActionResult<List<BotEventDto>>> GetForGroup([FromQuery] string groupCode, CancellationToken ct)
     {
         var group = await groups.GetByCodeAsync(groupCode, ct);
-        return Ok(ToDtoList(group.GetEvents().ToList()));
+        return Ok(ToDtoList(group.Events.ToList()));
     }
     
     //используется, чтобы отметить неуспевших пользователей

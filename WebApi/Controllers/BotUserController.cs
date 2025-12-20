@@ -105,8 +105,9 @@ public sealed class BotUserController : ControllerBase
         var user = await users.GetByTelegramIdAsync(dto.telegramId, ct);
         var group = await groups.GetByCodeAsync(dto.groupCode, ct);
         
-        user.DeleteGroup(dto.groupCode);
+        user.GroupCodes.Remove(dto.groupCode);
         group.RemoveUser(user);
+
 
         await groups.UpdateAsync(group, ct);
         await users.UpdateAsync(user, ct);
@@ -120,11 +121,17 @@ public sealed class BotUserController : ControllerBase
     public async Task<ActionResult<InfoUserDto>> GetUserInfo([FromQuery] long telegramId, CancellationToken ct)
     {
         var user = await users.GetByTelegramIdAsync(telegramId, ct);
+        
+        if (user == null)
+        {
+            return NotFound($"User with TelegramId {telegramId} not found");
+        }
+    
         return Ok(new InfoUserDto(
             user.FullName,
             user.Username,
-            user.GroupCodes.First(),
-            user.GroupCodes.Last(),
+            user.GroupCodes.FirstOrDefault() ?? string.Empty,
+            user.GroupCodes.LastOrDefault() ?? string.Empty,
             user.IsAdmin,
             user.AveragePosition,
             user.ParticipationCount));

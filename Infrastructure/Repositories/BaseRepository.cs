@@ -23,4 +23,10 @@ public abstract class BaseRepository<T> : IRepository<T>
         Context.Update(entity);
         return Task.CompletedTask;
     }
+
+    public virtual Task DeleteAsync(T entity, CancellationToken ct)
+    {
+        Context.Remove(entity);
+        return Task.CompletedTask;
+    }
 }

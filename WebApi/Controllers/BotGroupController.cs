@@ -34,7 +34,7 @@ public class BotGroupController : ControllerBase
     public async Task<ActionResult<List<string>>> GetCategories(
         [FromQuery] string groupCode,
         CancellationToken ct) =>
-        Ok((await groups.GetByCodeAsync(groupCode, ct)).GetCategories().Select(categ => categ.SubjectName).ToList());
+        Ok((await groups.GetByCodeAsync(groupCode, ct)).Categories.Select(categ => categ.SubjectName).ToList());
     
     //добавляет категорию для указанной группы/подгруппы
     [HttpPost("add-category")]
@@ -73,6 +73,6 @@ public class BotGroupController : ControllerBase
     public async Task<ActionResult<List<long>>> GetUsers([FromQuery] string groupCode, CancellationToken ct)
     {
         var group = await groups.GetByCodeAsync(groupCode, ct);
-        return Ok(group.GetUsers().Select(user => user.TelegramId).ToList());
+        return Ok(group.Users.Select(user => user.TelegramId).ToList());
     }
 }

@@ -12,9 +12,11 @@ builder.Services.AddControllers();
 builder.Services.AddScoped<Application.Interfaces.IUserRepository, Infrastructure.Repositories.UserRepository>();
 builder.Services.AddScoped<Application.Interfaces.IGroupRepository, Infrastructure.Repositories.GroupRepository>();
 builder.Services.AddScoped<Application.Interfaces.IUnitOfWork, Infrastructure.Repositories.UnitOfWork>();
-builder.Services.AddScoped<Application.Interfaces.IEventRepository, Infrastructure.Repositories.EventRepository>(); // Ваша реализация
-builder.Services.AddHostedService<Infrastructure.Services.QueueFormationService>();
+builder.Services.AddScoped<Application.Interfaces.IEventRepository, Infrastructure.Repositories.EventRepository>();
+builder.Services.AddScoped<Application.Interfaces.IEventCategoryRepository, Infrastructure.Repositories.EventCategoryRepository>(); ///
 var app = builder.Build();
+
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

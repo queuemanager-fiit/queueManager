@@ -47,7 +47,7 @@ namespace QueueManagerBot
             {
                 case UserState.None:
                     var tgID = new { msg.Chat.Id };
-                    var userResponse = await httpClient.PostAsJsonAsync($"{apiBaseUrl}/api/users/get-user", tgID);
+                    var userResponse = await httpClient.PostAsJsonAsync($"{apiBaseUrl}/api/users/user-info", tgID);
 
                     if (!userResponse.IsSuccessStatusCode)
                     {
@@ -55,7 +55,7 @@ namespace QueueManagerBot
                         return;
                     }
 
-                    var user = await userResponse.Content.ReadFromJsonAsync<WebApi.Controllers.BotUserController.BotUserDto>();
+                    var user = await userResponse.Content.ReadFromJsonAsync<WebApi.Controllers.BotUserController.InfoUserDto>();
 
                     if (user.IsAdmin)
                     {

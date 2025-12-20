@@ -12,9 +12,4 @@ public class GroupRepository : BaseRepository<Group>, IGroupRepository
     {
         return await Context.Groups.FirstOrDefaultAsync(x => x.Code == code, ct);
     }
-
-    public Task<List<Group>> GetGroupsByCategoryAsync(Guid categoryId, CancellationToken ct)
-    {
-        throw new NotImplementedException();
-    }
 }

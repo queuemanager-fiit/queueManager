@@ -22,32 +22,35 @@ public class ApplicationDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+
         modelBuilder.Entity<Event>(entity =>
         {
             entity.HasKey(e => e.Id);
-        
-            // Настройка свойств с private set
+
             entity.Property(e => e.OccurredOn);
             entity.Property(e => e.FormationTime);
             entity.Property(e => e.DeletionTime);
-            entity.Property(e => e.State);
-            entity.Property(e => e.GroupId);
-        
-            // Связи
-            entity.HasOne(e => e.Category)
-                .WithMany(c => c.Events)
+            entity.Property(e => e.NotificationTime);
+            entity.Property(e => e.IsNotified);
+            entity.Property(e => e.IsFormed);
+            entity.Property(e => e.GroupCode);
+
+            entity.HasOne(typeof(EventCategory), "Category")
+                .WithMany()
                 .HasForeignKey("CategoryId");
-        
-            entity.HasMany(e => e.Users)
-                .WithMany();
+
+            entity.HasMany(typeof(User), "Participants")
+                .WithMany()
+                .UsingEntity(j => j.ToTable("EventParticipants"));
         });
+
 
         modelBuilder.Entity<EventCategory>(entity =>
         {
             entity.HasKey(ec => ec.Id);
             entity.Property(ec => ec.SubjectName);
             entity.Property(ec => ec.IsAutoCreate);
-            entity.Property(ec => ec.GroupId);
+            entity.Property(ec => ec.GroupCode);
         });
 
         base.OnModelCreating(modelBuilder);

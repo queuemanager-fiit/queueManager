@@ -1,22 +1,24 @@
-﻿namespace Domain.Entities;
+﻿using System.ComponentModel.DataAnnotations;
+namespace Domain.Entities;
 
 public class User
 {
-    public long TelegramId { get; }
+    [Key]
+    public long TelegramId { get; private set;}
     public string FullName { get; private set; }
     public string Username { get; private set; }
-    private List<string> groupCodes = new();
-    public IReadOnlyCollection<string> GroupCodes => groupCodes;
+    public List<string> GroupCodes = new();
     public bool IsAdmin { get; private set; }
     public double AveragePosition { get; private set; } = 0.0;
     public int ParticipationCount { get; private set; } = 0;
+    protected User() { } 
 
     public User(long telegramId, string fullName, string username, List<string> groupCodes)
     {
         TelegramId = telegramId;
         FullName = fullName;
         Username = username;
-        this.groupCodes = groupCodes;
+        GroupCodes = groupCodes;
         IsAdmin = false;
     }
 
@@ -24,11 +26,8 @@ public class User
     {
         FullName = fullName;
         Username = username;
-        this.groupCodes = groupCodes;
+        GroupCodes = groupCodes;
     }
-
-    public void DeleteGroup(string groupCode) =>
-        groupCodes.Remove(groupCode);
 
     public void UpdateAveragePosition(int currentPosition)
     {

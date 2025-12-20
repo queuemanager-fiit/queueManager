@@ -8,7 +8,8 @@ namespace QueueManagerBot
         WaitingForQueueCategory,
         WaitingForQueueNameToDelete,
         WaitingForNewCategoryName,
-         WaitingForQueueDate,
-         WaitingForGroupId,
+        WaitingForQueueDate,
+        WaitingForGroupId,
+        WaitingForGroupIdCategory,
     }
 }

@@ -2,6 +2,9 @@ using System.Data.Common;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
+using WebApi.Controllers;
+using System.Net.Http.Json;
+using Microsoft.Extensions.Configuration;
 
 namespace QueueManagerBot
 {
@@ -11,9 +14,16 @@ namespace QueueManagerBot
         public TelegramBotClient Bot { get; }
         public UserState[] AllowedStates { get; }
         public StateManager StateManager { get; }
-        public Dictionary<long, Dictionary<string, string>> QueuesData { get; } = new Dictionary<long, Dictionary<string, string>>();
+        public Dictionary<long, Dictionary<string, string>> CategoriesData { get; } = new Dictionary<long, Dictionary<string, string>>();
+        private readonly HttpClient httpClient;
+        private readonly string apiBaseUrl;
 
-        public AddCategoryCommand(string name, TelegramBotClient tgBot, StateManager stateManager)
+        public AddCategoryCommand(
+            string name, 
+            TelegramBotClient tgBot, 
+            StateManager stateManager,
+            IHttpClientFactory httpClientFactory,
+            IConfiguration configuration)
         {
             Name = name;
             Bot = tgBot;
@@ -23,16 +33,24 @@ namespace QueueManagerBot
                 UserState.None,
                 UserState.WaitingForNewCategoryName
             };
-        }
 
+            httpClient = httpClientFactory.CreateClient("ApiClient");
+            apiBaseUrl = configuration["ApiBaseUrl"] ?? "https://localhost:5001";
+        }
         public bool CanExecute(Message msg, UserState state)
         {
-            // var isAdmin = db.IsAdmin(msg.Chat.Id);
             return (msg.Text == Name && state == UserState.None) || (state != UserState.None && AllowedStates.Contains(state));
         }
 
         public async Task Execute(Message msg)
         {
+            if (!CategoriesData.ContainsKey(msg.Chat.Id))
+            {
+                CategoriesData.Add(msg.Chat.Id, new Dictionary<string, string>());
+                CategoriesData[msg.Chat.Id].Add("CategotyName", "");
+                CategoriesData[msg.Chat.Id].Add("GroupId", ""); 
+            }
+
             switch (StateManager.GetState(msg.Chat.Id))
             {
                 case UserState.None:
@@ -40,11 +58,58 @@ namespace QueueManagerBot
                     StateManager.SetState(msg.Chat.Id, UserState.WaitingForNewCategoryName);
                     break;
                 case UserState.WaitingForNewCategoryName:
-                    // db.AddCategory(msg.Text)
-                    StateManager.SetState(msg.Chat.Id, UserState.None);
-                    await Bot.SendMessage(msg.Chat.Id, "Категория успешно добавлена");
+                    CategoriesData[msg.Chat.Id]["CategotyName"] = msg.Text;
+                    StateManager.SetState(msg.Chat.Id, UserState.WaitingForGroupIdCategory);
+                    await Bot.SendMessage(
+                        msg.Chat.Id,
+                        "Для кого хотите создать категорию?",
+                        replyMarkup : new string[] { "Для всей группы", "Для своей половинки" }
+                        );
                     break;
+                case UserState.WaitingForGroupIdCategory:
+                    StateManager.SetState(msg.Chat.Id, UserState.None);
+                    var userResponse = await httpClient.GetAsync($"{apiBaseUrl}/api/users/user-info?telegramId={msg.Chat.Id}");
 
+                    if (!userResponse.IsSuccessStatusCode)
+                    {
+                        await Bot.SendMessage(msg.Chat.Id, "Ошибка при получении данных пользователя");
+                        return;
+                    }
+
+                    var user = await userResponse.Content.ReadFromJsonAsync<WebApi.Controllers.BotUserController.BotUserDto>();
+                    
+                    if (msg.Text == "Для всей группы")
+                        CategoriesData[msg.Chat.Id]["GroupId"] = user.GroupCode;
+                    else if (msg.Text == "Для своей половинки")
+                        CategoriesData[msg.Chat.Id]["GroupId"] = user.SubGroupCode;
+
+                    try
+                    {
+                        var category = new WebApi.Controllers.BotGroupController.CategoryDto(
+                            CategoriesData[msg.Chat.Id]["GroupId"],
+                            false,
+                            CategoriesData[msg.Chat.Id]["CategotyName"]);
+                        var response = await httpClient.PostAsJsonAsync($"{apiBaseUrl}/api/groups/add-category", category);
+
+
+                        if (response.IsSuccessStatusCode)
+                        {
+                            CategoriesData.Remove(msg.Chat.Id);
+                            await Bot.SendMessage(msg.Chat.Id, "Категория успешно создана");
+                            StateManager.SetState(msg.Chat.Id, UserState.None);
+                        }
+                        else
+                        {
+                            var errorContent = await response.Content.ReadAsStringAsync();
+                            await Bot.SendMessage(msg.Chat.Id, $"Ошибка сохранения: {response.StatusCode}\n{errorContent}");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        await Bot.SendMessage(msg.Chat.Id, "Произошла непредвиденная ошибка");
+                        Console.WriteLine(ex.Message);
+                    }
+                    break;
             }
         }
     }
