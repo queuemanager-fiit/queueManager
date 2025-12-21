@@ -44,7 +44,7 @@ public sealed class BotUserController : ControllerBase
     [HttpPost("update-userinfo")]
     public async Task<IActionResult> UpdateUserInfo([FromBody] BotUserDto dto, CancellationToken ct)
     {
-        /*var group = await groups.GetByCodeAsync(dto.GroupCode, ct);
+        var group = await groups.GetByCodeAsync(dto.GroupCode, ct);
         var subGroup = await groups.GetByCodeAsync(dto.SubGroupCode, ct);
         
         if (group is null)
@@ -95,9 +95,9 @@ public sealed class BotUserController : ControllerBase
         await groups.UpdateAsync(group, ct);
         
         await uow.SaveChangesAsync(ct);
-        return NoContent();*/
+        return NoContent();
         
-        var group = await groups.GetByCodeAsync(dto.GroupCode, ct);
+        /*var group = await groups.GetByCodeAsync(dto.GroupCode, ct);
         
         if (group is null)
         {
@@ -121,7 +121,7 @@ public sealed class BotUserController : ControllerBase
         }
 
         await uow.SaveChangesAsync(ct);
-        return NoContent();
+        return NoContent();*/
     }
     
     //вызывается для удаления пользователя из группы
