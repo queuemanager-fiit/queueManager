@@ -44,7 +44,7 @@ public sealed class BotUserController : ControllerBase
     [HttpPost("update-userinfo")]
     public async Task<IActionResult> UpdateUserInfo([FromBody] BotUserDto dto, CancellationToken ct)
     {
-        /*var group = await groups.GetByCodeAsync(dto.GroupCode, ct);
+        var group = await groups.GetByCodeAsync(dto.GroupCode, ct);
         var subGroup = await groups.GetByCodeAsync(dto.SubGroupCode, ct);
         
         if (group is null)
@@ -94,32 +94,6 @@ public sealed class BotUserController : ControllerBase
         await groups.UpdateAsync(subGroup, ct);
         await groups.UpdateAsync(group, ct);
         
-        await uow.SaveChangesAsync(ct);
-        return NoContent();*/
-        
-        var group = await groups.GetByCodeAsync(dto.GroupCode, ct);
-        
-        if (group is null)
-        {
-            group = new Group(dto.GroupCode);
-            var subGroup = new Group(dto.SubGroupCode);
-            await groups.AddAsync(group, ct);
-            await groups.AddAsync(subGroup, ct);
-        }
-        
-        var user = await users.GetByTelegramIdAsync(dto.TelegramId, ct);
-        if (user is null)
-        {
-            user = new User(dto.TelegramId, dto.FullName, dto.Username,
-                new List<string> { dto.GroupCode, dto.SubGroupCode });
-            await users.AddAsync(user, ct);
-        }
-        else
-        {
-            user.UpdateInfo(dto.FullName, dto.Username, new List<string> { dto.GroupCode, dto.SubGroupCode });
-            await users.UpdateAsync(user, ct);
-        }
-
         await uow.SaveChangesAsync(ct);
         return NoContent();
     }
