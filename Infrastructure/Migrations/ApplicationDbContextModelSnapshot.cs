@@ -38,13 +38,18 @@ namespace Infrastructure.Migrations
 
                     b.Property<string>("GroupCode")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
 
                     b.Property<bool>("IsFormed")
-                        .HasColumnType("boolean");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false);
 
                     b.Property<bool>("IsNotified")
-                        .HasColumnType("boolean");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false);
 
                     b.Property<DateTimeOffset>("NotificationTime")
                         .HasColumnType("timestamp with time zone");
@@ -55,6 +60,8 @@ namespace Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
+
+                    b.HasIndex("GroupCode");
 
                     b.ToTable("Events");
                 });
@@ -67,16 +74,21 @@ namespace Infrastructure.Migrations
 
                     b.Property<string>("GroupCode")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
 
                     b.Property<bool>("IsAutoCreate")
-                        .HasColumnType("boolean");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false);
 
                     b.Property<string>("SubjectName")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("GroupCode");
 
                     b.ToTable("EventCategories");
                 });
@@ -100,23 +112,44 @@ namespace Infrastructure.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("TelegramId"));
 
                     b.Property<double>("AveragePosition")
-                        .HasColumnType("double precision");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("double precision")
+                        .HasDefaultValue(0.0);
+
+                    b.Property<Guid?>("EventCategoryId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("FullName")
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("GroupCode")
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<string>("GroupCodes")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<bool>("IsAdmin")
-                        .HasColumnType("boolean");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false);
 
                     b.Property<int>("ParticipationCount")
-                        .HasColumnType("integer");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(0);
 
                     b.Property<string>("Username")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("TelegramId");
+
+                    b.HasIndex("EventCategoryId");
+
+                    b.HasIndex("GroupCode");
 
                     b.ToTable("Users");
                 });
@@ -141,10 +174,39 @@ namespace Infrastructure.Migrations
                     b.HasOne("Domain.Entities.EventCategory", "Category")
                         .WithMany()
                         .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.Group", null)
+                        .WithMany("Events")
+                        .HasForeignKey("GroupCode")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("Domain.Entities.EventCategory", b =>
+                {
+                    b.HasOne("Domain.Entities.Group", null)
+                        .WithMany("Categories")
+                        .HasForeignKey("GroupCode")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Domain.Entities.User", b =>
+                {
+                    b.HasOne("Domain.Entities.EventCategory", null)
+                        .WithMany("UnfinishedUsers")
+                        .HasForeignKey("EventCategoryId");
+
+                    b.HasOne("Domain.Entities.Group", "Group")
+                        .WithMany("Users")
+                        .HasForeignKey("GroupCode")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Group");
                 });
 
             modelBuilder.Entity("EventUser", b =>
@@ -160,6 +222,20 @@ namespace Infrastructure.Migrations
                         .HasForeignKey("ParticipantsTelegramId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Domain.Entities.EventCategory", b =>
+                {
+                    b.Navigation("UnfinishedUsers");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Group", b =>
+                {
+                    b.Navigation("Categories");
+
+                    b.Navigation("Events");
+
+                    b.Navigation("Users");
                 });
 #pragma warning restore 612, 618
         }

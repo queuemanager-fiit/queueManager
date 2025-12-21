@@ -7,25 +7,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class CleanDatabase : Migration
+    public partial class CleanStart : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
-                name: "EventCategories",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    SubjectName = table.Column<string>(type: "text", nullable: false),
-                    IsAutoCreate = table.Column<bool>(type: "boolean", nullable: false),
-                    GroupCode = table.Column<string>(type: "text", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_EventCategories", x => x.Id);
-                });
-
             migrationBuilder.CreateTable(
                 name: "Groups",
                 columns: table => new
@@ -38,20 +24,23 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Users",
+                name: "EventCategories",
                 columns: table => new
                 {
-                    TelegramId = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    FullName = table.Column<string>(type: "text", nullable: false),
-                    Username = table.Column<string>(type: "text", nullable: false),
-                    IsAdmin = table.Column<bool>(type: "boolean", nullable: false),
-                    AveragePosition = table.Column<double>(type: "double precision", nullable: false),
-                    ParticipationCount = table.Column<int>(type: "integer", nullable: false)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    SubjectName = table.Column<string>(type: "text", nullable: false),
+                    IsAutoCreate = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
+                    GroupCode = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Users", x => x.TelegramId);
+                    table.PrimaryKey("PK_EventCategories", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_EventCategories_Groups_GroupCode",
+                        column: x => x.GroupCode,
+                        principalTable: "Groups",
+                        principalColumn: "Code",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -64,9 +53,9 @@ namespace Infrastructure.Migrations
                     FormationTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     DeletionTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     NotificationTime = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    IsNotified = table.Column<bool>(type: "boolean", nullable: false),
-                    IsFormed = table.Column<bool>(type: "boolean", nullable: false),
-                    GroupCode = table.Column<string>(type: "text", nullable: false)
+                    IsNotified = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
+                    IsFormed = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
+                    GroupCode = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -76,7 +65,44 @@ namespace Infrastructure.Migrations
                         column: x => x.CategoryId,
                         principalTable: "EventCategories",
                         principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Events_Groups_GroupCode",
+                        column: x => x.GroupCode,
+                        principalTable: "Groups",
+                        principalColumn: "Code",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Users",
+                columns: table => new
+                {
+                    TelegramId = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    FullName = table.Column<string>(type: "text", nullable: false),
+                    Username = table.Column<string>(type: "text", nullable: false),
+                    GroupCode = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
+                    GroupCodes = table.Column<string>(type: "text", nullable: false),
+                    IsAdmin = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
+                    AveragePosition = table.Column<double>(type: "double precision", nullable: false, defaultValue: 0.0),
+                    ParticipationCount = table.Column<int>(type: "integer", nullable: false, defaultValue: 0),
+                    EventCategoryId = table.Column<Guid>(type: "uuid", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.TelegramId);
+                    table.ForeignKey(
+                        name: "FK_Users_EventCategories_EventCategoryId",
+                        column: x => x.EventCategoryId,
+                        principalTable: "EventCategories",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Users_Groups_GroupCode",
+                        column: x => x.GroupCode,
+                        principalTable: "Groups",
+                        principalColumn: "Code",
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateTable(
@@ -104,6 +130,11 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_EventCategories_GroupCode",
+                table: "EventCategories",
+                column: "GroupCode");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_EventParticipants_ParticipantsTelegramId",
                 table: "EventParticipants",
                 column: "ParticipantsTelegramId");
@@ -112,6 +143,21 @@ namespace Infrastructure.Migrations
                 name: "IX_Events_CategoryId",
                 table: "Events",
                 column: "CategoryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Events_GroupCode",
+                table: "Events",
+                column: "GroupCode");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_EventCategoryId",
+                table: "Users",
+                column: "EventCategoryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_GroupCode",
+                table: "Users",
+                column: "GroupCode");
         }
 
         /// <inheritdoc />
@@ -121,9 +167,6 @@ namespace Infrastructure.Migrations
                 name: "EventParticipants");
 
             migrationBuilder.DropTable(
-                name: "Groups");
-
-            migrationBuilder.DropTable(
                 name: "Events");
 
             migrationBuilder.DropTable(
@@ -131,6 +174,9 @@ namespace Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "EventCategories");
+
+            migrationBuilder.DropTable(
+                name: "Groups");
         }
     }
 }

@@ -31,8 +31,11 @@ namespace QueueManagerBot
             AllowedStates = new UserState[]
             {
                 UserState.None,
-                UserState.WaitingForNewCategoryName
+                UserState.WaitingForNewCategoryName,
+                UserState.WaitingForGroupIdCategory,
+                
             };
+
 
             httpClient = httpClientFactory.CreateClient("ApiClient");
             apiBaseUrl = configuration["ApiBaseUrl"] ?? "https://localhost:5001";
@@ -44,6 +47,22 @@ namespace QueueManagerBot
 
         public async Task Execute(Message msg)
         {
+            var userResponse = await httpClient.GetAsync($"{apiBaseUrl}/api/users/user-info?telegramId={msg.Chat.Id}");
+
+            if (!userResponse.IsSuccessStatusCode)
+            {
+                await Bot.SendMessage(msg.Chat.Id, "Ошибка при получении данных пользователя");
+                return;
+            }
+
+            var user = await userResponse.Content.ReadFromJsonAsync<WebApi.Controllers.BotUserController.InfoUserDto>();
+
+            if (!user.IsAdmin)
+            {
+                await Bot.SendMessage(msg.Chat.Id, "Создавать категории может только админ");
+                return;
+            }
+
             if (!CategoriesData.ContainsKey(msg.Chat.Id))
             {
                 CategoriesData.Add(msg.Chat.Id, new Dictionary<string, string>());
@@ -68,15 +87,7 @@ namespace QueueManagerBot
                     break;
                 case UserState.WaitingForGroupIdCategory:
                     StateManager.SetState(msg.Chat.Id, UserState.None);
-                    var userResponse = await httpClient.GetAsync($"{apiBaseUrl}/api/users/user-info?telegramId={msg.Chat.Id}");
 
-                    if (!userResponse.IsSuccessStatusCode)
-                    {
-                        await Bot.SendMessage(msg.Chat.Id, "Ошибка при получении данных пользователя");
-                        return;
-                    }
-
-                    var user = await userResponse.Content.ReadFromJsonAsync<WebApi.Controllers.BotUserController.BotUserDto>();
                     
                     if (msg.Text == "Для всей группы")
                         CategoriesData[msg.Chat.Id]["GroupId"] = user.GroupCode;
@@ -112,5 +123,6 @@ namespace QueueManagerBot
                     break;
             }
         }
+
     }
 }

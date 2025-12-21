@@ -16,6 +16,7 @@ public abstract class BaseRepository<T> : IRepository<T>
     public virtual async Task AddAsync(T entity, CancellationToken ct)
     {
         await Context.AddAsync(entity, ct);
+        await Context.SaveChangesAsync(ct);
     }
 
     public virtual Task UpdateAsync(T entity, CancellationToken ct)

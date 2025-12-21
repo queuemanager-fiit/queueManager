@@ -46,39 +46,40 @@ namespace QueueManagerBot
             switch (StateManager.GetState(msg.Chat.Id))
             {
                 case UserState.None:
-                    var tgID = new { msg.Chat.Id };
-                    var userResponse = await httpClient.PostAsJsonAsync($"{apiBaseUrl}/api/users/user-info", tgID);
+                    var userResponse = await httpClient.GetAsync($"{apiBaseUrl}/api/users/user-info?telegramId={msg.Chat.Id}");
 
                     if (!userResponse.IsSuccessStatusCode)
                     {
                         await Bot.SendMessage(msg.Chat.Id, "Ошибка при получении данных пользователя");
                         return;
                     }
-
+                    Console.WriteLine($"3");
                     var user = await userResponse.Content.ReadFromJsonAsync<WebApi.Controllers.BotUserController.InfoUserDto>();
 
                     if (user.IsAdmin)
                     {
                         var groupCode = new { user.GroupCode };
                         var subGroupCode = new { user.SubGroupCode };
+                        Console.WriteLine($"1");
+                        var groupQueuesResponse = await httpClient.GetAsync($"{apiBaseUrl}/api/events/events-for-group?groupCode={groupCode}");
+                        var subGroupQueuesResponse = await httpClient.GetAsync($"{apiBaseUrl}/api/events/events-for-group?groupCode={subGroupCode}");
 
-                        var groupQueuesResponse = await httpClient.PostAsJsonAsync($"{apiBaseUrl}/api/events/events-list-created-by", groupCode);
-                        var subGroupQueuesResponse = await httpClient.PostAsJsonAsync($"{apiBaseUrl}/api/events/events-list-created-by", subGroupCode);
 
+                        Console.WriteLine($"{groupCode}, {subGroupCode}");
                         var groupQueues = await groupQueuesResponse.Content.ReadFromJsonAsync<List<WebApi.Controllers.BotEventController.BotEventDto>>();
                         var subGroupQueues = await subGroupQueuesResponse.Content.ReadFromJsonAsync<List<WebApi.Controllers.BotEventController.BotEventDto>>();
-
+                        Console.WriteLine($"2");
                         var allQueues = new List<WebApi.Controllers.BotEventController.BotEventDto>();
                         if (groupQueues != null) allQueues.AddRange(groupQueues);
                         if (subGroupQueues != null) allQueues.AddRange(subGroupQueues);
-
+                        Console.WriteLine($"3");
                         if (!allQueues.Any())
                         {
                             await Bot.SendMessage(msg.Chat.Id, "У вас нет активных очередей");
                             StateManager.SetState(msg.Chat.Id, UserState.None);
                             return;
                         }
-
+                        Console.WriteLine($"4");
                         var buttons = new List<InlineKeyboardButton>();
                         foreach (var queue in allQueues)
                         {
@@ -87,6 +88,7 @@ namespace QueueManagerBot
                                 callbackData: $"delete_queue_{queue.EventId}"
                             ));
                         }
+                        Console.WriteLine($"5");
                         var keyboard = new InlineKeyboardMarkup(buttons);
                         await Bot.SendMessage(msg.Chat.Id, "Выберете очередь для удаления", replyMarkup: keyboard);
                         StateManager.SetState(msg.Chat.Id, UserState.WaitingForQueueNameToDelete);

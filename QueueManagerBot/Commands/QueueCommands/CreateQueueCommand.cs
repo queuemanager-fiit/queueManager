@@ -68,6 +68,12 @@ namespace QueueManagerBot
             }
 
             var user = await userResponse.Content.ReadFromJsonAsync<WebApi.Controllers.BotUserController.InfoUserDto>();
+            if (!user.IsAdmin)
+            {
+                await Bot.SendMessage(msg.Chat.Id, "Создавать очереди может только админ");
+                return;
+            }
+
 
             switch (StateManager.GetState(msg.Chat.Id))
             {
@@ -86,6 +92,7 @@ namespace QueueManagerBot
                         QueuesData[msg.Chat.Id]["GroupId"] = user.GroupCode;
                     else if (msg.Text == "Для своей половинки")
                         QueuesData[msg.Chat.Id]["GroupId"] = user.SubGroupCode;
+                        
 
 
                     var categoriesResponse = await httpClient.GetAsync($"{apiBaseUrl}/api/groups/category-list?groupCode={QueuesData[msg.Chat.Id]["GroupId"]}");
@@ -97,7 +104,7 @@ namespace QueueManagerBot
                     }
                     
                     var categories = await categoriesResponse.Content.ReadFromJsonAsync<List<string>>();
-                    
+                    Console.WriteLine(QueuesData[msg.Chat.Id]["GroupId"]);
                     if (categories == null || !categories.Any())
                     {
                         await Bot.SendMessage(msg.Chat.Id, "Для вашей группы нет доступных категорий");
@@ -149,7 +156,7 @@ namespace QueueManagerBot
                         QueuesData[msg.Chat.Id]["QueueDate"] + "." + DateTime.Now.Year, 
                         "dd.MM.yyyy", 
                         CultureInfo.InvariantCulture,
-                        DateTimeStyles.AssumeLocal
+                        DateTimeStyles.AssumeUniversal
                     );
                     }
                     catch
@@ -161,16 +168,21 @@ namespace QueueManagerBot
 
                     try
                     {
+                        Console.WriteLine("1");
                         var queue = new WebApi.Controllers.BotEventController.CreationDto(
                             QueuesData[msg.Chat.Id]["GroupId"],
                             QueuesData[msg.Chat.Id]["QueueCategory"],
                             date);
+                        Console.WriteLine("2");
                         var response = await httpClient.PostAsJsonAsync($"{apiBaseUrl}/api/events/create-queue", queue);
+                        Console.WriteLine(response.StatusCode);
 
 
                         if (response.IsSuccessStatusCode)
                         {
+                            
                             QueuesData.Remove(msg.Chat.Id);
+                            Console.WriteLine("4");
                             await Bot.SendMessage(msg.Chat.Id, "Очередь успешно создана");
                             StateManager.SetState(msg.Chat.Id, UserState.None);
                         }
@@ -183,7 +195,8 @@ namespace QueueManagerBot
                     catch (Exception ex)
                     {
                         await Bot.SendMessage(msg.Chat.Id, "Произошла непредвиденная ошибка");
-                        Console.WriteLine(ex.Message);
+                        Console.WriteLine(ex.Message.Substring(0,500));
+
                     }
                     break;
             }

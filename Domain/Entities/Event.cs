@@ -16,7 +16,7 @@ public class Event
     public bool IsFormed { get;  set; }
     public string GroupCode { get;set; }
 
-     protected Event() { } 
+    protected Event() { } 
 
     public Event(
         EventCategory category,
@@ -118,7 +118,7 @@ public class EventCategory
     public string SubjectName { get; private set;}
     public bool IsAutoCreate { get; private set;}
     public string GroupCode { get; private set;}
-    public List<User> UnfinishedUsers = new();
+    public List<User> UnfinishedUsers { get; private set; }= new();
 
     public EventCategory(
         string subjectName,

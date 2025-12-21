@@ -25,8 +25,8 @@ namespace QueueManagerBot
             IHttpClientFactory httpClientFactory,
             IConfiguration configuration)
         {
-            httpClientFactory = httpClientFactory;
-            configuration = configuration;
+            this.httpClientFactory = httpClientFactory;
+            this.configuration = configuration;
             bot = new TelegramBotClient(token);
             bot.OnMessage += OnMessage;
             bot.OnUpdate += OnUpdate;
@@ -86,7 +86,7 @@ namespace QueueManagerBot
                     configuration),
                     
                 new AddCategoryCommand(
-                    "/create_category",
+                    "/add_category",
                     bot,
                     stateManager,
                     httpClientFactory,
@@ -100,9 +100,12 @@ namespace QueueManagerBot
         async Task OnMessage(Message msg, UpdateType type)
         {
             var isUserRegistered = await IsUserRegistered(msg.Chat.Id);
-            if (!isUserRegistered && msg.Text != "/start")
+            Console.WriteLine(isUserRegistered);
+            if (!isUserRegistered && msg.Text != "/start" && stateManager.GetState(msg.Chat.Id) != UserState.WaitingForStudentData)
+            {
                 await bot.SendMessage(msg.Chat.Id, "Зарегистрируйтесь при помощи команды /start");
-
+                return;
+            }
             var command = Commands
                 .FirstOrDefault(command => command.CanExecute(msg, stateManager.GetState(msg.Chat.Id)));
             if (command != null)
@@ -319,13 +322,15 @@ namespace QueueManagerBot
         {
             try
             {
+                Console.WriteLine("2");
                 var httpClient = httpClientFactory.CreateClient("ApiClient");
+                Console.WriteLine("1");
                 var userResponse = await httpClient.GetAsync($"{apiBaseUrl}/api/users/user-info?telegramId={telegramId}");
-                
                 return userResponse.IsSuccessStatusCode;
             }
-            catch
+            catch (Exception ex)
             {
+                Console.WriteLine(ex.Message);
                 return false;
             }
         }

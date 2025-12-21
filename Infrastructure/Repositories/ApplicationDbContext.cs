@@ -22,35 +22,86 @@ public class ApplicationDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-
-        modelBuilder.Entity<Event>(entity =>
+        modelBuilder.Entity<Group>(entity =>
         {
-            entity.HasKey(e => e.Id);
 
-            entity.Property(e => e.OccurredOn);
-            entity.Property(e => e.FormationTime);
-            entity.Property(e => e.DeletionTime);
-            entity.Property(e => e.NotificationTime);
-            entity.Property(e => e.IsNotified);
-            entity.Property(e => e.IsFormed);
-            entity.Property(e => e.GroupCode);
-
-            entity.HasOne(typeof(EventCategory), "Category")
-                .WithMany()
-                .HasForeignKey("CategoryId");
-
-            entity.HasMany(typeof(User), "Participants")
-                .WithMany()
-                .UsingEntity(j => j.ToTable("EventParticipants"));
+            entity.HasMany(g => g.Users)
+                .WithOne(u => u.Group)
+                .HasForeignKey(u => u.GroupCode)
+                .HasPrincipalKey(g => g.Code)
+                .OnDelete(DeleteBehavior.SetNull);
+                
+            entity.HasMany(g => g.Events)
+                .WithOne()
+                .HasForeignKey(e => e.GroupCode)
+                .HasPrincipalKey(g => g.Code)
+                .OnDelete(DeleteBehavior.Cascade);
+                
+            entity.HasMany(g => g.Categories)
+                .WithOne()
+                .HasForeignKey(ec => ec.GroupCode)
+                .HasPrincipalKey(g => g.Code)
+                .OnDelete(DeleteBehavior.Cascade);
         });
 
+        modelBuilder.Entity<User>(entity =>
+        {
+            entity.HasKey(u => u.TelegramId);
+            entity.Property(u => u.GroupCode).HasMaxLength(20);
+            
+            entity.Property(u => u.FullName).IsRequired();
+            entity.Property(u => u.Username);
+            entity.Property(u => u.IsAdmin).HasDefaultValue(false);
+            entity.Property(u => u.AveragePosition).HasDefaultValue(0.0);
+            entity.Property(u => u.ParticipationCount).HasDefaultValue(0);
+            
+            entity.Property(u => u.GroupCodes)
+                .HasConversion(
+                    v => string.Join(';', v),
+                    v => v.Split(';', StringSplitOptions.RemoveEmptyEntries).ToList()
+                )
+                .HasColumnType("text");
+        });
 
         modelBuilder.Entity<EventCategory>(entity =>
         {
             entity.HasKey(ec => ec.Id);
-            entity.Property(ec => ec.SubjectName);
-            entity.Property(ec => ec.IsAutoCreate);
-            entity.Property(ec => ec.GroupCode);
+            entity.Property(ec => ec.SubjectName).IsRequired();
+            entity.Property(ec => ec.IsAutoCreate).HasDefaultValue(false);
+            entity.Property(ec => ec.GroupCode).HasMaxLength(20).IsRequired();
+
+            entity.HasOne<Group>()
+                .WithMany(g => g.Categories)
+                .HasForeignKey(ec => ec.GroupCode)
+                .HasPrincipalKey(g => g.Code)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<Event>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.OccurredOn);
+            entity.Property(e => e.FormationTime);
+            entity.Property(e => e.DeletionTime);
+            entity.Property(e => e.NotificationTime);
+            entity.Property(e => e.IsNotified).HasDefaultValue(false);
+            entity.Property(e => e.IsFormed).HasDefaultValue(false);
+            entity.Property(e => e.GroupCode).HasMaxLength(20).IsRequired();
+
+            entity.HasOne(typeof(EventCategory), "Category")
+                .WithMany()
+                .HasForeignKey("CategoryId")
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasMany(typeof(User), "Participants")
+                .WithMany()
+                .UsingEntity(j => j.ToTable("EventParticipants"));
+            
+            entity.HasOne<Group>()
+                .WithMany(g => g.Events)
+                .HasForeignKey(e => e.GroupCode)
+                .HasPrincipalKey(g => g.Code)
+                .OnDelete(DeleteBehavior.Cascade);
         });
 
         base.OnModelCreating(modelBuilder);

@@ -1,17 +1,27 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.RegularExpressions;
 namespace Domain.Entities;
 
 public class User
 {
     [Key]
-    public long TelegramId { get; private set;}
+    public long TelegramId { get; private set; }
     public string FullName { get; private set; }
     public string Username { get; private set; }
-    public List<string> GroupCodes = new();
+    
+    // ДОБАВИТЬ: свойство для связи с Group
+    public string? GroupCode { get; private set; } 
+    public Group? Group { get; private set; } // Навигационное свойство
+
+    // ОСТАВИТЬ: список всех групп (если нужен)
+    public List<string> GroupCodes { get; private set; } = new();
+
     public bool IsAdmin { get; private set; }
     public double AveragePosition { get; private set; } = 0.0;
     public int ParticipationCount { get; private set; } = 0;
-    protected User() { } 
+
+    protected User() { }
+
 
     public User(long telegramId, string fullName, string username, List<string> groupCodes)
     {

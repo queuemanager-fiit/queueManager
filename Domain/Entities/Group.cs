@@ -5,9 +5,9 @@ public class Group
 {
     [Key]
     public string Code { get; private set;}
-    public List<EventCategory> Categories = new();
-    public List<Event> Events = new();
-    public List<User> Users = new();
+    public List<EventCategory> Categories { get; private set; } = new();
+    public List<Event> Events { get; private set; } = new();
+    public List<User> Users { get; private set; }= new();
     
     protected Group() { } 
     public Group(string code)
