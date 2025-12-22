@@ -1,6 +1,6 @@
 ﻿using OfficeOpenXml;
 
-namespace Infrastructure.Parser;
+namespace Table;
 
 public class Lesson(string name, DateTime dateTime)
 {
@@ -8,10 +8,10 @@ public class Lesson(string name, DateTime dateTime)
     public DateTime DateTime { get; } = dateTime;
 }
 
-public class GroupInfo(string name, List<Lesson> lessons)
+public class Group(string name)
 {
-    public readonly string name = name;
-    public readonly List<Lesson> Lessons = lessons;
+    public string Name { get; } = name;
+    public Dictionary<DayOfWeek, List<Lesson>> lessons = new();
 }
 
 public enum Parity
@@ -20,43 +20,54 @@ public enum Parity
     Even,
 }
 
-public class Schedule
+public class Schedule(string filePath)
 {
-    private ExcelPackage package;
-    private string lastMessage;
+    private ExcelPackage package = new(new FileInfo(filePath));
 
-
+    private readonly Dictionary<string, DayOfWeek> dayDefinder = new()
+    {
+        {"ПН", DayOfWeek.Monday},
+        {"ВТ", DayOfWeek.Tuesday},
+        {"СР", DayOfWeek.Wednesday},
+        {"ЧТ", DayOfWeek.Thursday},
+        {"ПТ", DayOfWeek.Friday},
+        {"СБ", DayOfWeek.Saturday},
+        {"ВС", DayOfWeek.Sunday + 7},
+    };
 
     static Schedule()
     {
         ExcelPackage.License.SetNonCommercialPersonal("My Name");
     }
 
-    public Schedule(string filePath)
-    {
-        package = new ExcelPackage(new FileInfo(filePath));
-        lastMessage = "";
-    }
 
-
-    public List<GroupInfo> CollectGroupInfo(DateTime dateTime = default)
+    public List<Group> CollectGroupInfo(DateTime dateTime = default)
     {
         if (dateTime == default)
             dateTime = DateTime.Now;
-        var groups = new List<GroupInfo>();
+        var groups = new List<Group>();
         var worksheet = package.Workbook.Worksheets[3];
         var groupPositionsList = FindGroupPositions(worksheet).ToList();
-        var parity = DetermineParity(DateTime.Now) is Parity.Even ? 1 : 0;
+        var parity = DetermineParity(dateTime) is Parity.Even ? 1 : 0;
         foreach (var position in groupPositionsList)
         {
             var lessons = new List<Lesson>();
-            groups.Add(new GroupInfo(worksheet.Cells[position.Item1, position.Item2].Text.Split(",")[0], lessons));
+            var currentGroup = new Group(worksheet.Cells[position.Item1, position.Item2].Text.Split(",")[0]);
+            groups.Add(currentGroup);
             for (var i = position.Item1 + 1 + parity; i < worksheet.Dimension.End.Row;)
             {
                 var text = FindTextCell(worksheet, (i, position.Item2));
-                if (text != "")
+                var dayOfWeek = FindTextCell(worksheet, (i, 1));
+                if (text != "" && dayDefinder.ContainsKey(dayOfWeek))
                 {
-                    lessons.Add(new Lesson(text.Split(",")[0], DateTime.Now));
+                    var timeLesson = FindTextCell(worksheet, (i, 2)).Split()[1].Split(":");
+                    var difference = dateTime.DayOfWeek - dayDefinder[FindTextCell(worksheet, (i, 1))];
+                    var targetDate = dateTime.AddDays(-difference);
+                    targetDate = new DateTime(targetDate.Year, targetDate.Month, targetDate.Day, int.Parse(timeLesson[0]), int.Parse(timeLesson[1]), 0);
+                    if (!currentGroup.lessons.ContainsKey(targetDate.DayOfWeek))
+                        currentGroup.lessons[targetDate.DayOfWeek] = new List<Lesson>();
+                    currentGroup.lessons[targetDate.DayOfWeek].Add(new Lesson(text.Split(",")[0], targetDate));
+                    lessons.Add(new Lesson(text.Split(",")[0], new DateTime()));
                 }
 
                 i = SkipTwoRows(worksheet, (i, position.Item2));
@@ -115,18 +126,21 @@ public class Schedule
         for (var i = startPosition.Item1 + 1; ; i++)
         {
             var leftCellText = FindTextCell(worksheet, (i, startPosition.Item2));
+            var rightCellText = FindTextCell(worksheet, (i, startPosition.Item2 + 1));
             if (leftCellText == "")
                 break;
-            listParity.Add((ParseDate(leftCellText),
-                ParseDate(FindTextCell(worksheet, (i, startPosition.Item2 + 1))))
-                );
+            listParity.Add(ParseTimeInterval((leftCellText, rightCellText)));
         }
     }
 
-    private DateTime ParseDate(string date)
+    private (DateTime, DateTime) ParseTimeInterval((string, string) dates)
     {
-        var stringDate = date.Split(".");
-        return new DateTime(int.Parse(stringDate[2]), int.Parse(stringDate[1]), int.Parse(stringDate[0]));
+        var stringDate = (dates.Item1.Split("."), dates.Item2.Split("."));
+        return (
+            new DateTime(int.Parse(stringDate.Item1[2]), int.Parse(stringDate.Item1[1]), int.Parse(stringDate.Item1[0]),
+                0, 0, 0),
+            new DateTime(int.Parse(stringDate.Item2[2]), int.Parse(stringDate.Item2[1]), int.Parse(stringDate.Item2[0]),
+                23, 59, 59));
     }
 
     private string FindTextCell(ExcelWorksheet worksheet, (int, int) position)
@@ -153,14 +167,5 @@ public class Schedule
                     yield return (row, col);
             }
         }
-    }
-}
-
-class Program
-{
-    static void Main()
-    {
-        var filePath = @"C:\Users\Егор\Desktop\Table\Расписание.xlsx";
-        new Schedule(filePath).CollectGroupInfo();
     }
 }
