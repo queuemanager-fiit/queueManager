@@ -1,5 +1,7 @@
 using Application.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Infrastructure.Services;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,7 +15,8 @@ builder.Services.AddScoped<Application.Interfaces.IUserRepository, Infrastructur
 builder.Services.AddScoped<Application.Interfaces.IGroupRepository, Infrastructure.Repositories.GroupRepository>();
 builder.Services.AddScoped<Application.Interfaces.IUnitOfWork, Infrastructure.Repositories.UnitOfWork>();
 builder.Services.AddScoped<Application.Interfaces.IEventRepository, Infrastructure.Repositories.EventRepository>();
-builder.Services.AddScoped<Application.Interfaces.IEventCategoryRepository, Infrastructure.Repositories.EventCategoryRepository>(); ///
+builder.Services.AddScoped<Application.Interfaces.IEventCategoryRepository, Infrastructure.Repositories.EventCategoryRepository>(); 
+builder.Services.AddHostedService<Infrastructure.Services.QueueFormationService>();
 var app = builder.Build();
 
 

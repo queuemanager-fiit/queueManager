@@ -65,12 +65,6 @@ namespace QueueManagerBot
                     stateManager,
                     httpClientFactory,
                     configuration),
-
-                new DeleteQueueCommand("/delete_queue", 
-                    bot, 
-                    stateManager,
-                    httpClientFactory,
-                    configuration),
                 
                 new GetQueuesCommand(
                     "/get_queues", 

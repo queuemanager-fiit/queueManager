@@ -1,6 +1,7 @@
 using Application.Interfaces;
 using Domain.Entities;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -8,69 +9,58 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Services;
 
-public class QueueFormationService : IHostedService, IDisposable
+public class QueueFormationService : BackgroundService
 {
-    private Timer? timer;
-    private readonly IEventRepository eventRepository;
+    private readonly IServiceProvider serviceProvider;
     private readonly TimeSpan checkInterval = TimeSpan.FromSeconds(60);
 
-    public QueueFormationService(IEventRepository eventRepository)
+    public QueueFormationService(IServiceProvider serviceProvider)
     {
-        this.eventRepository = eventRepository ?? throw new ArgumentNullException(nameof(eventRepository));
+        this.serviceProvider = serviceProvider ??
+            throw new ArgumentNullException(nameof(serviceProvider));
     }
 
-    public Task StartAsync(CancellationToken cancellationToken)
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        timer = new Timer(
-            CheckAndProcessQueuesAsync,
-            null,
-            TimeSpan.Zero,
-            checkInterval
-        );
-
-        return Task.CompletedTask;
-    }
-
-    private async void CheckAndProcessQueuesAsync(object? state)
-    {
-        try
+        while (!stoppingToken.IsCancellationRequested)
         {
-            var now = DateTimeOffset.UtcNow;
-
-            var pendingFormation = await eventRepository.GetDueFormationAsync(now, CancellationToken.None);
-
-            foreach (var eventItem in pendingFormation)
+            try
             {
-                if (!eventItem.IsFormed)
+                using (var scope = serviceProvider.CreateScope())
                 {
-                    eventItem.FormQueue();
-                    await eventRepository.UpdateAsync(eventItem, CancellationToken.None);
+                    var eventRepository = scope.ServiceProvider
+                        .GetRequiredService<IEventRepository>();
+
+                    var now = DateTimeOffset.UtcNow;
+
+                    var pendingFormation = await eventRepository
+                        .GetDueFormationAsync(now, stoppingToken);
+
+                    foreach (var eventItem in pendingFormation)
+                    {
+                        if (!eventItem.IsFormed)
+                        {
+                            eventItem.FormQueue();
+                            await eventRepository.UpdateAsync(eventItem, stoppingToken);
+                        }
+                    }
+
+                    var expiredEvents = pendingFormation
+                        .Where(e => e.DeletionTime <= now)
+                        .ToList();
+
+                    foreach (var eventItem in expiredEvents)
+                    {
+                        await eventRepository.DeleteAsync(eventItem, stoppingToken);
+                    }
                 }
             }
-
-            var expiredEvents = pendingFormation
-                .Where(e => e.DeletionTime <= now)
-                .ToList();
-
-            foreach (var eventItem in expiredEvents)
+            catch (Exception ex)
             {
-                await eventRepository.DeleteAsync(eventItem, CancellationToken.None);
+                Console.WriteLine($"Ошибка при обработке очередей: {ex.Message}");
             }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"������ ��� ��������� ��������: {ex.Message}");
-        }
-    }
 
-    public Task StopAsync(CancellationToken cancellationToken)
-    {
-        timer?.Change(Timeout.Infinite, 0);
-        return Task.CompletedTask;
-    }
-
-    public void Dispose()
-    {
-        timer?.Dispose();
+            await Task.Delay(checkInterval, stoppingToken);
+        }
     }
 }

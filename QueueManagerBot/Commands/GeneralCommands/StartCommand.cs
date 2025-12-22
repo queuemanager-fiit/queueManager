@@ -37,13 +37,19 @@ namespace QueueManagerBot
             return msg.Text == Name && AllowedStates.Contains(state);
         }
 
-        public async Task Execute(Message msg)
+         public async Task Execute(Message msg)
         {
-            // if (db.get(msg.Chat.Id) != null) 
-            //      await Bot.SendMessage(msg.Chat, "Вы уже зарегистрированы, для получения списка команд введите /help")
+            var userResponse = await httpClient.GetAsync($"{apiBaseUrl}/api/users/user-info?telegramId={msg.Chat.Id}");
+
+            if (userResponse.IsSuccessStatusCode)
+            {
+                await Bot.SendMessage(msg.Chat.Id, "Вы уже зарегистрированы, воспользуйтесь командой /help");
+                return;
+            }
             await Bot.SendMessage(msg.Chat, 
                 "Добро пожаловать!\nДля регистрации в боте введите @fiitobot [Ваши Фамилия Имя] и нажмите на всплывающее окно\n\nПример: @fiitobot Иванов Иван");
             StateManager.SetState(msg.Chat.Id, UserState.WaitingForStudentData);
         }
+
     }
 }

@@ -68,11 +68,7 @@ namespace QueueManagerBot
             }
 
             var user = await userResponse.Content.ReadFromJsonAsync<WebApi.Controllers.BotUserController.InfoUserDto>();
-            if (!user.IsAdmin)
-            {
-                await Bot.SendMessage(msg.Chat.Id, "Создавать очереди может только админ");
-                return;
-            }
+            
 
 
             switch (StateManager.GetState(msg.Chat.Id))
@@ -152,12 +148,35 @@ namespace QueueManagerBot
                     QueuesData[msg.Chat.Id]["QueueDate"] = msg.Text;
                     try
                     {
-                        date = DateTimeOffset.ParseExact(
-                        QueuesData[msg.Chat.Id]["QueueDate"] + "." + DateTime.Now.Year, 
-                        "dd.MM.yyyy", 
-                        CultureInfo.InvariantCulture,
-                        DateTimeStyles.AssumeUniversal
-                    );
+                        var parts = msg.Text.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                        
+                        var timePart = parts[0];
+                        var datePart = parts[1];
+                        
+                        if (!TimeSpan.TryParseExact(timePart, "hh\\:mm", CultureInfo.InvariantCulture, out TimeSpan time))
+                            throw new FormatException();
+                        
+                        var utcPlus5Offset = TimeSpan.FromHours(5);
+                        var nowUtc = DateTime.UtcNow;
+                        var nowUtcPlus5 = nowUtc + utcPlus5Offset;
+                        
+                        var dateWithYear = $"{datePart}.{nowUtcPlus5.Year}";
+                        if (!DateTime.TryParseExact(dateWithYear, "dd.MM.yyyy", 
+                            CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime parsedDate))
+                            throw new FormatException();
+                        
+                        parsedDate = parsedDate.Date.Add(time);
+                        
+                        if (parsedDate < nowUtcPlus5)
+                        {
+                            var dateWithNextYear = $"{datePart}.{nowUtcPlus5.Year + 1}";
+                            DateTime.TryParseExact(dateWithNextYear, "dd.MM.yyyy", 
+                                CultureInfo.InvariantCulture, DateTimeStyles.None, out parsedDate);
+                            parsedDate = parsedDate.Date.Add(time);
+                        }
+                        
+                        var dateUtcPlus5 = new DateTimeOffset(parsedDate, utcPlus5Offset);
+                        date = dateUtcPlus5.ToUniversalTime();
                     }
                     catch
                     {
@@ -206,7 +225,8 @@ namespace QueueManagerBot
         {
             var categoryName = categoryCallback.Remove(0, "select_category_".Length);
             QueuesData[tgId]["QueueCategory"] = categoryName;
-            await Bot.SendMessage(tgId, "Введите дату категории в формате ДД.ММ");
+            await Bot.SendMessage(tgId, @"Введите время и дату в формате: ЧЧ:ММ ДД.ММ
+Пример: 19:00 22.12 — 22 декабря в 19:00");
             StateManager.SetState(tgId, UserState.WaitingForQueueDate);
         }
     }
