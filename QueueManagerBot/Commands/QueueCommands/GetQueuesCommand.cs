@@ -42,44 +42,32 @@ namespace QueueManagerBot
 
         public async Task Execute(Message msg)
         {
-            try
-            {
-                var response = await httpClient.GetAsync(
-                    $"{apiBaseUrl}/api/events/user-info-events?telegramId={msg.Chat.Id}");
+            var controllerUser = new ControllerUser(httpClient, apiBaseUrl);
+            var events = await controllerUser.GetQueueList(msg.Chat.Id);
                 
-                if (response.IsSuccessStatusCode)
+            if (events != null)
+            {       
+                if (events?.Any() == true)
                 {
-                    var json = await response.Content.ReadAsStringAsync();
-                    var events = JsonSerializer.Deserialize<List<BotEventController.BotEventDto>>(
-                        json, 
-                        new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-                    
-                    if (events?.Any() == true)
+                    foreach (var e in events)
                     {
-                        foreach (var e in events)
-                        {
-                            await Bot.SendMessage(
-                                msg.Chat.Id,
-                                $"Событие: {e.Category}\n" +
-                                $"Время: {e.OccurredOn:g}\n" +
-                                $"ID: {e.EventId}");
-                        }
-                    }
-                    else
-                    {
-                        await Bot.SendMessage(msg.Chat.Id, "Нет активных событий");
+                        await Bot.SendMessage(
+                            msg.Chat.Id,
+                            $"Событие: {e.Category}\n" +
+                            $"Время: {e.OccurredOn:g}\n" +
+                            $"ID: {e.EventId}");
                     }
                 }
                 else
                 {
-                    await Bot.SendMessage(msg.Chat.Id, $"Ошибка при получении данных {response}");
+                    await Bot.SendMessage(msg.Chat.Id, "Нет активных событий");
                 }
             }
-            catch (Exception ex)
+            else
             {
-                await Bot.SendMessage(msg.Chat.Id, "Произошла ошибка");
-                Console.WriteLine($"Error in GetQueuesCommand: {ex.Message}");
+                await Bot.SendMessage(msg.Chat.Id, $"Ошибка при получении данных");
             }
+            
         }
     }
 }

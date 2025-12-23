@@ -43,43 +43,33 @@ namespace QueueManagerBot
 
         public async Task Execute(Message msg)
         {
+            var controllerUser = new ControllerUser(httpClient, apiBaseUrl);
+            var user = await controllerUser.GetUser(msg.Chat.Id);
+
+            if (user == null)
+            {
+                await Bot.SendMessage(msg.Chat.Id, "Произошла непредвиденная ошибка");
+            }
+
             switch (StateManager.GetState(msg.Chat.Id))
             {
                 case UserState.None:
-                    var userResponse = await httpClient.GetAsync($"{apiBaseUrl}/api/users/user-info?telegramId={msg.Chat.Id}");
-
-                    if (!userResponse.IsSuccessStatusCode)
-                    {
-                        await Bot.SendMessage(msg.Chat.Id, "Ошибка при получении данных пользователя");
-                        return;
-                    }
-                    Console.WriteLine($"3");
-                    var user = await userResponse.Content.ReadFromJsonAsync<WebApi.Controllers.BotUserController.InfoUserDto>();
-
                     if (user.IsAdmin)
-                    {
-                        var groupCode = new { user.GroupCode };
-                        var subGroupCode = new { user.SubGroupCode };
-                        Console.WriteLine($"1");
-                        var groupCatsResponse = await httpClient.GetAsync($"{apiBaseUrl}/api/groups/category-list?groupCode={groupCode}");
-                        var subGroupCatsResponse = await httpClient.GetAsync($"{apiBaseUrl}/api/groups/category-list?groupCode={subGroupCode}");
+                    {                 
+                        var groupCats = await controllerUser.GetCategoryList(user.GroupCode);
+                        var subGroupCats = await controllerUser.GetCategoryList(user.SubGroupCode);
 
-
-                        Console.WriteLine($"{groupCode}, {subGroupCode}");
-                        var groupCats = await groupCatsResponse.Content.ReadFromJsonAsync<List<string>>();
-                        var subGroupCats = await subGroupCatsResponse.Content.ReadFromJsonAsync<List<string>>();
-                        Console.WriteLine($"2");
                         var allCats = new List<string>();
                         if (groupCats != null) allCats.AddRange(groupCats);
                         if (subGroupCats != null) allCats.AddRange(subGroupCats);
-                        Console.WriteLine($"3");
+                        
                         if (!allCats.Any())
                         {
                             await Bot.SendMessage(msg.Chat.Id, "У вас нет активных категорий");
                             StateManager.SetState(msg.Chat.Id, UserState.None);
                             return;
                         }
-                        Console.WriteLine($"4");
+                        
                         var buttons = new List<InlineKeyboardButton>();
                         foreach (var cat in allCats)
                         {

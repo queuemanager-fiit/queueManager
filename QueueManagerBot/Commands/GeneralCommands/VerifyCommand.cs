@@ -43,44 +43,32 @@ namespace QueueManagerBot
 
         public async Task Execute(Message msg)
         {
-            try
-            {
-                var data = GetStudentData(msg.Text, msg.Chat.Id);
+            var data = GetStudentData(msg.Text, msg.Chat.Id);
                 
-                if (data != null && 
-                    data.Username == "@" + msg.Chat.Username && 
-                    msg.ViaBot != null && 
-                    msg.ViaBot!.Username == "fiitobot")
-                {
+            if (data != null && 
+                data.Username == "@" + msg.Chat.Username && 
+                msg.ViaBot != null && 
+                msg.ViaBot!.Username == "fiitobot")
+            {
 
-                    var response = await httpClient.PostAsJsonAsync($"{apiBaseUrl}/api/users/update-userinfo", data);                     
+                var controllerUser = new ControllerUser(httpClient, apiBaseUrl);
+                var user = await controllerUser.UpdateUserInfo(data);                  
                     
-                    if (response.IsSuccessStatusCode)
-                    {
-                        await Bot.SendMessage(msg.Chat.Id, "Ваши данные приняты и сохранены в системе");
-                        await Bot.SendMessage(msg.Chat.Id, "ℹЕсли хотите узнать список команд, введите /help");
-                        await Bot.SendMessage("699010737", $"Новый пользователь @{msg.Chat.Username}");
-                        StateManager.SetState(msg.Chat.Id, UserState.None);
-                    }
-                    else
-                    {
-                        var errorContent = await response.Content.ReadAsStringAsync();
-                        await Bot.SendMessage(msg.Chat.Id, $"Ошибка сохранения: {response.StatusCode}\n{errorContent}");
-                    }
+                if (user)
+                {
+                    await Bot.SendMessage(msg.Chat.Id, "Ваши данные приняты и сохранены в системе");
+                    await Bot.SendMessage(msg.Chat.Id, "ℹЕсли хотите узнать список команд, введите /help");
+                    await Bot.SendMessage("699010737", $"Новый пользователь @{msg.Chat.Username}");
+                    StateManager.SetState(msg.Chat.Id, UserState.None);
                 }
                 else
                 {
-                    await Bot.SendMessage(msg.Chat.Id, "Вы ввели не свои данные или данные неверны");
+                    await Bot.SendMessage(msg.Chat.Id, $"Ошибка сохранения");
                 }
             }
-            catch (HttpRequestException ex)
+            else
             {
-                await Bot.SendMessage(msg.Chat.Id, "Ошибка подключения к серверу. Попробуйте позже.");
-            }
-            catch (Exception ex)
-            {
-                await Bot.SendMessage(msg.Chat.Id, "Произошла непредвиденная ошибка");
-                Console.WriteLine(ex.Message);
+                await Bot.SendMessage(msg.Chat.Id, "Вы ввели не свои данные или данные неверны");
             }
         }
 

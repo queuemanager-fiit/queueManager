@@ -59,17 +59,14 @@ namespace QueueManagerBot
 
             var date = new DateTimeOffset();
 
-            var userResponse = await httpClient.GetAsync($"{apiBaseUrl}/api/users/user-info?telegramId={msg.Chat.Id}");
+            var controllerUser = new ControllerUser(httpClient, apiBaseUrl);
+            var user = await controllerUser.GetUser(msg.Chat.Id); 
 
-            if (!userResponse.IsSuccessStatusCode)
+            if (user == null)
             {
                 await Bot.SendMessage(msg.Chat.Id, "Ошибка при получении данных пользователя");
                 return;
             }
-
-            var user = await userResponse.Content.ReadFromJsonAsync<WebApi.Controllers.BotUserController.InfoUserDto>();
-            
-
 
             switch (StateManager.GetState(msg.Chat.Id))
             {
@@ -90,20 +87,11 @@ namespace QueueManagerBot
                         QueuesData[msg.Chat.Id]["GroupId"] = user.SubGroupCode;
                         
 
+                    var categories = await controllerUser.GetCategoryList(QueuesData[msg.Chat.Id]["GroupId"]);
 
-                    var categoriesResponse = await httpClient.GetAsync($"{apiBaseUrl}/api/groups/category-list?groupCode={QueuesData[msg.Chat.Id]["GroupId"]}");
-    
-                    if (!categoriesResponse.IsSuccessStatusCode)
-                    {
-                        await Bot.SendMessage(msg.Chat.Id, "Ошибка при получении категорий");
-                        return;
-                    }
-                    
-                    var categories = await categoriesResponse.Content.ReadFromJsonAsync<List<string>>();
-                    Console.WriteLine(QueuesData[msg.Chat.Id]["GroupId"]);
                     if (categories == null || !categories.Any())
                     {
-                        await Bot.SendMessage(msg.Chat.Id, "Для вашей группы нет доступных категорий");
+                        await Bot.SendMessage(msg.Chat.Id, "Для вашей группы нет доступных категорий, создайте или попросите админа создать её");
                         return;
                     }
                     
@@ -184,38 +172,23 @@ namespace QueueManagerBot
                         return;
                     }
                     
+                    var queue = new WebApi.Controllers.BotEventController.CreationDto(
+                        QueuesData[msg.Chat.Id]["GroupId"],
+                        QueuesData[msg.Chat.Id]["QueueCategory"],
+                        date);
+                        
+                    var response = await controllerUser.CreateQueue(queue);
 
-                    try
+                    if (response)
                     {
-                        Console.WriteLine("1");
-                        var queue = new WebApi.Controllers.BotEventController.CreationDto(
-                            QueuesData[msg.Chat.Id]["GroupId"],
-                            QueuesData[msg.Chat.Id]["QueueCategory"],
-                            date);
-                        Console.WriteLine("2");
-                        var response = await httpClient.PostAsJsonAsync($"{apiBaseUrl}/api/events/create-queue", queue);
-                        Console.WriteLine(response.StatusCode);
-
-
-                        if (response.IsSuccessStatusCode)
-                        {
-                            
-                            QueuesData.Remove(msg.Chat.Id);
-                            Console.WriteLine("4");
-                            await Bot.SendMessage(msg.Chat.Id, "Очередь успешно создана");
-                            StateManager.SetState(msg.Chat.Id, UserState.None);
-                        }
-                        else
-                        {
-                            var errorContent = await response.Content.ReadAsStringAsync();
-                            await Bot.SendMessage(msg.Chat.Id, $"Ошибка сохранения: {response.StatusCode}\n{errorContent}");
-                        }
+                        QueuesData.Remove(msg.Chat.Id);
+                        await Bot.SendMessage(msg.Chat.Id, "Очередь успешно создана");
+                        StateManager.SetState(msg.Chat.Id, UserState.None);
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        await Bot.SendMessage(msg.Chat.Id, "Произошла непредвиденная ошибка");
-                        Console.WriteLine(ex.Message.Substring(0,500));
-
+                        await Bot.SendMessage(msg.Chat.Id, $"Ошибка сохранения");
+                        StateManager.SetState(msg.Chat.Id, UserState.None);
                     }
                     break;
             }

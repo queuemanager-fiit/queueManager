@@ -37,18 +37,21 @@ namespace QueueManagerBot
             return msg.Text == Name && AllowedStates.Contains(state);
         }
 
-         public async Task Execute(Message msg)
+        public async Task Execute(Message msg)
         {
-            var userResponse = await httpClient.GetAsync($"{apiBaseUrl}/api/users/user-info?telegramId={msg.Chat.Id}");
+            var controllerUser = new ControllerUser(httpClient, apiBaseUrl);
+            var user = await controllerUser.GetUser(msg.Chat.Id);
 
-            if (userResponse.IsSuccessStatusCode)
+            if (user != null)
             {
-                await Bot.SendMessage(msg.Chat.Id, "Вы уже зарегистрированы, воспользуйтесь командой /help");
-                return;
-            }
-            await Bot.SendMessage(msg.Chat, 
+                await Bot.SendMessage(msg.Chat.Id, 
                 "Добро пожаловать!\nДля регистрации в боте введите @fiitobot [Ваши Фамилия Имя] и нажмите на всплывающее окно\n\nПример: @fiitobot Иванов Иван");
-            StateManager.SetState(msg.Chat.Id, UserState.WaitingForStudentData);
+                StateManager.SetState(msg.Chat.Id, UserState.WaitingForStudentData);
+            }
+            else
+            {
+                await Bot.SendMessage(msg.Chat.Id, "Произошла непредвиденная ошибка");
+            }
         }
 
     }

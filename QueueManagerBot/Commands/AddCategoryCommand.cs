@@ -47,15 +47,14 @@ namespace QueueManagerBot
 
         public async Task Execute(Message msg)
         {
-            var userResponse = await httpClient.GetAsync($"{apiBaseUrl}/api/users/user-info?telegramId={msg.Chat.Id}");
+            var controllerUser = new ControllerUser(httpClient, apiBaseUrl);
+            var user = await controllerUser.GetUser(msg.Chat.Id);
 
-            if (!userResponse.IsSuccessStatusCode)
+            if (user == null)
             {
                 await Bot.SendMessage(msg.Chat.Id, "Ошибка при получении данных пользователя");
                 return;
             }
-
-            var user = await userResponse.Content.ReadFromJsonAsync<WebApi.Controllers.BotUserController.InfoUserDto>();
 
             if (!user.IsAdmin)
             {
@@ -94,35 +93,25 @@ namespace QueueManagerBot
                     else if (msg.Text == "Для своей половинки")
                         CategoriesData[msg.Chat.Id]["GroupId"] = user.SubGroupCode;
 
-                    try
+                    var category = new WebApi.Controllers.BotGroupController.CategoryDto(
+                        CategoriesData[msg.Chat.Id]["GroupId"],
+                        false,
+                        CategoriesData[msg.Chat.Id]["CategotyName"]);
+                    var response = await controllerUser.CreateCategory(category);
+
+                    if (response)
                     {
-                        var category = new WebApi.Controllers.BotGroupController.CategoryDto(
-                            CategoriesData[msg.Chat.Id]["GroupId"],
-                            false,
-                            CategoriesData[msg.Chat.Id]["CategotyName"]);
-                        var response = await httpClient.PostAsJsonAsync($"{apiBaseUrl}/api/groups/add-category", category);
-
-
-                        if (response.IsSuccessStatusCode)
-                        {
-                            CategoriesData.Remove(msg.Chat.Id);
-                            await Bot.SendMessage(msg.Chat.Id, "Категория успешно создана");
-                            StateManager.SetState(msg.Chat.Id, UserState.None);
-                        }
-                        else
-                        {
-                            var errorContent = await response.Content.ReadAsStringAsync();
-                            await Bot.SendMessage(msg.Chat.Id, $"Ошибка сохранения: {response.StatusCode}\n{errorContent}");
-                        }
+                        CategoriesData.Remove(msg.Chat.Id);
+                        await Bot.SendMessage(msg.Chat.Id, "Категория успешно создана");
+                        StateManager.SetState(msg.Chat.Id, UserState.None);
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        await Bot.SendMessage(msg.Chat.Id, "Произошла непредвиденная ошибка");
-                        Console.WriteLine(ex.Message);
+                        await Bot.SendMessage(msg.Chat.Id, $"Ошибка сохранения");
+                        StateManager.SetState(msg.Chat.Id, UserState.None);
                     }
                     break;
             }
         }
-
     }
 }

@@ -40,6 +40,27 @@ namespace QueueManagerBot
             }
         }
 
+        public async Task<bool> UpdateUserInfo(WebApi.Controllers.BotUserController.BotUserDto user)
+        {
+            try
+            {
+                var response = await httpClient.PostAsJsonAsync($"{apiBaseUrl}/api/users/update-userinfo", user);  
+                if (response.IsSuccessStatusCode)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+        }
+
         public async Task<List<string>?> GetCategoryList(string groupCode)
         {
             try
