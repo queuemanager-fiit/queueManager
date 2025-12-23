@@ -24,7 +24,6 @@ public class EventCategoryRepository : BaseRepository<EventCategory>, IEventCate
                 ct);
     }
 
-    // Можно добавить дополнительные методы если нужно
     public async Task<EventCategory?> GetBySubjectNameAsync(string subjectName, CancellationToken ct)
     {
         return await Context.EventCategories

@@ -39,7 +39,7 @@ public class EventRepository : BaseRepository<Event>, IEventRepository
             
         foreach (var eventItem in events)
         {
-            eventItem.MarkAsNotified(now); // ← ИСПОЛЬЗУЙ МЕТОД!
+            eventItem.MarkAsNotified(now);
         }
         
         Context.Events.UpdateRange(events);
@@ -53,7 +53,7 @@ public class EventRepository : BaseRepository<Event>, IEventRepository
             
         foreach (var eventItem in events)
         {
-            eventItem.MarkAsFormed(now); // ← ИСПОЛЬЗУЙ МЕТОД!
+            eventItem.MarkAsFormed(now);
         }
         
         Context.Events.UpdateRange(events);
