@@ -8,8 +8,6 @@ public class User
     public long TelegramId { get; private set; }
     public string FullName { get; private set; }
     public string Username { get; private set; }
-    public string? GroupCode { get; private set; } 
-    public Group? Group { get; private set; }
     public List<string> GroupCodes { get; private set; } = new();
 
     public bool IsAdmin { get; private set; }

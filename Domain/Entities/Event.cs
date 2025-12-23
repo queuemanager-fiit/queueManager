@@ -6,7 +6,7 @@ public class Event
     [Key]
     public Guid Id { get; private set; } = Guid.NewGuid();
     public EventCategory Category { get;  set; }
-    public List<User> Participants = new();
+    public List<User> Participants { get; private set; } = new();
     public Dictionary<User, UserPreference> Preferences = new();
     public DateTimeOffset OccurredOn { get; set; }
     public DateTimeOffset FormationTime { get; set; }

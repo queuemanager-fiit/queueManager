@@ -16,7 +16,7 @@ public class ApplicationDbContext : DbContext
     {
         if (!optionsBuilder.IsConfigured)
         {
-            optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=postgres;Username=postgres;Password=postgres");
+            optionsBuilder.UseNpgsql("Host=158.160.81.218;Port=5432;Database=queuemanager_db;Username=real;Password=real");
         }
     }
 
@@ -24,13 +24,6 @@ public class ApplicationDbContext : DbContext
     {
         modelBuilder.Entity<Group>(entity =>
         {
-
-            entity.HasMany(g => g.Users)
-                .WithOne(u => u.Group)
-                .HasForeignKey(u => u.GroupCode)
-                .HasPrincipalKey(g => g.Code)
-                .OnDelete(DeleteBehavior.SetNull);
-                
             entity.HasMany(g => g.Events)
                 .WithOne()
                 .HasForeignKey(e => e.GroupCode)
@@ -46,9 +39,7 @@ public class ApplicationDbContext : DbContext
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(u => u.TelegramId);
-            entity.Property(u => u.GroupCode).HasMaxLength(20);
-            
+            entity.HasKey(u => u.TelegramId); 
             entity.Property(u => u.FullName).IsRequired();
             entity.Property(u => u.Username);
             entity.Property(u => u.IsAdmin).HasDefaultValue(false);
