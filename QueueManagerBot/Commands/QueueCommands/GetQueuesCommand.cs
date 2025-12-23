@@ -45,7 +45,7 @@ namespace QueueManagerBot
             try
             {
                 var response = await httpClient.GetAsync(
-                    $"{apiBaseUrl}/api/events/events-list-for-user?telegramId={msg.Chat.Id}");
+                    $"{apiBaseUrl}/api/events/user-info-events?telegramId={msg.Chat.Id}");
                 
                 if (response.IsSuccessStatusCode)
                 {

@@ -8,7 +8,7 @@ using Telegram.Bot.Types.ReplyMarkups;
 
 namespace QueueManagerBot
 {
-    public class DeleteQueueCommand : ICommand
+    public class DeleteCategoryCommand : ICommand
     {
         public string Name { get; }
         public TelegramBotClient Bot { get; }
@@ -17,7 +17,7 @@ namespace QueueManagerBot
         private readonly HttpClient httpClient;
         private readonly string apiBaseUrl;
 
-        public DeleteQueueCommand(
+        public DeleteCategoryCommand(
             string name, 
             TelegramBotClient tgBot, 
             StateManager stateManager,
@@ -61,41 +61,41 @@ namespace QueueManagerBot
                         var groupCode = new { user.GroupCode };
                         var subGroupCode = new { user.SubGroupCode };
                         Console.WriteLine($"1");
-                        var groupQueuesResponse = await httpClient.GetAsync($"{apiBaseUrl}/api/events/events-for-group?groupCode={groupCode}");
-                        var subGroupQueuesResponse = await httpClient.GetAsync($"{apiBaseUrl}/api/events/events-for-group?groupCode={subGroupCode}");
+                        var groupCatsResponse = await httpClient.GetAsync($"{apiBaseUrl}/api/groups/category-list?groupCode={groupCode}");
+                        var subGroupCatsResponse = await httpClient.GetAsync($"{apiBaseUrl}/api/groups/category-list?groupCode={subGroupCode}");
 
 
                         Console.WriteLine($"{groupCode}, {subGroupCode}");
-                        var groupQueues = await groupQueuesResponse.Content.ReadFromJsonAsync<List<WebApi.Controllers.BotEventController.BotEventDto>>();
-                        var subGroupQueues = await subGroupQueuesResponse.Content.ReadFromJsonAsync<List<WebApi.Controllers.BotEventController.BotEventDto>>();
+                        var groupCats = await groupCatsResponse.Content.ReadFromJsonAsync<List<string>>();
+                        var subGroupCats = await subGroupCatsResponse.Content.ReadFromJsonAsync<List<string>>();
                         Console.WriteLine($"2");
-                        var allQueues = new List<WebApi.Controllers.BotEventController.BotEventDto>();
-                        if (groupQueues != null) allQueues.AddRange(groupQueues);
-                        if (subGroupQueues != null) allQueues.AddRange(subGroupQueues);
+                        var allCats = new List<string>();
+                        if (groupCats != null) allCats.AddRange(groupCats);
+                        if (subGroupCats != null) allCats.AddRange(subGroupCats);
                         Console.WriteLine($"3");
-                        if (!allQueues.Any())
+                        if (!allCats.Any())
                         {
-                            await Bot.SendMessage(msg.Chat.Id, "У вас нет активных очередей");
+                            await Bot.SendMessage(msg.Chat.Id, "У вас нет активных категорий");
                             StateManager.SetState(msg.Chat.Id, UserState.None);
                             return;
                         }
                         Console.WriteLine($"4");
                         var buttons = new List<InlineKeyboardButton>();
-                        foreach (var queue in allQueues)
+                        foreach (var cat in allCats)
                         {
                             buttons.Add(InlineKeyboardButton.WithCallbackData(
-                                text: $"{queue.OccurredOn} {queue.Category}",
-                                callbackData: $"delete_queue_{queue.EventId}"
+                                text: $"{cat}",
+                                callbackData: $"delete_category_{cat}"
                             ));
                         }
                         Console.WriteLine($"5");
                         var keyboard = new InlineKeyboardMarkup(buttons);
-                        await Bot.SendMessage(msg.Chat.Id, "Выберете очередь для удаления", replyMarkup: keyboard);
+                        await Bot.SendMessage(msg.Chat.Id, "Выберете категорию для удаления", replyMarkup: keyboard);
                         StateManager.SetState(msg.Chat.Id, UserState.WaitingForQueueNameToDelete);
                     }
                     else
                     {
-                        await Bot.SendMessage(msg.Chat.Id, "У вас нет прав для удаления очереди, это может сделать только админ");
+                        await Bot.SendMessage(msg.Chat.Id, "У вас нет прав для удаления категории, это может сделать только админ");
                     }
                     break;
             }

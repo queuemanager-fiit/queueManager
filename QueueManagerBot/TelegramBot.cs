@@ -80,11 +80,18 @@ namespace QueueManagerBot
                     configuration),
                     
                 new AddCategoryCommand(
-                    "/add_category",
+                    "/category_category",
                     bot,
                     stateManager,
                     httpClientFactory,
                     configuration),
+                new DeleteCategoryCommand(
+                    "/delete_category",
+                    bot,
+                    stateManager,
+                    httpClientFactory,
+                    configuration
+                )
 
             };
             
@@ -109,20 +116,35 @@ namespace QueueManagerBot
         async Task OnUpdate(Update update)
         {
             if (update is { CallbackQuery: { } query })
-            {
-                
+            {                
                 await bot.AnswerCallbackQuery(query.Id);
                 var httpClient = httpClientFactory.CreateClient("ApiClient");
-                if (query.Data.StartsWith("delete_queue_"))
+
+                var userResponse = await httpClient.GetAsync($"{apiBaseUrl}/api/users/user-info?telegramId={query.Message.Chat.Id}");
+
+                if (!userResponse.IsSuccessStatusCode)
                 {
-                    var eventIdString = query.Data.Replace("delete_queue_", "");
-                    var response = await httpClient.PostAsJsonAsync(
-                        $"{apiBaseUrl}/api/events/delete_queue", 
-                        new { EventId = eventIdString }
+                    Console.WriteLine("Ошибка при получении данных пользователя");
+                    return;
+                }
+
+                var user = await userResponse.Content.ReadFromJsonAsync<WebApi.Controllers.BotUserController.InfoUserDto>();
+                if (query.Data.StartsWith("delete_category_"))
+                {
+                    var catNameString = query.Data.Replace("delete_category_", "");
+                    var catDeletionSubGroup = new WebApi.Controllers.BotGroupController.DeletionDto(user.SubGroupCode, catNameString);
+                    var catDeletionGroup = new WebApi.Controllers.BotGroupController.DeletionDto(user.GroupCode, catNameString);
+                    var response1 = await httpClient.PostAsJsonAsync(
+                        $"{apiBaseUrl}/api/events/delete-category", 
+                        catDeletionSubGroup
+                    );
+                    var response2 = await httpClient.PostAsJsonAsync(
+                        $"{apiBaseUrl}/api/events/delete-category", 
+                        catDeletionGroup
                     );
                     
                     var chatId = query.Message.Chat.Id;
-                    if (response.IsSuccessStatusCode)
+                    if (response1.IsSuccessStatusCode || response2.IsSuccessStatusCode)
                     {
                         await bot.SendMessage(chatId, "✅ Удалено!");
                         await bot.DeleteMessage(chatId, query.Message.MessageId);

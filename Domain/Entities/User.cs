@@ -5,7 +5,7 @@ namespace Domain.Entities;
 public class User
 {
     [Key]
-    public long TelegramId { get; }
+    public long TelegramId { get; private set; }
     public string FullName { get; private set; }
     public string Username { get; private set; }
     public string? GroupCode { get; private set; } 

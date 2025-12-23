@@ -4,7 +4,7 @@ namespace Domain.Entities;
 public class Group
 {
     [Key]
-    public string Code { get; }
+    public string Code { get; private set; }
     public List<EventCategory> Categories { get; private set; } = new();
     public List<Event> Events { get; private set; } = new();
     public List<User> Users { get; private set; }= new();

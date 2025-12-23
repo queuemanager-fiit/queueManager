@@ -4,7 +4,7 @@ namespace Domain.Entities;
 public class Event
 {
     [Key]
-    public Guid Id { get; init; } = Guid.NewGuid();
+    public Guid Id { get; private set; } = Guid.NewGuid();
     public EventCategory Category { get;  set; }
     public List<User> Participants = new();
     public Dictionary<User, UserPreference> Preferences = new();
@@ -121,7 +121,7 @@ public class Event
 public class EventCategory
 {
     [Key]
-    public Guid Id { get; } = Guid.NewGuid();
+    public Guid Id { get; private set; } = Guid.NewGuid();
     public string SubjectName { get; private set;}
     public bool IsAutoCreate { get; private set;}
     public string GroupCode { get; private set;}
