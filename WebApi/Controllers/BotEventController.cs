@@ -194,6 +194,12 @@ public class BotEventController : ControllerBase
     public async Task<ActionResult<List<BotEventDto>>> GetUserEventsInfo([FromQuery] long telegramId, CancellationToken ct)
     {
         var user = await users.GetByTelegramIdAsync(telegramId, ct);
+        
+        if (user == null)
+        {
+            return NotFound($"User with TelegramId {telegramId} not found");
+        }
+        
         var group = await groups.GetByCodeAsync(user.GroupCodes.First(), ct);
         var subGroup = await groups.GetByCodeAsync(user.GroupCodes.Last(), ct);
         var events = group.Events.Concat(subGroup.Events).ToList();
