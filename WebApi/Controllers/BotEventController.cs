@@ -188,4 +188,15 @@ public class BotEventController : ControllerBase
         await uow.SaveChangesAsync(ct);
         return NoContent();
     }
+    
+    //возвращает информацию об очередях, в которых участвует пользователь
+    [HttpGet("user-info-events")]
+    public async Task<ActionResult<List<BotEventDto>>> GetUserEventsInfo([FromQuery] long telegramId, CancellationToken ct)
+    {
+        var user = await users.GetByTelegramIdAsync(telegramId, ct);
+        var group = await groups.GetByCodeAsync(user.GroupCodes.First(), ct);
+        var subGroup = await groups.GetByCodeAsync(user.GroupCodes.Last(), ct);
+        var events = group.Events.Concat(subGroup.Events).ToList();
+        return Ok(ToDtoList(events.Where(ev => ev.Participants.Contains(user)).ToList()));
+    }
 }

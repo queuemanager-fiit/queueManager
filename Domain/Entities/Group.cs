@@ -4,7 +4,7 @@ namespace Domain.Entities;
 public class Group
 {
     [Key]
-    public string Code { get; private set;}
+    public string Code { get; }
     public List<EventCategory> Categories { get; private set; } = new();
     public List<Event> Events { get; private set; } = new();
     public List<User> Users { get; private set; }= new();
@@ -53,4 +53,10 @@ public class Group
         if (user == null) return false;
         return Users.Remove(user);
     }
+    
+    public override bool Equals(object? obj)
+        => obj is Group g && g.Code.Equals(Code);
+
+    public override int GetHashCode()
+        => Code.GetHashCode();
 }

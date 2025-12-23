@@ -4,7 +4,7 @@ namespace Domain.Entities;
 public class Event
 {
     [Key]
-    public Guid Id { get; set;} = Guid.NewGuid();
+    public Guid Id { get; init; } = Guid.NewGuid();
     public EventCategory Category { get;  set; }
     public List<User> Participants = new();
     public Dictionary<User, UserPreference> Preferences = new();
@@ -110,11 +110,18 @@ public class Event
 
     public void MarkAsNotified() =>
         IsNotified = true;
+    
+    public override bool Equals(object? obj)
+        => obj is Event e && e.Id == Id;
+
+    public override int GetHashCode()
+        => Id.GetHashCode();
 }
 
 public class EventCategory
 {
-    public Guid Id { get; private set;} = Guid.NewGuid();
+    [Key]
+    public Guid Id { get; } = Guid.NewGuid();
     public string SubjectName { get; private set;}
     public bool IsAutoCreate { get; private set;}
     public string GroupCode { get; private set;}
@@ -153,4 +160,10 @@ public class EventCategory
                 UnfinishedUsers.Add(user);
         }
     }
+    
+    public override bool Equals(object? obj)
+        => obj is EventCategory e && e.Id == Id;
+
+    public override int GetHashCode()
+        => Id.GetHashCode();
 }

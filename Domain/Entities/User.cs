@@ -5,7 +5,7 @@ namespace Domain.Entities;
 public class User
 {
     [Key]
-    public long TelegramId { get; private set; }
+    public long TelegramId { get; }
     public string FullName { get; private set; }
     public string Username { get; private set; }
     
@@ -64,6 +64,12 @@ public class User
 
     public void SetAdminStatus(bool isAdmin) => IsAdmin = isAdmin;
     public bool IsAdministrator() => IsAdmin;
+    
+    public override bool Equals(object? obj)
+        => obj is User u && u.TelegramId == TelegramId;
+
+    public override int GetHashCode()
+        => TelegramId.GetHashCode();
 }
 
 public enum UserPreference
