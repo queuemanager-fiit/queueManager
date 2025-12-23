@@ -155,22 +155,34 @@ namespace QueueManagerBot
                 if (query.Data.StartsWith("confirm_queue_from"))
                 {
                     var parts = query.Data.Split('_');
-                    
+
                     var fromIndex = Array.IndexOf(parts, "from");
                     var toIndex = Array.IndexOf(parts, "to");
+
+
                     
                     if (fromIndex != -1 && toIndex != -1 && toIndex > fromIndex + 1)
                     {
-                        var userId = parts[fromIndex + 1];
-                        var queueId = string.Join("_", parts.Skip(toIndex + 1));
+                        var queueId = parts[fromIndex + 1];
+                        var userId = parts[toIndex + 1];
+
+                        var hasEnd = query.Data.Contains("_end");
+                        var hasStart = query.Data.Contains("_start");
 
                         var telegramId = long.Parse(userId);
                         var eventId = Guid.Parse(queueId);
+
+                        var pref = Domain.Entities.UserPreference.NoPreference;
+
+                        if (hasStart)
+                            pref = Domain.Entities.UserPreference.Start;
+                        else
+                            pref = Domain.Entities.UserPreference.End;
                         
                         var participant = new WebApi.Controllers.BotEventController.ParticipationDto(
                             telegramId,
                             eventId,
-                            Domain.Entities.UserPreference.NoPreference
+                            pref
                         );
                         await httpClient.PostAsJsonAsync($"{apiBaseUrl}/api/events/confirm", participant);
                     }
@@ -231,8 +243,11 @@ namespace QueueManagerBot
                         new[]
                         {
                             InlineKeyboardButton.WithCallbackData(
-                                "✅ Записаться",
-                                $"confirm_queue_from_{eventDto.EventId}_to_{telegramId}"
+                                "Хочу в начало",
+                                $"confirm_queue_from_{eventDto.EventId}_to_{telegramId}_start"),
+                            InlineKeyboardButton.WithCallbackData(
+                                "Хочу в конец",
+                                $"confirm_queue_from_{eventDto.EventId}_to_{telegramId}_end"
                             )
                         }
                     });
