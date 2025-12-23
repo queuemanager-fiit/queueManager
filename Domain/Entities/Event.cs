@@ -1,22 +1,24 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
+
 namespace Domain.Entities;
 
 public class Event
 {
     [Key]
     public Guid Id { get; private set; } = Guid.NewGuid();
-    public EventCategory Category { get;  set; }
+    public EventCategory Category { get; set; }
     public List<User> Participants { get; private set; } = new();
-    public Dictionary<User, UserPreference> Preferences = new();
+    public List<UserPreference> Preferences { get; private set; } = new();
     public DateTimeOffset OccurredOn { get; set; }
     public DateTimeOffset FormationTime { get; set; }
     public DateTimeOffset DeletionTime { get; set; }
-    public DateTimeOffset NotificationTime {get; set;}
-    public bool IsNotified { get;  set; }
-    public bool IsFormed { get;  set; }
-    public string GroupCode { get;set; }
+    public DateTimeOffset NotificationTime { get; set; }
+    public bool IsNotified { get; set; }
+    public bool IsFormed { get; set; }
+    public string GroupCode { get; set; }
 
-    protected Event() { } 
+    protected Event() { }
 
     public Event(
         EventCategory category,
@@ -35,18 +37,21 @@ public class Event
     {
         if (user == null) throw new ArgumentNullException(nameof(user));
         if (!CanUserJoin(user)) return false;
-        if (Preferences.ContainsKey(user)) return false;
 
-        Preferences[user] = preference;
+        int index = Participants.IndexOf(user);
+        if (index != -1) return false;
+
         Participants.Add(user);
+        Preferences.Add(preference);
         return true;
     }
+
     public void MarkAsNotified(DateTimeOffset time)
     {
         IsNotified = true;
         NotificationTime = time;
     }
-    
+
     public void MarkAsFormed(DateTimeOffset time)
     {
         IsFormed = true;
@@ -56,13 +61,12 @@ public class Event
     public bool RemoveParticipant(User user)
     {
         if (user == null) return false;
-        if (!Preferences.ContainsKey(user)) return false;
 
         int index = Participants.IndexOf(user);
         if (index == -1) return false;
 
-        Preferences.Remove(user);
         Participants.RemoveAt(index);
+        Preferences.RemoveAt(index);
 
         return true;
     }
@@ -76,17 +80,24 @@ public class Event
 
         var unfinished = Category.UnfinishedUsers;
 
-        var sortedParticipants = Preferences
-            .OrderBy(p => p.Value)
-            .ThenBy(p => p.Key.AveragePosition)
-            .Select(p => p.Key)
+        var participantPreferences = new List<(User, UserPreference)>();
+        for (int i = 0; i < Participants.Count; i++)
+        {
+            participantPreferences.Add((Participants[i], Preferences[i]));
+        }
+
+        var sortedParticipants = participantPreferences
+            .OrderBy(p => p.Item2)
+            .ThenBy(p => p.Item1.AveragePosition)
+            .Select(p => p.Item1)
             .ToList();
 
         var finalQueue = new List<User>();
 
         foreach (var user in unfinished)
         {
-            if (Preferences.ContainsKey(user) && Preferences[user] != UserPreference.End)
+            int index = Participants.IndexOf(user);
+            if (index != -1 && Preferences[index] != UserPreference.End)
             {
                 finalQueue.Add(user);
                 sortedParticipants.Remove(user);
@@ -110,7 +121,7 @@ public class Event
 
     public void MarkAsNotified() =>
         IsNotified = true;
-    
+
     public override bool Equals(object? obj)
         => obj is Event e && e.Id == Id;
 
