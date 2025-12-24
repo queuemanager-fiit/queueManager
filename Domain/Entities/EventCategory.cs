@@ -1,3 +1,8 @@
+using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
+
+namespace Domain.Entities;
+
 public class EventCategory
 {
     [Key]
