@@ -8,7 +8,7 @@ public class Event
     [Key]
     public Guid Id { get; private set; } = Guid.NewGuid();
     public EventCategory Category { get; set; }
-    public List<User> Participants { get; private set; } = new();
+    public List<long> ParticipantsTelegramIds { get; private set; } = new();
     public List<UserPreference> Preferences { get; private set; } = new();
     public DateTimeOffset OccurredOn { get; set; }
     public DateTimeOffset FormationTime { get; set; }
@@ -38,10 +38,10 @@ public class Event
         if (user == null) throw new ArgumentNullException(nameof(user));
         if (!CanUserJoin(user)) return false;
 
-        int index = Participants.IndexOf(user);
+        int index = ParticipantsTelegramIds.IndexOf(user);
         if (index != -1) return false;
 
-        Participants.Add(user);
+        ParticipantsTelegramIds.Add(user);
         Preferences.Add(preference);
         return true;
     }
@@ -62,10 +62,10 @@ public class Event
     {
         if (user == null) return false;
 
-        int index = Participants.IndexOf(user);
+        int index = ParticipantsTelegramIds.IndexOf(user);
         if (index == -1) return false;
 
-        Participants.RemoveAt(index);
+        ParticipantsTelegramIds.RemoveAt(index);
         Preferences.RemoveAt(index);
 
         return true;
@@ -78,12 +78,12 @@ public class Event
     {
         if (IsFormed) return;
 
-        var unfinished = Category.UnfinishedUsers;
+        var unfinished = Category.UnfinishedUsersTelegramIds;
 
         var participantPreferences = new List<(User, UserPreference)>();
-        for (int i = 0; i < Participants.Count; i++)
+        for (int i = 0; i < ParticipantsTelegramIds.Count; i++)
         {
-            participantPreferences.Add((Participants[i], Preferences[i]));
+            participantPreferences.Add((ParticipantsTelegramIds[i], Preferences[i]));
         }
 
         var sortedParticipants = participantPreferences
@@ -96,7 +96,7 @@ public class Event
 
         foreach (var user in unfinished)
         {
-            int index = Participants.IndexOf(user);
+            int index = ParticipantsTelegramIds.IndexOf(user);
             if (index != -1 && Preferences[index] != UserPreference.End)
             {
                 finalQueue.Add(user);
@@ -106,17 +106,17 @@ public class Event
 
         finalQueue.AddRange(sortedParticipants);
 
-        Participants.Clear();
-        Participants.AddRange(finalQueue);
+        ParticipantsTelegramIds.Clear();
+        ParticipantsTelegramIds.AddRange(finalQueue);
         IsFormed = true;
 
-        for (int i = 0; i < Participants.Count; i++)
+        for (int i = 0; i < ParticipantsTelegramIds.Count; i++)
         {
-            var user = Participants[i];
+            var user = ParticipantsTelegramIds[i];
             user.UpdateAveragePosition(i + 1);
         }
 
-        Category.UnfinishedUsers.Clear();
+        Category.UnfinishedUsersTelegramIds.Clear();
     }
 
     public void MarkAsNotified() =>
@@ -136,7 +136,7 @@ public class EventCategory
     public string SubjectName { get; private set;}
     public bool IsAutoCreate { get; private set;}
     public string GroupCode { get; private set;}
-    public List<User> UnfinishedUsers { get; private set; }= new();
+    public List<long> UnfinishedUsersTelegramIds { get; private set; }= new();
 
     public EventCategory(
         string subjectName,
@@ -161,14 +161,14 @@ public class EventCategory
                 "Номер позиции должен быть положительным целым числом."
             );
 
-        UnfinishedUsers.Clear();
+        UnfinishedUsersTelegramIds.Clear();
 
 
         for (int i = cutoffPosition; i < queue.Count; i++)
         {
             var user = queue[i];
             if (user != null)
-                UnfinishedUsers.Add(user);
+                UnfinishedUsersTelegramIds.Add(user);
         }
     }
     

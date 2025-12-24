@@ -5,9 +5,9 @@ public class Group
 {
     [Key]
     public string Code { get; private set; }
-    public List<EventCategory> Categories { get; private set; } = new();
-    public List<Event> Events { get; private set; } = new();
-    public List<User> Users { get; private set; }= new();
+    public List<Guid> CategoriesIds { get; private set; } = new();
+    public List<Guid> EventsIds { get; private set; } = new();
+    public List<long> UsersTelegramIds { get; private set; }= new();
     
     protected Group() { } 
     public Group(string code)
@@ -18,40 +18,40 @@ public class Group
     public bool AddCategory(EventCategory category)
     {
         if (category == null) return false;
-        Categories.Add(category);
+        CategoriesIds.Add(category);
         return true;
     }
 
     public bool RemoveCategory(EventCategory category)
     {
         if (category == null) return false;
-        return Categories.Remove(category);
+        return CategoriesIds.Remove(category);
     }
 
     public bool AddEvent(Event evt)
     {
         if (evt == null) return false;
-        Events.Add(evt);
+        EventsIds.Add(evt);
         return true;
     }
 
     public bool RemoveEvent(Event evt)
     {
         if (evt == null) return false;
-        return Events.Remove(evt);
+        return EventsIds.Remove(evt);
     }
     
     public bool AddUser(User user)
     {
         if (user == null) return false;
-        Users.Add(user);
+        UsersTelegramIds.Add(user);
         return true;
     }
 
     public bool RemoveUser(User user)
     {
         if (user == null) return false;
-        return Users.Remove(user);
+        return UsersTelegramIds.Remove(user);
     }
     
     public override bool Equals(object? obj)

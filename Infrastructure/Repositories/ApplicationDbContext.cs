@@ -25,20 +25,20 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<Group>(entity =>
         {
 
-            entity.HasMany(g => g.Events)
+            entity.HasMany(g => g.EventsIds)
                 .WithOne()
                 .HasForeignKey(e => e.GroupCode)
                 .HasPrincipalKey(g => g.Code)
                 .OnDelete(DeleteBehavior.Cascade);
                 
 
-            entity.HasMany(g => g.Categories)
+            entity.HasMany(g => g.CategoriesIds)
                 .WithOne()
                 .HasForeignKey(ec => ec.GroupCode)
                 .HasPrincipalKey(g => g.Code)
                 .OnDelete(DeleteBehavior.Cascade);
                 
-            entity.HasMany(g => g.Users)
+            entity.HasMany(g => g.UsersTelegramIds)
                 .WithMany()
                 .UsingEntity<Dictionary<string, object>>(
                     "UserGroups",
@@ -86,7 +86,7 @@ public class ApplicationDbContext : DbContext
             entity.Property(ec => ec.GroupCode).HasMaxLength(20).IsRequired();
 
             entity.HasOne<Group>()
-                .WithMany(g => g.Categories)
+                .WithMany(g => g.CategoriesIds)
                 .HasForeignKey(ec => ec.GroupCode)
                 .HasPrincipalKey(g => g.Code)
                 .OnDelete(DeleteBehavior.Cascade);
@@ -109,7 +109,7 @@ public class ApplicationDbContext : DbContext
                 .HasForeignKey("CategoryId")
                 .OnDelete(DeleteBehavior.Restrict);
 
-            entity.HasMany(e => e.Participants)
+            entity.HasMany(e => e.ParticipantsTelegramIds)
                 .WithMany()
                 .UsingEntity<Dictionary<string, object>>(
                     "EventParticipants",
@@ -132,7 +132,7 @@ public class ApplicationDbContext : DbContext
                     });
 
             entity.HasOne<Group>()
-                .WithMany(g => g.Events)
+                .WithMany(g => g.EventsIds)
                 .HasForeignKey(e => e.GroupCode)
                 .HasPrincipalKey(g => g.Code)
                 .OnDelete(DeleteBehavior.Cascade);

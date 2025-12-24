@@ -61,7 +61,7 @@ public class BotEventController : ControllerBase
     {
         return list
             .Select(e =>
-                new BotEventDto(e.Participants
+                new BotEventDto(e.ParticipantsTelegramIds
                         .Select(u => u.TelegramId)
                         .ToArray(),
                     e.OccurredOn,
@@ -173,7 +173,7 @@ public class BotEventController : ControllerBase
     public async Task<ActionResult<List<BotEventDto>>> GetForGroup([FromQuery] string groupCode, CancellationToken ct)
     {
         var group = await groups.GetByCodeAsync(groupCode, ct);
-        return Ok(ToDtoList(group.Events.ToList()));
+        return Ok(ToDtoList(group.EventsIds.ToList()));
     }
     
     //используется, чтобы отметить неуспевших пользователей
@@ -182,7 +182,7 @@ public class BotEventController : ControllerBase
     {
         var ev = await events.GetByIdAsync(request.EventId, ct);
         var category = ev.Category;
-        category.UpdateUnfinishedUsers(ev.Participants, request.FirstUnfinishedPosition);
+        category.UpdateUnfinishedUsers(ev.ParticipantsTelegramIds, request.FirstUnfinishedPosition);
 
         await eventCategories.UpdateAsync(category, ct);
         await uow.SaveChangesAsync(ct);
@@ -202,7 +202,7 @@ public class BotEventController : ControllerBase
         
         var group = await groups.GetByCodeAsync(user.GroupCodes.First(), ct);
         var subGroup = await groups.GetByCodeAsync(user.GroupCodes.Last(), ct);
-        var events = group.Events.Concat(subGroup.Events).ToList();
-        return Ok(ToDtoList(events.Where(ev => ev.Participants.Contains(user)).ToList()));
+        var events = group.EventsIds.Concat(subGroup.EventsIds).ToList();
+        return Ok(ToDtoList(events.Where(ev => ev.ParticipantsTelegramIds.Contains(user)).ToList()));
     }
 }

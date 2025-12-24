@@ -12,7 +12,7 @@ public class EventRepository : BaseRepository<Event>, IEventRepository
     {
         return await Context.Events
             .Where(e => e.OccurredOn <= now)
-            .Include(e => e.Participants)
+            .Include(e => e.ParticipantsTelegramIds)
             .ToListAsync(ct);
     }
 
@@ -20,14 +20,14 @@ public class EventRepository : BaseRepository<Event>, IEventRepository
     {
         return await Context.Events
             .Where(e => e.FormationTime <= now)
-            .Include(e => e.Participants)
+            .Include(e => e.ParticipantsTelegramIds)
             .ToListAsync(ct);
     }
 
     public async Task<Event?> GetByIdAsync(Guid eventId, CancellationToken ct)
     {
         return await Context.Events
-            .Include(e => e.Participants)
+            .Include(e => e.ParticipantsTelegramIds)
             .FirstOrDefaultAsync(e => e.Id == eventId, ct);
     }
 
