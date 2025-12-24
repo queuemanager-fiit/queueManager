@@ -39,15 +39,16 @@ public class BotGroupController : ControllerBase
         if (group is null)
             return NotFound($"Group with Group Code {groupCode} not found");
         
-        var categoryTasks = group.CategoriesIds
-            .Select(id => eventCategories.GetByIdAsync(id, ct));
-
-        var categories = await Task.WhenAll(categoryTasks);
+        var categoryNames = new List<string>();
         
-        return Ok(categories
-            .Where(c => c != null)
-            .Select(c => c.SubjectName)
-            .ToList());
+        foreach (var id in group.CategoriesIds)
+        {
+            var category = await eventCategories.GetByIdAsync(id, ct);
+            if (category != null)
+                categoryNames.Add(category.SubjectName);
+        }
+        
+        return Ok(categoryNames);
     }
     
     //добавляет категорию для указанной группы/подгруппы
@@ -74,10 +75,11 @@ public class BotGroupController : ControllerBase
     {
         var group = await groups.GetByCodeAsync(dto.GroupCode, ct);
         var category = await eventCategories.GetByGroupIdAndNameAsync(dto.GroupCode, dto.CategoryName, ct);
+
         group.RemoveCategory(category.Id);
+        
         await groups.UpdateAsync(group, ct);
         await eventCategories.DeleteAsync(category, ct);
-        
         await uow.SaveChangesAsync(ct);
         return NoContent();
     }

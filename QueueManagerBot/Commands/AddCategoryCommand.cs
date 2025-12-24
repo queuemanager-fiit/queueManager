@@ -44,7 +44,6 @@ namespace QueueManagerBot
         }
         public bool CanExecute(Message msg, UserState state)
         {
-            Console.WriteLine($"{state}");
             return (msg.Text == Name && state == UserState.None) || (state != UserState.None && AllowedStates.Contains(state));
         }
 
@@ -117,10 +116,16 @@ namespace QueueManagerBot
                     StateManager.SetState(msg.Chat.Id, UserState.WaitingForGroupIdCategory);
                     break;
                 case UserState.WaitingForGroupIdCategory:
+                    Console.WriteLine(1);
+                    Console.WriteLine($"{CategoriesData[msg.Chat.Id]["IsAutomatic"]} 12");
                     if (CategoriesData[msg.Chat.Id]["IsAutomatic"] != "")
                     {
-                        var sch = new Table.Schedule("https://docs.google.com/spreadsheets/d/1pj8fzVqrZVkNssSJiInxy_Cm54ddC8tm8eluMdV-XvM/edit?usp=sharing");
+                        Console.WriteLine(2);
+                        var sch = new Table.Schedule("C:\\пезда\\queueManager\\Infrastructure\\Parser\\РасписаниеФИИТ2025осень.xlsx");
+
+                        Console.WriteLine(CategoriesData[msg.Chat.Id]["GroupId"]);
                         var cats = sch.GetSubjectsByGroup(CategoriesData[msg.Chat.Id]["GroupId"]);
+                        Console.WriteLine(cats[0]);
                         Console.WriteLine(cats);
                         if (!cats.Contains(msg.Text))
                         {

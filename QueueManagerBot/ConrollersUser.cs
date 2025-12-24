@@ -200,7 +200,7 @@ namespace QueueManagerBot
         {
             try
             {
-                var response = await httpClient.PostAsJsonAsync($"{apiBaseUrl}/api/events/delete-category", category);
+                var response = await httpClient.PostAsJsonAsync($"{apiBaseUrl}/api/groups/delete-category", category);
                 if (response.IsSuccessStatusCode)
                 {
                     return true;

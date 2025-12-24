@@ -249,12 +249,12 @@ namespace QueueManagerBot
                             )
                         }
                     });
-                    Console.WriteLine(4);
+                    var localTime = eventDto.OccurredOn.AddHours(5);
                     await bot.SendMessage(
                         telegramId,
                         $"📋 Уведомление о очереди!\n\n" +
                         $"Категория: {eventDto.Category}\n" +
-                        $"Дата: {eventDto.OccurredOn:dd.MM.yyyy HH:mm}\n\n" +
+                        $"Дата: {localTime:dd.MM.yyyy HH:mm}\n\n" +
                         $"Нажмите кнопку, чтобы записаться:",
                         replyMarkup: keyboard
                     );
@@ -327,12 +327,12 @@ namespace QueueManagerBot
                         var userInfo = participantsInfo.FirstOrDefault(p => p.Id == telegramId);
                         var userPosition = participantsInfo.FindIndex(p => p.Id == telegramId) + 1;
                         var displayName = userInfo.Username ?? $"Пользователь #{telegramId}";
-
+                        var localTime = eventDto.OccurredOn.AddHours(5);
                         await bot.SendMessage(
                             telegramId,
                             $"🏁 *Очередь сформирована!*\n\n" +
                             $"📌 *Категория:* {eventDto.Category}\n" +
-                            $"📅 *Дата и время:* {eventDto.OccurredOn:dd.MM.yyyy HH:mm}\n" +
+                            $"📅 *Дата и время:* {localTime:dd.MM.yyyy HH:mm}\n" +
                             $"👥 *Количество участников:* {eventDto.TelegramId.Length}\n" +
                             $"📍 *Ваша позиция:* {userPosition}\n" +
                             $"👤 *Ваше имя:* {displayName}\n\n" +
