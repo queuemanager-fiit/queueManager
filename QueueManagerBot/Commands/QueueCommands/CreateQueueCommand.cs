@@ -85,13 +85,21 @@ namespace QueueManagerBot
                         QueuesData[msg.Chat.Id]["GroupId"] = user.GroupCode;
                     else if (msg.Text == "Для своей половинки")
                         QueuesData[msg.Chat.Id]["GroupId"] = user.SubGroupCode;
+                    else
+                    {
+                        await Bot.SendMessage(msg.Chat.Id, "Воспользуйтесь клавитурой ниже");
+                        return;
+                    }
                         
 
                     var categories = await controllerUser.GetCategoryList(QueuesData[msg.Chat.Id]["GroupId"]);
 
                     if (categories == null || !categories.Any())
                     {
-                        await Bot.SendMessage(msg.Chat.Id, "Для вашей группы нет доступных категорий, создайте или попросите админа создать её");
+                        await Bot.SendMessage(
+                            msg.Chat.Id, "Для вашей группы нет доступных категорий, создайте или попросите админа создать её", 
+                            replyMarkup: new ReplyKeyboardRemove()
+                            );
                         StateManager.SetState(msg.Chat.Id, UserState.None);
                         return;
                     }
@@ -119,7 +127,7 @@ namespace QueueManagerBot
                     }
                     
                     var keyboard = new InlineKeyboardMarkup(rows);
-                    
+
                     await Bot.SendMessage(
                         msg.Chat.Id,
                         "Выберите категорию для очереди:",
@@ -169,7 +177,7 @@ namespace QueueManagerBot
                     }
                     catch
                     {
-                        await Bot.SendMessage(msg.Chat.Id, "Неверный формат даты");
+                        await Bot.SendMessage(msg.Chat.Id, "Неверный формат даты", replyMarkup: new ReplyKeyboardRemove());
                         return;
                     }
                     
@@ -183,12 +191,12 @@ namespace QueueManagerBot
                     if (response)
                     {
                         QueuesData.Remove(msg.Chat.Id);
-                        await Bot.SendMessage(msg.Chat.Id, "Очередь успешно создана");
+                        await Bot.SendMessage(msg.Chat.Id, "Очередь успешно создана", replyMarkup: new ReplyKeyboardRemove());
                         StateManager.SetState(msg.Chat.Id, UserState.None);
                     }
                     else
                     {
-                        await Bot.SendMessage(msg.Chat.Id, $"Ошибка сохранения");
+                        await Bot.SendMessage(msg.Chat.Id, $"Ошибка сохранения", replyMarkup: new ReplyKeyboardRemove());
                         StateManager.SetState(msg.Chat.Id, UserState.None);
                     }
                     break;

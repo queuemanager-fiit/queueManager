@@ -92,6 +92,11 @@ namespace QueueManagerBot
                         CategoriesData[msg.Chat.Id]["GroupId"] = user.GroupCode;
                     else if (msg.Text == "Для своей половинки")
                         CategoriesData[msg.Chat.Id]["GroupId"] = user.SubGroupCode;
+                    else
+                    {
+                        await Bot.SendMessage(msg.Chat.Id, "Воспользуйтесь клавитурой ниже");
+                        return;
+                    }
 
                     var category = new WebApi.Controllers.BotGroupController.CategoryDto(
                         CategoriesData[msg.Chat.Id]["GroupId"],
@@ -102,12 +107,12 @@ namespace QueueManagerBot
                     if (response)
                     {
                         CategoriesData.Remove(msg.Chat.Id);
-                        await Bot.SendMessage(msg.Chat.Id, "Категория успешно создана");
+                        await Bot.SendMessage(msg.Chat.Id, "Категория успешно создана", replyMarkup: new ReplyKeyboardRemove());
                         StateManager.SetState(msg.Chat.Id, UserState.None);
                     }
                     else
                     {
-                        await Bot.SendMessage(msg.Chat.Id, $"Ошибка сохранения");
+                        await Bot.SendMessage(msg.Chat.Id, $"Ошибка сохранения", replyMarkup: new ReplyKeyboardRemove());
                         StateManager.SetState(msg.Chat.Id, UserState.None);
                     }
                     break;
