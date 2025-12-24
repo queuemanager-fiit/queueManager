@@ -42,6 +42,7 @@ namespace QueueManagerBot
         }
         public bool CanExecute(Message msg, UserState state)
         {
+            Console.WriteLine($"{state}");
             return (msg.Text == Name && state == UserState.None) || (state != UserState.None && AllowedStates.Contains(state));
         }
 
@@ -84,10 +85,7 @@ namespace QueueManagerBot
                         replyMarkup : new string[] { "Для всей группы", "Для своей половинки" }
                         );
                     break;
-                case UserState.WaitingForGroupIdCategory:
-                    StateManager.SetState(msg.Chat.Id, UserState.None);
-
-                    
+                case UserState.WaitingForGroupIdCategory:                    
                     if (msg.Text == "Для всей группы")
                         CategoriesData[msg.Chat.Id]["GroupId"] = user.GroupCode;
                     else if (msg.Text == "Для своей половинки")
@@ -115,6 +113,7 @@ namespace QueueManagerBot
                         await Bot.SendMessage(msg.Chat.Id, $"Ошибка сохранения", replyMarkup: new ReplyKeyboardRemove());
                         StateManager.SetState(msg.Chat.Id, UserState.None);
                     }
+                    StateManager.SetState(msg.Chat.Id, UserState.None);
                     break;
             }
         }
