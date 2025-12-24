@@ -1,17 +1,17 @@
 ﻿using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 
 public class ApplicationDbContext : DbContext
 {
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) 
+    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options) { }
     public ApplicationDbContext() { }
     public DbSet<User> Users { get; set; }
     public DbSet<Group> Groups { get; set; }
     public DbSet<Event> Events { get; set; }
-    
-    public DbSet<EventCategory> EventCategories { get; set; } 
-    
+    public DbSet<EventCategory> EventCategories { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         if (!optionsBuilder.IsConfigured)
@@ -25,40 +25,26 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<Group>(entity =>
         {
 
-            entity.HasMany(g => g.EventsIds)
-                .WithOne()
-                .HasForeignKey(e => e.GroupCode)
-                .HasPrincipalKey(g => g.Code)
-                .OnDelete(DeleteBehavior.Cascade);
-                
+            entity.Property(g => g.CategoriesIds)
+                .HasConversion(
+                    v => JsonSerializer.Serialize(v, (JsonSerializerOptions)null),
+                    v => JsonSerializer.Deserialize<List<Guid>>(v, (JsonSerializerOptions)null) ?? new List<Guid>()
+                )
+                .HasColumnType("jsonb");
 
-            entity.HasMany(g => g.CategoriesIds)
-                .WithOne()
-                .HasForeignKey(ec => ec.GroupCode)
-                .HasPrincipalKey(g => g.Code)
-                .OnDelete(DeleteBehavior.Cascade);
-                
-            entity.HasMany(g => g.UsersTelegramIds)
-                .WithMany()
-                .UsingEntity<Dictionary<string, object>>(
-                    "UserGroups",
-                    j => j
-                        .HasOne<User>()
-                        .WithMany()
-                        .HasForeignKey("UserTelegramId")
-                        .HasPrincipalKey(u => u.TelegramId)
-                        .OnDelete(DeleteBehavior.Cascade),
-                    j => j
-                        .HasOne<Group>()
-                        .WithMany()
-                        .HasForeignKey("GroupCode")
-                        .HasPrincipalKey(g => g.Code)
-                        .OnDelete(DeleteBehavior.Cascade),
-                    j =>
-                    {
-                        j.HasKey("UserTelegramId", "GroupCode");
-                        j.ToTable("UserGroups");
-                    });
+            entity.Property(g => g.EventsIds)
+                .HasConversion(
+                    v => JsonSerializer.Serialize(v, (JsonSerializerOptions)null),
+                    v => JsonSerializer.Deserialize<List<Guid>>(v, (JsonSerializerOptions)null) ?? new List<Guid>()
+                )
+                .HasColumnType("jsonb");
+
+            entity.Property(g => g.UsersTelegramIds)
+                .HasConversion(
+                    v => JsonSerializer.Serialize(v, (JsonSerializerOptions)null),
+                    v => JsonSerializer.Deserialize<List<long>>(v, (JsonSerializerOptions)null) ?? new List<long>()
+                )
+                .HasColumnType("jsonb");
         });
 
         modelBuilder.Entity<User>(entity =>
@@ -69,7 +55,7 @@ public class ApplicationDbContext : DbContext
             entity.Property(u => u.IsAdmin).HasDefaultValue(false);
             entity.Property(u => u.AveragePosition).HasDefaultValue(0.0);
             entity.Property(u => u.ParticipationCount).HasDefaultValue(0);
-            
+
             entity.Property(u => u.GroupCodes)
                 .HasConversion(
                     v => string.Join(';', v),
@@ -85,11 +71,12 @@ public class ApplicationDbContext : DbContext
             entity.Property(ec => ec.IsAutoCreate).HasDefaultValue(false);
             entity.Property(ec => ec.GroupCode).HasMaxLength(20).IsRequired();
 
-            entity.HasOne<Group>()
-                .WithMany(g => g.CategoriesIds)
-                .HasForeignKey(ec => ec.GroupCode)
-                .HasPrincipalKey(g => g.Code)
-                .OnDelete(DeleteBehavior.Cascade);
+            entity.Property(ec => ec.UnfinishedUsersTelegramIds)
+                .HasConversion(
+                    v => JsonSerializer.Serialize(v, (JsonSerializerOptions)null),
+                    v => JsonSerializer.Deserialize<List<long>>(v, (JsonSerializerOptions)null) ?? new List<long>()
+                )
+                .HasColumnType("jsonb");
         });
 
         modelBuilder.Entity<Event>(entity =>
@@ -103,41 +90,21 @@ public class ApplicationDbContext : DbContext
             entity.Property(e => e.IsFormed).HasDefaultValue(false);
             entity.Property(e => e.GroupCode).HasMaxLength(20).IsRequired();
 
+            entity.Property(e => e.ParticipantsTelegramIds)
+                .HasConversion(
+                    v => JsonSerializer.Serialize(v, (JsonSerializerOptions)null),
+                    v => JsonSerializer.Deserialize<List<long>>(v, (JsonSerializerOptions)null) ?? new List<long>()
+                )
+                .HasColumnType("jsonb");
 
-            entity.HasOne(e => e.Category)
-                .WithMany()
-                .HasForeignKey("CategoryId")
-                .OnDelete(DeleteBehavior.Restrict);
-
-            entity.HasMany(e => e.ParticipantsTelegramIds)
-                .WithMany()
-                .UsingEntity<Dictionary<string, object>>(
-                    "EventParticipants",
-                    j => j
-                        .HasOne<User>()
-                        .WithMany()
-                        .HasForeignKey("UserTelegramId")
-                        .HasPrincipalKey(u => u.TelegramId)
-                        .OnDelete(DeleteBehavior.Cascade),
-                    j => j
-                        .HasOne<Event>()
-                        .WithMany()
-                        .HasForeignKey("EventId")
-                        .HasPrincipalKey(e => e.Id)
-                        .OnDelete(DeleteBehavior.Cascade),
-                    j =>
-                    {
-                        j.HasKey("UserTelegramId", "EventId");
-                        j.ToTable("EventParticipants");
-                    });
-
-            entity.HasOne<Group>()
-                .WithMany(g => g.EventsIds)
-                .HasForeignKey(e => e.GroupCode)
-                .HasPrincipalKey(g => g.Code)
-                .OnDelete(DeleteBehavior.Cascade);
+            entity.Property(e => e.Preferences)
+                .HasConversion(
+                    v => JsonSerializer.Serialize(v, (JsonSerializerOptions)null),
+                    v => JsonSerializer.Deserialize<List<UserPreference>>(v, (JsonSerializerOptions)null) ?? new List<UserPreference>()
+                )
+                .HasColumnType("jsonb");
         });
-        
+
         base.OnModelCreating(modelBuilder);
     }
 }

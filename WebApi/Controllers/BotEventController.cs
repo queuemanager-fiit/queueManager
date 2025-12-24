@@ -57,27 +57,33 @@ public class BotEventController : ControllerBase
     
     public sealed record MarkUnfinishedUsers(Guid EventId, int FirstUnfinishedPosition);
 
-    private List<BotEventDto> ToDtoList(List<Event> list)
+    private async Task<List<BotEventDto>> ToDtoList(List<Event> list, CancellationToken ct)
     {
-        return list
-            .Select(e =>
-                new BotEventDto(e.ParticipantsTelegramIds
-                        .ToArray(),
-                    e.OccurredOn,
-                    e.Category.SubjectName,
-                    e.Id))
-            .ToList();
+        var dtoList = new List<BotEventDto>();
+
+
+        foreach (var e in list)
+        {
+            var category = await eventCategories.GetByIdAsync(e.CategoryId, ct);
+            dtoList.Add(new BotEventDto(
+                e.ParticipantsTelegramIds.ToArray(),
+                e.OccurredOn,
+                category?.SubjectName ?? "Unknown",
+                e.Id));
+        }
+
+        return dtoList;
     }
 
     //вызывается раз в определенный срок, чтобы узнать, есть ли события, по которым пора выслать уведомление
     [HttpGet("due-events-notification")]
     public async Task<ActionResult<List<BotEventDto>>> GetDueNotification(CancellationToken ct) =>
-        Ok(ToDtoList(await events.GetDueNotificationAsync(DateTimeOffset.UtcNow, ct)));
-    
+        Ok(await ToDtoList(await events.GetDueNotificationAsync(DateTimeOffset.UtcNow, ct), ct));
+
     //вызывается раз в определенный срок, чтобы узнать, есть ли события, по которым сформировалась очередь
     [HttpGet("due-events-formation")]
     public async Task<ActionResult<List<BotEventDto>>> GetDueFormation(CancellationToken ct) =>
-        Ok(ToDtoList(await events.GetDueFormationAsync(DateTimeOffset.UtcNow, ct)));
+        Ok(await ToDtoList(await events.GetDueFormationAsync(DateTimeOffset.UtcNow, ct), ct));
 
     //используется, чтобы отметить события, по которым были высланы уведомления
     [HttpPost("mark-notified")]
@@ -141,7 +147,7 @@ public class BotEventController : ControllerBase
             ct);
         
         var ev = new Event(
-            category,
+            category.Id,
             dto.OccurredOn,
             dto.GroupCode);
         await events.AddAsync(ev, ct);
@@ -172,28 +178,31 @@ public class BotEventController : ControllerBase
     public async Task<ActionResult<List<BotEventDto>>> GetForGroup([FromQuery] string groupCode, CancellationToken ct)
     {
         var group = await groups.GetByCodeAsync(groupCode, ct);
-        
-        if (group is null)
+        if (group == null)
             return NotFound($"Group with Group Code {groupCode} not found");
-        
-        var tasks = group.EventsIds.Select(id => this.events.GetByIdAsync(id, ct));
-        var events = await Task.WhenAll(tasks);
-        return Ok(ToDtoList(events.ToList()));
+
+        var tasks = group.EventsIds.Select(id => events.GetByIdAsync(id, ct));
+        var eventsList = await Task.WhenAll(tasks);
+        return Ok(await ToDtoList(eventsList.ToList(), ct));
     }
-    
+
     //используется, чтобы отметить неуспевших пользователей
     [HttpPost("mark-unfinished")]
     public async Task<IActionResult> MarkUnfinished([FromBody] MarkUnfinishedUsers request, CancellationToken ct)
     {
         var ev = await events.GetByIdAsync(request.EventId, ct);
-        var category = ev.Category;
-        category.UpdateUnfinishedUsers(ev.ParticipantsTelegramIds, request.FirstUnfinishedPosition);
+        var category = await eventCategories.GetByIdAsync(ev.CategoryId, ct);
 
+        if (category == null)
+            return NotFound($"Category with Id {ev.CategoryId} not found");
+
+        category.UpdateUnfinishedUsers(ev.ParticipantsTelegramIds, request.FirstUnfinishedPosition);
         await eventCategories.UpdateAsync(category, ct);
         await uow.SaveChangesAsync(ct);
+
         return NoContent();
     }
-    
+
     //возвращает информацию об очередях, в которых участвует пользователь
     [HttpGet("user-info-events")]
     public async Task<ActionResult<List<BotEventDto>>> GetUserEventsInfo([FromQuery] long telegramId, CancellationToken ct)
@@ -220,7 +229,7 @@ public class BotEventController : ControllerBase
             .Where(x => x.ok)
             .Select(x => x.ev)
             .ToList();
-        
-        return Ok(ToDtoList(filteredIds));
+
+        return Ok(await ToDtoList(filteredIds, ct));
     }
 }

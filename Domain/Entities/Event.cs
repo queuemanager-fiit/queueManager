@@ -7,7 +7,7 @@ public class Event
 {
     [Key]
     public Guid Id { get; private set; } = Guid.NewGuid();
-    public EventCategory Category { get; set; }
+    public Guid CategoryId { get; set; }
     public List<long> ParticipantsTelegramIds { get; private set; } = new();
     public List<UserPreference> Preferences { get; private set; } = new();
     public DateTimeOffset OccurredOn { get; set; }
@@ -21,11 +21,11 @@ public class Event
     protected Event() { }
 
     public Event(
-        EventCategory category,
+        Guid category,
         DateTimeOffset occurredOn,
         string groupCode)
     {
-        Category = category ?? throw new ArgumentNullException(nameof(category));
+        CategoryId = category;
         OccurredOn = occurredOn;
         FormationTime = occurredOn.Subtract(TimeSpan.FromDays(1));
         NotificationTime = FormationTime.Subtract(TimeSpan.FromDays(1));

@@ -3,6 +3,26 @@
   "WorkspaceRootPath": "C:\\Users\\\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queueManager\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{58558B1F-6F85-47D4-907B-208A738ABE1D}|Infrastructure\\Infrastructure.csproj|c:\\users\\\u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queuemanager\\infrastructure\\repositories\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{58558B1F-6F85-47D4-907B-208A738ABE1D}|Infrastructure\\Infrastructure.csproj|solutionrelative:infrastructure\\repositories\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{58558B1F-6F85-47D4-907B-208A738ABE1D}|Infrastructure\\Infrastructure.csproj|c:\\users\\\u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queuemanager\\infrastructure\\repositories\\grouprepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{58558B1F-6F85-47D4-907B-208A738ABE1D}|Infrastructure\\Infrastructure.csproj|solutionrelative:infrastructure\\repositories\\grouprepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BE6C0D75-76F0-4A88-8A04-8024F44F3054}|WebApi\\WebApi.csproj|c:\\users\\\u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queuemanager\\webapi\\controllers\\boteventcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BE6C0D75-76F0-4A88-8A04-8024F44F3054}|WebApi\\WebApi.csproj|solutionrelative:webapi\\controllers\\boteventcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{58558B1F-6F85-47D4-907B-208A738ABE1D}|Infrastructure\\Infrastructure.csproj|c:\\users\\\u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queuemanager\\infrastructure\\repositories\\eventcategoryrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{58558B1F-6F85-47D4-907B-208A738ABE1D}|Infrastructure\\Infrastructure.csproj|solutionrelative:infrastructure\\repositories\\eventcategoryrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F72BA8B5-90CE-477B-8D26-85B35AF5F6EE}|Domain\\Domain.csproj|c:\\users\\\u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queuemanager\\domain\\entities\\event.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F72BA8B5-90CE-477B-8D26-85B35AF5F6EE}|Domain\\Domain.csproj|solutionrelative:domain\\entities\\event.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{58558B1F-6F85-47D4-907B-208A738ABE1D}|Infrastructure\\Infrastructure.csproj|c:\\users\\\u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queuemanager\\infrastructure\\parser\\parser.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{58558B1F-6F85-47D4-907B-208A738ABE1D}|Infrastructure\\Infrastructure.csproj|solutionrelative:infrastructure\\parser\\parser.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -23,20 +43,12 @@
       "RelativeMoniker": "D:0:0:{5961456F-9FFD-4C09-AA16-FDA77E366E11}|QueueManagerBot\\QueueManagerBot.csproj|solutionrelative:queuemanagerbot\\userstates.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{F72BA8B5-90CE-477B-8D26-85B35AF5F6EE}|Domain\\Domain.csproj|c:\\users\\\u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queuemanager\\domain\\entities\\event.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{F72BA8B5-90CE-477B-8D26-85B35AF5F6EE}|Domain\\Domain.csproj|solutionrelative:domain\\entities\\event.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{BE6C0D75-76F0-4A88-8A04-8024F44F3054}|WebApi\\WebApi.csproj|c:\\users\\\u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queuemanager\\webapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{BE6C0D75-76F0-4A88-8A04-8024F44F3054}|WebApi\\WebApi.csproj|solutionrelative:webapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{58558B1F-6F85-47D4-907B-208A738ABE1D}|Infrastructure\\Infrastructure.csproj|c:\\users\\\u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queuemanager\\infrastructure\\services\\queueservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{58558B1F-6F85-47D4-907B-208A738ABE1D}|Infrastructure\\Infrastructure.csproj|solutionrelative:infrastructure\\services\\queueservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{BE6C0D75-76F0-4A88-8A04-8024F44F3054}|WebApi\\WebApi.csproj|c:\\users\\\u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queuemanager\\webapi\\controllers\\boteventcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BE6C0D75-76F0-4A88-8A04-8024F44F3054}|WebApi\\WebApi.csproj|solutionrelative:webapi\\controllers\\boteventcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{F72BA8B5-90CE-477B-8D26-85B35AF5F6EE}|Domain\\Domain.csproj|c:\\users\\\u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queuemanager\\domain\\entities\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -79,66 +91,40 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "Parser.cs",
-              "DocumentMoniker": "C:\\Users\\\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queueManager\\Infrastructure\\Parser\\Parser.cs",
-              "RelativeDocumentMoniker": "Infrastructure\\Parser\\Parser.cs",
-              "ToolTip": "C:\\Users\\\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queueManager\\Infrastructure\\Parser\\Parser.cs",
-              "RelativeToolTip": "Infrastructure\\Parser\\Parser.cs",
-              "ViewState": "AgIAAE4AAAAAAAAAAAAUwGQAAAAFAAAAAAAAAA==",
+              "Title": "ApplicationDbContext.cs",
+              "DocumentMoniker": "C:\\Users\\\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queueManager\\Infrastructure\\Repositories\\ApplicationDbContext.cs",
+              "RelativeDocumentMoniker": "Infrastructure\\Repositories\\ApplicationDbContext.cs",
+              "ToolTip": "C:\\Users\\\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queueManager\\Infrastructure\\Repositories\\ApplicationDbContext.cs",
+              "RelativeToolTip": "Infrastructure\\Repositories\\ApplicationDbContext.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAFAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-24T03:30:52.701Z",
+              "WhenOpened": "2025-12-24T11:40:29.407Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "TelegramBot.cs",
-              "DocumentMoniker": "C:\\Users\\\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queueManager\\QueueManagerBot\\TelegramBot.cs",
-              "RelativeDocumentMoniker": "QueueManagerBot\\TelegramBot.cs",
-              "ToolTip": "C:\\Users\\\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queueManager\\QueueManagerBot\\TelegramBot.cs",
-              "RelativeToolTip": "QueueManagerBot\\TelegramBot.cs",
-              "ViewState": "AgIAACwBAAAAAAAAAAAmwAgAAAASAAAAAAAAAA==",
+              "Title": "GroupRepository.cs",
+              "DocumentMoniker": "C:\\Users\\\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queueManager\\Infrastructure\\Repositories\\GroupRepository.cs",
+              "RelativeDocumentMoniker": "Infrastructure\\Repositories\\GroupRepository.cs",
+              "ToolTip": "C:\\Users\\\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queueManager\\Infrastructure\\Repositories\\GroupRepository.cs",
+              "RelativeToolTip": "Infrastructure\\Repositories\\GroupRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-24T03:28:04.286Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "AddCategoryCommand.cs",
-              "DocumentMoniker": "C:\\Users\\\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queueManager\\QueueManagerBot\\Commands\\AddCategoryCommand.cs",
-              "RelativeDocumentMoniker": "QueueManagerBot\\Commands\\AddCategoryCommand.cs",
-              "ToolTip": "C:\\Users\\\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queueManager\\QueueManagerBot\\Commands\\AddCategoryCommand.cs",
-              "RelativeToolTip": "QueueManagerBot\\Commands\\AddCategoryCommand.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAKEAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-24T03:27:10.835Z",
+              "WhenOpened": "2025-12-24T11:36:55.042Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 3,
-              "Title": "ConrollersUser.cs",
-              "DocumentMoniker": "C:\\Users\\\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queueManager\\QueueManagerBot\\ConrollersUser.cs",
-              "RelativeDocumentMoniker": "QueueManagerBot\\ConrollersUser.cs",
-              "ToolTip": "C:\\Users\\\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queueManager\\QueueManagerBot\\ConrollersUser.cs",
-              "RelativeToolTip": "QueueManagerBot\\ConrollersUser.cs",
-              "ViewState": "AgIAAPEAAAAAAAAAAAAUwAUBAAAAAAAAAAAAAA==",
+              "Title": "EventCategoryRepository.cs",
+              "DocumentMoniker": "C:\\Users\\\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queueManager\\Infrastructure\\Repositories\\EventCategoryRepository.cs",
+              "RelativeDocumentMoniker": "Infrastructure\\Repositories\\EventCategoryRepository.cs",
+              "ToolTip": "C:\\Users\\\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queueManager\\Infrastructure\\Repositories\\EventCategoryRepository.cs",
+              "RelativeToolTip": "Infrastructure\\Repositories\\EventCategoryRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAADIAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-24T03:26:03.054Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "UserStates.cs",
-              "DocumentMoniker": "C:\\Users\\\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queueManager\\QueueManagerBot\\UserStates.cs",
-              "RelativeDocumentMoniker": "QueueManagerBot\\UserStates.cs",
-              "ToolTip": "C:\\Users\\\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queueManager\\QueueManagerBot\\UserStates.cs",
-              "RelativeToolTip": "QueueManagerBot\\UserStates.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-24T03:25:28.901Z",
+              "WhenOpened": "2025-12-24T11:33:22.564Z",
               "EditorCaption": ""
             },
             {
@@ -147,7 +133,68 @@
             },
             {
               "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "Parser.cs",
+              "DocumentMoniker": "C:\\Users\\\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queueManager\\Infrastructure\\Parser\\Parser.cs",
+              "RelativeDocumentMoniker": "Infrastructure\\Parser\\Parser.cs",
+              "ToolTip": "C:\\Users\\\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queueManager\\Infrastructure\\Parser\\Parser.cs",
+              "RelativeToolTip": "Infrastructure\\Parser\\Parser.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAGQAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-24T03:30:52.701Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "TelegramBot.cs",
+              "DocumentMoniker": "C:\\Users\\\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queueManager\\QueueManagerBot\\TelegramBot.cs",
+              "RelativeDocumentMoniker": "QueueManagerBot\\TelegramBot.cs",
+              "ToolTip": "C:\\Users\\\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queueManager\\QueueManagerBot\\TelegramBot.cs",
+              "RelativeToolTip": "QueueManagerBot\\TelegramBot.cs",
+              "ViewState": "AgIAACwBAAAAAAAAAAAmwAgAAAASAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-24T03:28:04.286Z"
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 7,
+              "Title": "AddCategoryCommand.cs",
+              "DocumentMoniker": "C:\\Users\\\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queueManager\\QueueManagerBot\\Commands\\AddCategoryCommand.cs",
+              "RelativeDocumentMoniker": "QueueManagerBot\\Commands\\AddCategoryCommand.cs",
+              "ToolTip": "C:\\Users\\\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queueManager\\QueueManagerBot\\Commands\\AddCategoryCommand.cs",
+              "RelativeToolTip": "QueueManagerBot\\Commands\\AddCategoryCommand.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAKEAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-24T03:27:10.835Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "ConrollersUser.cs",
+              "DocumentMoniker": "C:\\Users\\\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queueManager\\QueueManagerBot\\ConrollersUser.cs",
+              "RelativeDocumentMoniker": "QueueManagerBot\\ConrollersUser.cs",
+              "ToolTip": "C:\\Users\\\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queueManager\\QueueManagerBot\\ConrollersUser.cs",
+              "RelativeToolTip": "QueueManagerBot\\ConrollersUser.cs",
+              "ViewState": "AgIAAPEAAAAAAAAAAAAUwAUBAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-24T03:26:03.054Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "UserStates.cs",
+              "DocumentMoniker": "C:\\Users\\\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queueManager\\QueueManagerBot\\UserStates.cs",
+              "RelativeDocumentMoniker": "QueueManagerBot\\UserStates.cs",
+              "ToolTip": "C:\\Users\\\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queueManager\\QueueManagerBot\\UserStates.cs",
+              "RelativeToolTip": "QueueManagerBot\\UserStates.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-24T03:25:28.901Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
               "Title": "QueueService.cs",
               "DocumentMoniker": "C:\\Users\\\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queueManager\\Infrastructure\\Services\\QueueService.cs",
               "RelativeDocumentMoniker": "Infrastructure\\Services\\QueueService.cs",
@@ -159,7 +206,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 10,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queueManager\\WebApi\\Program.cs",
               "RelativeDocumentMoniker": "WebApi\\Program.cs",
@@ -171,7 +218,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 18,
               "Title": "QueueService.cs",
               "DocumentMoniker": "C:\\Users\\\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queueManager\\Application\\Services\\QueueService.cs",
               "RelativeDocumentMoniker": "Application\\Services\\QueueService.cs",
@@ -183,19 +230,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 2,
               "Title": "BotEventController.cs",
               "DocumentMoniker": "C:\\Users\\\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queueManager\\WebApi\\Controllers\\BotEventController.cs",
               "RelativeDocumentMoniker": "WebApi\\Controllers\\BotEventController.cs",
               "ToolTip": "C:\\Users\\\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queueManager\\WebApi\\Controllers\\BotEventController.cs",
               "RelativeToolTip": "WebApi\\Controllers\\BotEventController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAEIAAAA2AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-19T18:56:40.215Z"
+              "WhenOpened": "2025-12-19T18:56:40.215Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 15,
               "Title": "IEventSchedulerService.cs",
               "DocumentMoniker": "C:\\Users\\\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queueManager\\Domain\\Interfaces\\IEventSchedulerService.cs",
               "RelativeDocumentMoniker": "Domain\\Interfaces\\IEventSchedulerService.cs",
@@ -207,7 +255,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 12,
               "Title": "User.cs",
               "DocumentMoniker": "C:\\Users\\\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queueManager\\Domain\\Entities\\User.cs",
               "RelativeDocumentMoniker": "Domain\\Entities\\User.cs",
@@ -219,20 +267,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 4,
               "Title": "Event.cs",
               "DocumentMoniker": "C:\\Users\\\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queueManager\\Domain\\Entities\\Event.cs",
               "RelativeDocumentMoniker": "Domain\\Entities\\Event.cs",
               "ToolTip": "C:\\Users\\\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queueManager\\Domain\\Entities\\Event.cs",
               "RelativeToolTip": "Domain\\Entities\\Event.cs",
-              "ViewState": "AgIAAD4AAAAAAAAAAAAAAEoAAABAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAABMAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-12-12T22:13:58.094Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 14,
               "Title": "QueueService.cs",
               "DocumentMoniker": "C:\\Users\\\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queueManager\\Domain\\Services\\QueueService.cs",
               "RelativeDocumentMoniker": "Domain\\Services\\QueueService.cs",
@@ -243,7 +291,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 16,
               "Title": "IUnitOfWork.cs",
               "DocumentMoniker": "C:\\Users\\\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queueManager\\Domain\\Interfaces\\IUnitOfWork.cs",
               "RelativeDocumentMoniker": "Domain\\Interfaces\\IUnitOfWork.cs",
@@ -255,7 +303,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 17,
               "Title": "IEventRepository.cs",
               "DocumentMoniker": "C:\\Users\\\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queueManager\\Domain\\Interfaces\\IEventRepository.cs",
               "RelativeDocumentMoniker": "Domain\\Interfaces\\IEventRepository.cs",
@@ -267,7 +315,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 13,
               "Title": "Group.cs",
               "DocumentMoniker": "C:\\Users\\\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queueManager\\Domain\\Entities\\Group.cs",
               "RelativeDocumentMoniker": "Domain\\Entities\\Group.cs",

@@ -10,8 +10,6 @@ public class GroupRepository : BaseRepository<Group>, IGroupRepository
 
     public async Task<Group?> GetByCodeAsync(string code, CancellationToken ct)
     {
-        return await Context.Groups
-            .Include(g => g.CategoriesIds) 
-            .FirstOrDefaultAsync(x => x.Code == code, ct);
+        return await Context.Groups.FirstOrDefaultAsync(g => g.Code == code, ct);
     }
 }
