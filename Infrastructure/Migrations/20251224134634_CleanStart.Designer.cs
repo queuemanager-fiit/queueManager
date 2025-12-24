@@ -11,7 +11,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251224004545_CleanStart")]
+    [Migration("20251224134634_CleanStart")]
     partial class CleanStart
     {
         /// <inheritdoc />
@@ -60,15 +60,15 @@ namespace Infrastructure.Migrations
                     b.Property<DateTimeOffset>("OccurredOn")
                         .HasColumnType("timestamp with time zone");
 
-                    b.PrimitiveCollection<int[]>("Preferences")
+                    b.Property<string>("ParticipantsTelegramIds")
                         .IsRequired()
-                        .HasColumnType("integer[]");
+                        .HasColumnType("jsonb");
+
+                    b.Property<string>("Preferences")
+                        .IsRequired()
+                        .HasColumnType("jsonb");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CategoryId");
-
-                    b.HasIndex("GroupCode");
 
                     b.ToTable("Events");
                 });
@@ -93,9 +93,11 @@ namespace Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.HasKey("Id");
+                    b.Property<string>("UnfinishedUsersTelegramIds")
+                        .IsRequired()
+                        .HasColumnType("jsonb");
 
-                    b.HasIndex("GroupCode");
+                    b.HasKey("Id");
 
                     b.ToTable("EventCategories");
                 });
@@ -104,6 +106,18 @@ namespace Infrastructure.Migrations
                 {
                     b.Property<string>("Code")
                         .HasColumnType("text");
+
+                    b.Property<string>("CategoriesIds")
+                        .IsRequired()
+                        .HasColumnType("jsonb");
+
+                    b.Property<string>("EventsIds")
+                        .IsRequired()
+                        .HasColumnType("jsonb");
+
+                    b.Property<string>("UsersTelegramIds")
+                        .IsRequired()
+                        .HasColumnType("jsonb");
 
                     b.HasKey("Code");
 
@@ -122,9 +136,6 @@ namespace Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("double precision")
                         .HasDefaultValue(0.0);
-
-                    b.Property<Guid?>("EventCategoryId")
-                        .HasColumnType("uuid");
 
                     b.Property<string>("FullName")
                         .IsRequired()
@@ -150,114 +161,7 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("TelegramId");
 
-                    b.HasIndex("EventCategoryId");
-
                     b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("EventParticipants", b =>
-                {
-                    b.Property<long>("UserTelegramId")
-                        .HasColumnType("bigint");
-
-                    b.Property<Guid>("EventId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("UserTelegramId", "EventId");
-
-                    b.HasIndex("EventId");
-
-                    b.ToTable("EventParticipants", (string)null);
-                });
-
-            modelBuilder.Entity("UserGroups", b =>
-                {
-                    b.Property<long>("UserTelegramId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("GroupCode")
-                        .HasColumnType("text");
-
-                    b.HasKey("UserTelegramId", "GroupCode");
-
-                    b.HasIndex("GroupCode");
-
-                    b.ToTable("UserGroups", (string)null);
-                });
-
-            modelBuilder.Entity("Domain.Entities.Event", b =>
-                {
-                    b.HasOne("Domain.Entities.EventCategory", "Category")
-                        .WithMany()
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Entities.Group", null)
-                        .WithMany("Events")
-                        .HasForeignKey("GroupCode")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Category");
-                });
-
-            modelBuilder.Entity("Domain.Entities.EventCategory", b =>
-                {
-                    b.HasOne("Domain.Entities.Group", null)
-                        .WithMany("Categories")
-                        .HasForeignKey("GroupCode")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Domain.Entities.User", b =>
-                {
-                    b.HasOne("Domain.Entities.EventCategory", null)
-                        .WithMany("UnfinishedUsers")
-                        .HasForeignKey("EventCategoryId");
-                });
-
-            modelBuilder.Entity("EventParticipants", b =>
-                {
-                    b.HasOne("Domain.Entities.Event", null)
-                        .WithMany()
-                        .HasForeignKey("EventId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Entities.User", null)
-                        .WithMany()
-                        .HasForeignKey("UserTelegramId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("UserGroups", b =>
-                {
-                    b.HasOne("Domain.Entities.Group", null)
-                        .WithMany()
-                        .HasForeignKey("GroupCode")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Entities.User", null)
-                        .WithMany()
-                        .HasForeignKey("UserTelegramId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Domain.Entities.EventCategory", b =>
-                {
-                    b.Navigation("UnfinishedUsers");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Group", b =>
-                {
-                    b.Navigation("Categories");
-
-                    b.Navigation("Events");
                 });
 #pragma warning restore 612, 618
         }

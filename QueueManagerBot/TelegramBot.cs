@@ -123,6 +123,12 @@ namespace QueueManagerBot
                 var controllerUser = new ControllerUser(httpClient, apiBaseUrl);
                 var user = await controllerUser.GetUser(query.Message.Chat.Id);
 
+                await bot.EditMessageReplyMarkup(
+                    chatId: update.CallbackQuery.Message.Chat.Id,
+                    messageId: update.CallbackQuery.Message.MessageId,
+                    replyMarkup: null
+                );
+
                 if (query.Data.StartsWith("delete_category_"))
                 {
                     Console.WriteLine("deledte");
