@@ -65,10 +65,3 @@ public class User
     public override int GetHashCode()
         => TelegramId.GetHashCode();
 }
-
-public enum UserPreference
-{
-    Start,
-    NoPreference,
-    End
-}
