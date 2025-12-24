@@ -218,9 +218,17 @@ namespace QueueManagerBot
 
         private async Task SendNotificationsForEventAsync(WebApi.Controllers.BotEventController.BotEventDto eventDto)
         {
+            var httpClient = httpClientFactory.CreateClient("ApiClient");
+            var controllerUser = new ControllerUser(httpClient, apiBaseUrl);
+
             try
             {
-                foreach (var telegramId in eventDto.TelegramId)
+                Console.WriteLine(2);
+                Console.WriteLine(eventDto.GroupCode);
+                var tgIds = await controllerUser.GetGroupUsers(eventDto.GroupCode);
+                Console.WriteLine(tgIds == null);
+
+                foreach (var telegramId in tgIds)
                 {
                     var keyboard = new InlineKeyboardMarkup(new[]
                     {
@@ -235,7 +243,7 @@ namespace QueueManagerBot
                             )
                         }
                     });
-
+                    Console.WriteLine(4);
                     await bot.SendMessage(
                         telegramId,
                         $"📋 Уведомление о очереди!\n\n" +
@@ -253,6 +261,7 @@ namespace QueueManagerBot
                 Console.WriteLine($"Ошибка при отправке уведомлений для события {eventDto.EventId}: {ex.Message}");
             }
         }
+
 
 
         private async Task SendFormationNotificationAsync(WebApi.Controllers.BotEventController.BotEventDto eventDto)

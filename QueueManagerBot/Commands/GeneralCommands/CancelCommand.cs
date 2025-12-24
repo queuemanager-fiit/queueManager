@@ -32,7 +32,7 @@ namespace QueueManagerBot
 
         public bool CanExecute(Message msg, UserState state)
         {
-            return msg.Text == Name && AllowedStates.Contains(state);
+            return msg.Text == Name;
         }
 
         public async Task Execute(Message msg)

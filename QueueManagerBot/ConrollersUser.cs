@@ -257,5 +257,28 @@ namespace QueueManagerBot
                 return false;
             }
         }
+        public async Task<List<long>> GetGroupUsers(string groupCode)
+        {
+            try
+            {
+                var response = await httpClient.GetAsync($"{apiBaseUrl}/api/group/users-for-group?groupCode={groupCode}");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var tgIds = await response.Content.ReadFromJsonAsync<List<long>>();
+                    return tgIds;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return null;
+            }
+        }
+
     }
 }

@@ -31,7 +31,8 @@ public class BotEventController : ControllerBase
         long[] TelegramId,
         DateTimeOffset OccurredOn,
         string Category,
-        Guid EventId);
+        Guid EventId,
+        string GroupCode);
 
     public sealed record ParticipationDto(
         long TelegramId,
@@ -69,7 +70,8 @@ public class BotEventController : ControllerBase
                 e.ParticipantsTelegramIds.ToArray(),
                 e.OccurredOn,
                 category?.SubjectName ?? "Unknown",
-                e.Id));
+                e.Id,
+                e.GroupCode));
         }
 
         return dtoList;
