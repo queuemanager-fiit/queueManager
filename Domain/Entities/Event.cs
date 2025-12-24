@@ -38,10 +38,10 @@ public class Event
         if (user == null) throw new ArgumentNullException(nameof(user));
         if (!CanUserJoin(user)) return false;
 
-        int index = ParticipantsTelegramIds.IndexOf(user);
+        int index = ParticipantsTelegramIds.IndexOf(user.TelegramId);
         if (index != -1) return false;
 
-        ParticipantsTelegramIds.Add(user);
+        ParticipantsTelegramIds.Add(user.TelegramId);
         Preferences.Add(preference);
         return true;
     }
@@ -62,7 +62,7 @@ public class Event
     {
         if (user == null) return false;
 
-        int index = ParticipantsTelegramIds.IndexOf(user);
+        int index = ParticipantsTelegramIds.IndexOf(user.TelegramId);
         if (index == -1) return false;
 
         ParticipantsTelegramIds.RemoveAt(index);
@@ -168,7 +168,7 @@ public class EventCategory
         {
             var user = queue[i];
             if (user != null)
-                UnfinishedUsersTelegramIds.Add(user);
+                UnfinishedUsersTelegramIds.Add(user.TelegramId);
         }
     }
     

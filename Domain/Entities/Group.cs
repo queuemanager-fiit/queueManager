@@ -15,43 +15,37 @@ public class Group
         Code = code ?? throw new ArgumentNullException(nameof(code));
     }
 
-    public bool AddCategory(EventCategory category)
+    public bool AddCategory(Guid categoryId)
     {
-        if (category == null) return false;
-        CategoriesIds.Add(category);
+        CategoriesIds.Add(categoryId);
         return true;
     }
 
-    public bool RemoveCategory(EventCategory category)
+    public bool RemoveCategory(Guid categoryId)
     {
-        if (category == null) return false;
-        return CategoriesIds.Remove(category);
+        return CategoriesIds.Remove(categoryId);
     }
 
-    public bool AddEvent(Event evt)
+    public bool AddEvent(Guid eventId)
     {
-        if (evt == null) return false;
-        EventsIds.Add(evt);
+        EventsIds.Add(eventId);
         return true;
     }
 
-    public bool RemoveEvent(Event evt)
+    public bool RemoveEvent(Guid eventId)
     {
-        if (evt == null) return false;
-        return EventsIds.Remove(evt);
+        return EventsIds.Remove(eventId);
     }
     
-    public bool AddUser(User user)
+    public bool AddUser(long telegramId)
     {
-        if (user == null) return false;
-        UsersTelegramIds.Add(user);
+        UsersTelegramIds.Add(telegramId);
         return true;
     }
 
-    public bool RemoveUser(User user)
+    public bool RemoveUser(long telegramId)
     {
-        if (user == null) return false;
-        return UsersTelegramIds.Remove(user);
+        return UsersTelegramIds.Remove(telegramId);
     }
     
     public override bool Equals(object? obj)
