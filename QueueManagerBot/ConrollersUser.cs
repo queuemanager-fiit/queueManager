@@ -184,6 +184,7 @@ namespace QueueManagerBot
                 }
                 else
                 {
+                    Console.WriteLine($"{category.GroupCode} {category.CategoryName}");
                     return false;
                 }
             }

@@ -119,32 +119,19 @@ namespace QueueManagerBot
             {                
                 await bot.AnswerCallbackQuery(query.Id);
                 var httpClient = httpClientFactory.CreateClient("ApiClient");
+                var controllerUser = new ControllerUser(httpClient, apiBaseUrl);
+                var user = await controllerUser.GetUser(query.Message.Chat.Id);
 
-                var userResponse = await httpClient.GetAsync($"{apiBaseUrl}/api/users/user-info?telegramId={query.Message.Chat.Id}");
-
-                if (!userResponse.IsSuccessStatusCode)
-                {
-                    Console.WriteLine("Ошибка при получении данных пользователя");
-                    return;
-                }
-
-                var user = await userResponse.Content.ReadFromJsonAsync<WebApi.Controllers.BotUserController.InfoUserDto>();
                 if (query.Data.StartsWith("delete_category_"))
                 {
+                    Console.WriteLine("deledte");
                     var catNameString = query.Data.Replace("delete_category_", "");
                     var catDeletionSubGroup = new WebApi.Controllers.BotGroupController.DeletionDto(user.SubGroupCode, catNameString);
                     var catDeletionGroup = new WebApi.Controllers.BotGroupController.DeletionDto(user.GroupCode, catNameString);
-                    var response1 = await httpClient.PostAsJsonAsync(
-                        $"{apiBaseUrl}/api/events/delete-category", 
-                        catDeletionSubGroup
-                    );
-                    var response2 = await httpClient.PostAsJsonAsync(
-                        $"{apiBaseUrl}/api/events/delete-category", 
-                        catDeletionGroup
-                    );
-                    
+                    var response1 = await controllerUser.DeleteCategory(catDeletionSubGroup);
+                    var response2 = await controllerUser.DeleteCategory(catDeletionGroup);
                     var chatId = query.Message.Chat.Id;
-                    if (response1.IsSuccessStatusCode || response2.IsSuccessStatusCode)
+                    if (response1 || response2)
                     {
                         await bot.SendMessage(chatId, "✅ Удалено!");
                         await bot.DeleteMessage(chatId, query.Message.MessageId);
