@@ -33,8 +33,10 @@ public class BotGroupController : ControllerBase
     [HttpGet("category-list")]
     public async Task<ActionResult<List<string>>> GetCategories(
         [FromQuery] string groupCode,
-        CancellationToken ct) =>
-        Ok((await groups.GetByCodeAsync(groupCode, ct)).CategoriesIds.Select(categ => categ.SubjectName).ToList());
+        CancellationToken ct)
+    {
+        return Ok((await groups.GetByCodeAsync(groupCode, ct)).CategoriesIds.Select(categ => (await eventCategories.)).ToList());
+    }
     
     //добавляет категорию для указанной группы/подгруппы
     [HttpPost("add-category")]

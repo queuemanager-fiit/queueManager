@@ -66,8 +66,8 @@ public sealed class BotUserController : ControllerBase
             user = new User(dto.TelegramId, dto.FullName, dto.Username,
                 new List<string> { dto.GroupCode, dto.SubGroupCode });
             await users.AddAsync(user, ct);
-            group.AddUser(user);
-            subGroup.AddUser(user);
+            group.AddUser(user.TelegramId);
+            subGroup.AddUser(user.TelegramId);
         }
         else
         {
@@ -75,14 +75,14 @@ public sealed class BotUserController : ControllerBase
             var oldSubGroup = await groups.GetByCodeAsync(user.GroupCodes.Last(), ct);
             if (!user.GroupCodes.Contains(dto.GroupCode))
             {
-                oldGroup.RemoveUser(user);
-                group.AddUser(user);
+                oldGroup.RemoveUser(user.TelegramId);
+                group.AddUser(user.TelegramId);
             }
             
             if (!user.GroupCodes.Contains(dto.SubGroupCode))
             {
-                oldSubGroup.RemoveUser(user);
-                subGroup.AddUser(user);
+                oldSubGroup.RemoveUser(user.TelegramId);
+                subGroup.AddUser(user.TelegramId);
             }
             
             user.UpdateInfo(dto.FullName, dto.Username, new List<string> { dto.GroupCode, dto.SubGroupCode });
@@ -132,7 +132,7 @@ public sealed class BotUserController : ControllerBase
         var group = await groups.GetByCodeAsync(dto.groupCode, ct);
         
         user.GroupCodes.Remove(dto.groupCode);
-        group.RemoveUser(user);
+        group.RemoveUser(user.TelegramId);
 
 
         await groups.UpdateAsync(group, ct);
