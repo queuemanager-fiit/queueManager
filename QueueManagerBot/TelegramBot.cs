@@ -80,7 +80,7 @@ namespace QueueManagerBot
                     configuration),
                     
                 new AddCategoryCommand(
-                    "/category_category",
+                    "/create_category",
                     bot,
                     stateManager,
                     httpClientFactory,

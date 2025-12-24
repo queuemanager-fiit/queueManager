@@ -92,6 +92,7 @@ namespace QueueManagerBot
                     if (categories == null || !categories.Any())
                     {
                         await Bot.SendMessage(msg.Chat.Id, "Для вашей группы нет доступных категорий, создайте или попросите админа создать её");
+                        StateManager.SetState(msg.Chat.Id, UserState.None);
                         return;
                     }
                     

@@ -42,7 +42,7 @@ namespace QueueManagerBot
             var controllerUser = new ControllerUser(httpClient, apiBaseUrl);
             var user = await controllerUser.GetUser(msg.Chat.Id);
 
-            if (user != null)
+            if (user == null)
             {
                 await Bot.SendMessage(msg.Chat.Id, 
                 "Добро пожаловать!\nДля регистрации в боте введите @fiitobot [Ваши Фамилия Имя] и нажмите на всплывающее окно\n\nПример: @fiitobot Иванов Иван");
@@ -50,7 +50,7 @@ namespace QueueManagerBot
             }
             else
             {
-                await Bot.SendMessage(msg.Chat.Id, "Произошла непредвиденная ошибка");
+                await Bot.SendMessage(msg.Chat.Id, "Вы уже зарегистрированы");
             }
         }
 

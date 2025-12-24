@@ -24,22 +24,46 @@ public class ApplicationDbContext : DbContext
     {
         modelBuilder.Entity<Group>(entity =>
         {
+
             entity.HasMany(g => g.Events)
                 .WithOne()
                 .HasForeignKey(e => e.GroupCode)
                 .HasPrincipalKey(g => g.Code)
                 .OnDelete(DeleteBehavior.Cascade);
                 
+
             entity.HasMany(g => g.Categories)
                 .WithOne()
                 .HasForeignKey(ec => ec.GroupCode)
                 .HasPrincipalKey(g => g.Code)
                 .OnDelete(DeleteBehavior.Cascade);
+                
+            entity.HasMany(g => g.Users)
+                .WithMany()
+                .UsingEntity<Dictionary<string, object>>(
+                    "UserGroups",
+                    j => j
+                        .HasOne<User>()
+                        .WithMany()
+                        .HasForeignKey("UserTelegramId")
+                        .HasPrincipalKey(u => u.TelegramId)
+                        .OnDelete(DeleteBehavior.Cascade),
+                    j => j
+                        .HasOne<Group>()
+                        .WithMany()
+                        .HasForeignKey("GroupCode")
+                        .HasPrincipalKey(g => g.Code)
+                        .OnDelete(DeleteBehavior.Cascade),
+                    j =>
+                    {
+                        j.HasKey("UserTelegramId", "GroupCode");
+                        j.ToTable("UserGroups");
+                    });
         });
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(u => u.TelegramId); 
+            entity.HasKey(u => u.TelegramId);
             entity.Property(u => u.FullName).IsRequired();
             entity.Property(u => u.Username);
             entity.Property(u => u.IsAdmin).HasDefaultValue(false);
@@ -79,22 +103,41 @@ public class ApplicationDbContext : DbContext
             entity.Property(e => e.IsFormed).HasDefaultValue(false);
             entity.Property(e => e.GroupCode).HasMaxLength(20).IsRequired();
 
-            entity.HasOne(typeof(EventCategory), "Category")
+
+            entity.HasOne(e => e.Category)
                 .WithMany()
                 .HasForeignKey("CategoryId")
                 .OnDelete(DeleteBehavior.Restrict);
 
-            entity.HasMany(typeof(User), "Participants")
+            entity.HasMany(e => e.Participants)
                 .WithMany()
-                .UsingEntity(j => j.ToTable("EventParticipants"));
-            
+                .UsingEntity<Dictionary<string, object>>(
+                    "EventParticipants",
+                    j => j
+                        .HasOne<User>()
+                        .WithMany()
+                        .HasForeignKey("UserTelegramId")
+                        .HasPrincipalKey(u => u.TelegramId)
+                        .OnDelete(DeleteBehavior.Cascade),
+                    j => j
+                        .HasOne<Event>()
+                        .WithMany()
+                        .HasForeignKey("EventId")
+                        .HasPrincipalKey(e => e.Id)
+                        .OnDelete(DeleteBehavior.Cascade),
+                    j =>
+                    {
+                        j.HasKey("UserTelegramId", "EventId");
+                        j.ToTable("EventParticipants");
+                    });
+
             entity.HasOne<Group>()
                 .WithMany(g => g.Events)
                 .HasForeignKey(e => e.GroupCode)
                 .HasPrincipalKey(g => g.Code)
                 .OnDelete(DeleteBehavior.Cascade);
         });
-
+        
         base.OnModelCreating(modelBuilder);
     }
 }

@@ -107,6 +107,30 @@ namespace QueueManagerBot
             }
         }
 
+        public async Task<List<WebApi.Controllers.BotEventController.BotEventDto>?> GetQueueListForGroup(string group)
+        {
+            try
+            {
+                var response = await httpClient.GetAsync(
+                $"{apiBaseUrl}/api/events/events-for-group?groupCode={group}");
+                
+                if (response.IsSuccessStatusCode)
+                {
+                    var json = await response.Content.ReadAsStringAsync();
+                    var events = JsonSerializer.Deserialize<List<BotEventController.BotEventDto>>(
+                        json, 
+                        new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    return events;
+                }
+                return null;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return null;
+            }
+        }
+
         public async Task<bool> CreateQueue(WebApi.Controllers.BotEventController.CreationDto queue)
         {
             try
