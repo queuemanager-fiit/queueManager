@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 namespace Domain.Entities;
 
 public class Group
@@ -7,6 +8,8 @@ public class Group
     public string Code { get; private set; }
     public List<Guid> CategoriesIds { get; private set; } = new();
     public List<Guid> EventsIds { get; private set; } = new();
+    
+    [Column(TypeName = "long[]")]
     public List<long> UsersTelegramIds { get; private set; }= new();
     
     protected Group() { } 

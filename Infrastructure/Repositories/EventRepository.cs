@@ -10,7 +10,6 @@ public class EventRepository : BaseRepository<Event>, IEventRepository
 
     public async Task<List<Event>> GetDueNotificationAsync(DateTimeOffset now, CancellationToken ct)
     {
-        // УБРАЛ Include полностью!
         return await Context.Set<Event>()
             .Where(e => e.NotificationTime <= now && !e.IsNotified)
             .ToListAsync(ct)
@@ -19,7 +18,6 @@ public class EventRepository : BaseRepository<Event>, IEventRepository
 
     public async Task<List<Event>> GetDueFormationAsync(DateTimeOffset now, CancellationToken ct)
     {
-        // УБРАЛ Include полностью!
         return await Context.Set<Event>()
             .Where(e => e.FormationTime <= now && !e.IsFormed)
             .ToListAsync(ct)

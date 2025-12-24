@@ -173,6 +173,28 @@ namespace QueueManagerBot
                 return false;
             }
         }
+        public async Task<List<WebApi.Controllers.BotEventController.BotEventDto>?> DueEventsFormation()
+        {
+            try
+            {
+                var response = await httpClient.GetAsync($"{apiBaseUrl}/api/events/due-events-formation");
+                if (response.IsSuccessStatusCode)
+                {
+                    var formatationEvents = await response.Content.ReadFromJsonAsync<List<WebApi.Controllers.BotEventController.BotEventDto>>();
+                    return formatationEvents;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return null;
+            }
+        }
+
 
         public async Task<bool> DeleteCategory(WebApi.Controllers.BotGroupController.DeletionDto category)
         {
@@ -261,7 +283,7 @@ namespace QueueManagerBot
         {
             try
             {
-                var response = await httpClient.GetAsync($"{apiBaseUrl}/api/group/users-for-group?groupCode={groupCode}");
+                var response = await httpClient.GetAsync($"{apiBaseUrl}/api/groups/users-for-group?groupCode={groupCode}");
 
                 if (response.IsSuccessStatusCode)
                 {

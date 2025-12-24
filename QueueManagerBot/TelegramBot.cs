@@ -19,6 +19,8 @@ namespace QueueManagerBot
         private readonly IConfiguration configuration;
         private readonly string apiBaseUrl;
         private readonly Timer notificationTimer;
+        private readonly Timer formationTimer;
+
 
         public TelegramBot(
             string token,
@@ -32,9 +34,15 @@ namespace QueueManagerBot
             bot.OnUpdate += OnUpdate;
             stateManager = new StateManager();
             apiBaseUrl = configuration["ApiBaseUrl"] ?? "https://localhost:5001";
+            
             notificationTimer = new Timer(async _ =>
             {
                 await CheckAndSendNotificationsAsync();
+            }, null, TimeSpan.Zero, TimeSpan.FromMinutes(1));
+            
+            formationTimer = new Timer(async _ =>
+            {
+                await CheckAndSendFormationNotificationsAsync();
             }, null, TimeSpan.Zero, TimeSpan.FromMinutes(1));
 
             Commands = new List<ICommand>()
@@ -146,7 +154,7 @@ namespace QueueManagerBot
                     }
                 }
 
-                if (query.Data.StartsWith("confirm_queue_from"))
+                if (query.Data.StartsWith("from"))
                 {
                     var parts = query.Data.Split('_');
 
@@ -223,10 +231,8 @@ namespace QueueManagerBot
 
             try
             {
-                Console.WriteLine(2);
-                Console.WriteLine(eventDto.GroupCode);
                 var tgIds = await controllerUser.GetGroupUsers(eventDto.GroupCode);
-                Console.WriteLine(tgIds == null);
+
 
                 foreach (var telegramId in tgIds)
                 {
@@ -236,10 +242,10 @@ namespace QueueManagerBot
                         {
                             InlineKeyboardButton.WithCallbackData(
                                 "Хочу в начало",
-                                $"confirm_queue_from_{eventDto.EventId}_to_{telegramId}_start"),
+                                $"from_{eventDto.EventId:N}_to_{telegramId}_start"),
                             InlineKeyboardButton.WithCallbackData(
                                 "Хочу в конец",
-                                $"confirm_queue_from_{eventDto.EventId}_to_{telegramId}_end"
+                                $"from_{eventDto.EventId:N}_to_{telegramId}_end"
                             )
                         }
                     });
@@ -264,70 +270,87 @@ namespace QueueManagerBot
 
 
 
-        private async Task SendFormationNotificationAsync(WebApi.Controllers.BotEventController.BotEventDto eventDto)
+        private async Task CheckAndSendFormationNotificationsAsync()
         {
+            Console.WriteLine($"[{DateTime.Now:HH:mm:ss}] Проверяем сформированные очереди...");
+
+            var httpClient = httpClientFactory.CreateClient("ApiClient");
+            var controllerUser = new ControllerUser(httpClient, apiBaseUrl);
+            
             try
             {
-                var httpClient = httpClientFactory.CreateClient("ApiClient");
-                var participantsInfo = new List<(long Id, string Username, string FullName)>();
-                var controllerUser = new ControllerUser(httpClient, apiBaseUrl);
-
-                foreach (var telegramId in eventDto.TelegramId)
+                var formedEvents = await controllerUser.DueEventsFormation();
+                
+                if (formedEvents == null || !formedEvents.Any())
                 {
-                    var userInfo = await controllerUser.GetUser(telegramId);
-                    if (userInfo != null)
-                    {
-                        var displayName = !string.IsNullOrEmpty(userInfo.Username)
-                            ? $"@{userInfo.Username}"
-                            : userInfo.FullName;
-
-                        participantsInfo.Add((telegramId, displayName, userInfo.FullName));
-                    }
-                    else
-                    {
-                        participantsInfo.Add((telegramId, $"Пользователь #{telegramId}", "Неизвестно"));
-                    }
+                    return;
                 }
-
-                var participantsList = new StringBuilder();
-                participantsList.AppendLine("📋 *Список участников очереди:*\n");
-
-                for (int i = 0; i < participantsInfo.Count; i++)
+                
+                foreach (var eventDto in formedEvents)
                 {
-                    var position = i + 1;
-                    var (id, username, fullName) = participantsInfo[i];
+                    if (eventDto.TelegramId == null || eventDto.TelegramId.Length == 0)
+                    {
+                        Console.WriteLine($"Очередь {eventDto.EventId} пустая. Пропускаем.");
+                        continue;
+                    }
+                    
+                    var participantsInfo = new List<(long Id, string Username, string FullName)>();
+                    
+                    foreach (var telegramId in eventDto.TelegramId)
+                    {
+                        var userInfo = await controllerUser.GetUser(telegramId);
+                        if (userInfo != null)
+                        {
+                            var displayName = !string.IsNullOrEmpty(userInfo.Username)
+                                ? $"{userInfo.Username}"
+                                : userInfo.FullName;
+                            participantsInfo.Add((telegramId, displayName, userInfo.FullName));
+                        }
+                        else
+                        {
+                            participantsInfo.Add((telegramId, $"Пользователь #{telegramId}", "Неизвестно"));
+                        }
+                    }
 
-                    participantsList.AppendLine($"{position}. {username}");
-                }
+                    var participantsList = new StringBuilder();
+                    participantsList.AppendLine("📋 *Список участников очереди:*\n");
 
-                foreach (var telegramId in eventDto.TelegramId)
-                {
-                    var userInfo = participantsInfo.FirstOrDefault(p => p.Id == telegramId);
+                    for (int i = 0; i < participantsInfo.Count; i++)
+                    {
+                        var position = i + 1;
+                        var (id, username, fullName) = participantsInfo[i];
+                        participantsList.AppendLine($"{position}. {username}");
+                    }
 
-                    var userPosition = participantsInfo.FindIndex(p => p.Id == telegramId) + 1;
-                    var displayName = userInfo.Username ?? $"Пользователь #{telegramId}";
+                    foreach (var telegramId in eventDto.TelegramId)
+                    {
+                        var userInfo = participantsInfo.FirstOrDefault(p => p.Id == telegramId);
+                        var userPosition = participantsInfo.FindIndex(p => p.Id == telegramId) + 1;
+                        var displayName = userInfo.Username ?? $"Пользователь #{telegramId}";
 
-                    await bot.SendMessage(
-                        telegramId,
-                        $"🏁 *Очередь сформирована!*\n\n" +
-                        $"📌 *Категория:* {eventDto.Category}\n" +
-                        $"📅 *Дата и время:* {eventDto.OccurredOn:dd.MM.yyyy HH:mm}\n" +
-                        $"👥 *Количество участников:* {eventDto.TelegramId.Length}\n" +
-                        $"📍 *Ваша позиция:* {userPosition}\n" +
-                        $"👤 *Ваше имя:* {displayName}\n\n" +
-                        participantsList.ToString() +
-                        $"\n_Не опаздывайте!_ ⏰",
-                        parseMode: ParseMode.Markdown
-                    );
+                        await bot.SendMessage(
+                            telegramId,
+                            $"🏁 *Очередь сформирована!*\n\n" +
+                            $"📌 *Категория:* {eventDto.Category}\n" +
+                            $"📅 *Дата и время:* {eventDto.OccurredOn:dd.MM.yyyy HH:mm}\n" +
+                            $"👥 *Количество участников:* {eventDto.TelegramId.Length}\n" +
+                            $"📍 *Ваша позиция:* {userPosition}\n" +
+                            $"👤 *Ваше имя:* {displayName}\n\n" +
+                            participantsList.ToString() +
+                            $"\n_Не опаздывайте!_ ⏰",
+                            parseMode: ParseMode.Markdown
+                        );
 
-                    Console.WriteLine($"Уведомление о формировании отправлено пользователю {displayName} (ID: {telegramId})");
+                        Console.WriteLine($"Уведомление о формировании отправлено пользователю {displayName} (ID: {telegramId})");
+                    }
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Ошибка при отправке уведомления о формировании: {ex.Message}");
+                Console.WriteLine($"Ошибка: {ex.Message}");
             }
         }
+
         private async Task<bool> IsUserRegistered(long telegramId)
         {
             var httpClient = httpClientFactory.CreateClient("ApiClient");
@@ -337,6 +360,5 @@ namespace QueueManagerBot
                 return true;
             return false;
         }
-
     }
 }
