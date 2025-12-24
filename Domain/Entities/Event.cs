@@ -148,7 +148,7 @@ public class EventCategory
         GroupCode = groupCode ?? throw new ArgumentNullException(nameof(groupCode));
     }
 
-    public void UpdateUnfinishedUsers(IReadOnlyList<User> queue, int position)
+    public void UpdateUnfinishedUsers(IReadOnlyList<long> queue, int position)
     {
         if (queue == null)
             throw new ArgumentNullException(nameof(queue));
@@ -167,8 +167,7 @@ public class EventCategory
         for (int i = cutoffPosition; i < queue.Count; i++)
         {
             var user = queue[i];
-            if (user != null)
-                UnfinishedUsersTelegramIds.Add(user.TelegramId);
+            UnfinishedUsersTelegramIds.Add(user);
         }
     }
     

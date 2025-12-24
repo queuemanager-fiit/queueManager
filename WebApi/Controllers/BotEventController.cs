@@ -62,7 +62,6 @@ public class BotEventController : ControllerBase
         return list
             .Select(e =>
                 new BotEventDto(e.ParticipantsTelegramIds
-                        .Select(u => u.TelegramId)
                         .ToArray(),
                     e.OccurredOn,
                     e.Category.SubjectName,
@@ -147,7 +146,7 @@ public class BotEventController : ControllerBase
             dto.GroupCode);
         await events.AddAsync(ev, ct);
         
-        group.AddEvent(ev);
+        group.AddEvent(ev.Id);
         await groups.UpdateAsync(group, ct);
         
         await uow.SaveChangesAsync(ct);
@@ -160,7 +159,7 @@ public class BotEventController : ControllerBase
     {
         var group = await groups.GetByCodeAsync(dto.GroupCode, ct);
         var ev = await events.GetByIdAsync(dto.EventId, ct);
-        group.RemoveEvent(ev);
+        group.RemoveEvent(ev.Id);
         await groups.UpdateAsync(group, ct);
         await events.DeleteAsync(ev, ct);
         
@@ -173,7 +172,13 @@ public class BotEventController : ControllerBase
     public async Task<ActionResult<List<BotEventDto>>> GetForGroup([FromQuery] string groupCode, CancellationToken ct)
     {
         var group = await groups.GetByCodeAsync(groupCode, ct);
-        return Ok(ToDtoList(group.EventsIds.ToList()));
+        
+        if (group is null)
+            return NotFound($"Group with Group Code {groupCode} not found");
+        
+        var tasks = group.EventsIds.Select(id => this.events.GetByIdAsync(id, ct));
+        var events = await Task.WhenAll(tasks);
+        return Ok(ToDtoList(events.ToList()));
     }
     
     //используется, чтобы отметить неуспевших пользователей
@@ -202,7 +207,20 @@ public class BotEventController : ControllerBase
         
         var group = await groups.GetByCodeAsync(user.GroupCodes.First(), ct);
         var subGroup = await groups.GetByCodeAsync(user.GroupCodes.Last(), ct);
-        var events = group.EventsIds.Concat(subGroup.EventsIds).ToList();
-        return Ok(ToDtoList(events.Where(ev => ev.ParticipantsTelegramIds.Contains(user)).ToList()));
+        var eventsIds = group.EventsIds.Concat(subGroup.EventsIds).ToList();
+        var checks = await Task.WhenAll(
+            eventsIds.Select(async id =>
+            {
+                var ev = await events.GetByIdAsync(id, ct);
+                return (ev, ok: ev != null && ev.ParticipantsTelegramIds.Contains(user.TelegramId));
+            })
+        );
+        
+        var filteredIds = checks
+            .Where(x => x.ok)
+            .Select(x => x.ev)
+            .ToList();
+        
+        return Ok(ToDtoList(filteredIds));
     }
 }

@@ -35,7 +35,19 @@ public class BotGroupController : ControllerBase
         [FromQuery] string groupCode,
         CancellationToken ct)
     {
-        return Ok((await groups.GetByCodeAsync(groupCode, ct)).CategoriesIds.Select(categ => (await eventCategories.)).ToList());
+        var group = await groups.GetByCodeAsync(groupCode, ct);
+        if (group is null)
+            return NotFound($"Group with Group Code {groupCode} not found");
+        
+        var categoryTasks = group.CategoriesIds
+            .Select(id => eventCategories.GetByIdAsync(id, ct));
+
+        var categories = await Task.WhenAll(categoryTasks);
+        
+        return Ok(categories
+            .Where(c => c != null)
+            .Select(c => c.SubjectName)
+            .ToList());
     }
     
     //добавляет категорию для указанной группы/подгруппы
@@ -46,7 +58,7 @@ public class BotGroupController : ControllerBase
     {
         var group = await groups.GetByCodeAsync(dto.GroupCode, ct);
         var newCategory = new EventCategory(dto.NewCategoryName, dto.IsAutoCreate, dto.GroupCode);
-        group.AddCategory(newCategory);
+        group.AddCategory(newCategory.Id);
         await groups.UpdateAsync(group, ct);
         await eventCategories.AddAsync(newCategory, ct);
         
@@ -62,7 +74,7 @@ public class BotGroupController : ControllerBase
     {
         var group = await groups.GetByCodeAsync(dto.GroupCode, ct);
         var category = await eventCategories.GetByGroupIdAndNameAsync(dto.GroupCode, dto.CategoryName, ct);
-        group.RemoveCategory(category);
+        group.RemoveCategory(category.Id);
         await groups.UpdateAsync(group, ct);
         await eventCategories.DeleteAsync(category, ct);
         
@@ -75,6 +87,10 @@ public class BotGroupController : ControllerBase
     public async Task<ActionResult<List<long>>> GetUsers([FromQuery] string groupCode, CancellationToken ct)
     {
         var group = await groups.GetByCodeAsync(groupCode, ct);
-        return Ok(group.UsersTelegramIds.Select(user => user.TelegramId).ToList());
+        
+        if (group is null)
+            return NotFound($"Group with Group Code {groupCode} not found");
+        
+        return Ok(group.UsersTelegramIds);
     }
 }
