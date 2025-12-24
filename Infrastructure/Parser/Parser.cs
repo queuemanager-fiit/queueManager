@@ -79,4 +79,24 @@ public class Schedule
             }
         }
     }
+
+    public List<string> GetSubjectsByGroup(string groupName)
+    {
+        var allGroups = CollectGroupInfo();
+
+        var targetGroup = allGroups.FirstOrDefault(g => g.Name.Trim() == groupName.Trim());
+
+        if (targetGroup == null)
+            return new List<string>();
+
+        var subjects = new HashSet<string>();
+        foreach (var lessonList in targetGroup.Lessons.Values)
+        {
+            foreach (var lesson in lessonList)
+            {
+                subjects.Add(lesson.Name);
+            }
+        }
+        return subjects.ToList();
+    }
 }

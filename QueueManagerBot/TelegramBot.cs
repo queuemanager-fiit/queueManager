@@ -16,12 +16,12 @@ namespace QueueManagerBot
         private TelegramBotClient bot;
         private List<ICommand> Commands;
         private readonly IHttpClientFactory httpClientFactory;
-        private readonly IConfiguration configuration; 
+        private readonly IConfiguration configuration;
         private readonly string apiBaseUrl;
         private readonly Timer notificationTimer;
-        
+
         public TelegramBot(
-            string token, 
+            string token,
             IHttpClientFactory httpClientFactory,
             IConfiguration configuration)
         {
@@ -32,53 +32,53 @@ namespace QueueManagerBot
             bot.OnUpdate += OnUpdate;
             stateManager = new StateManager();
             apiBaseUrl = configuration["ApiBaseUrl"] ?? "https://localhost:5001";
-            notificationTimer = new Timer(async _ => 
+            notificationTimer = new Timer(async _ =>
             {
                 await CheckAndSendNotificationsAsync();
-            }, null, TimeSpan.Zero, TimeSpan.FromMinutes(30));
-            
+            }, null, TimeSpan.Zero, TimeSpan.FromMinutes(1));
+
             Commands = new List<ICommand>()
             {
                 new CancelCommand(
-                    "/cancel", 
-                    bot, 
+                    "/cancel",
+                    bot,
                     stateManager
                 ),
 
                 new StartCommand(
                     "/start",
-                    bot, 
+                    bot,
                     stateManager,
                     httpClientFactory,
                     configuration),
 
-                new HelpCommand("/help", 
-                    bot, 
+                new HelpCommand("/help",
+                    bot,
                     stateManager),
 
                 new InfoCommand("/info",
-                    bot, 
+                    bot,
                     stateManager),
 
                 new CreateQueueCommand("/create_queue",
-                    bot, 
+                    bot,
                     stateManager,
                     httpClientFactory,
                     configuration),
-                
+
                 new GetQueuesCommand(
-                    "/get_queues", 
-                    bot, 
+                    "/get_queues",
+                    bot,
                     stateManager,
                     httpClientFactory,
                     configuration),
-                
-                new VerifyCommand("", 
-                    bot, 
+
+                new VerifyCommand("",
+                    bot,
                     stateManager,
                     httpClientFactory,
                     configuration),
-                    
+
                 new AddCategoryCommand(
                     "/create_category",
                     bot,
@@ -94,10 +94,10 @@ namespace QueueManagerBot
                 )
 
             };
-            
+
             Console.WriteLine($"Бот инициализирован. API: {configuration["ApiBaseUrl"]}");
         }
-        
+
         async Task OnMessage(Message msg, UpdateType type)
         {
             var isUserRegistered = await IsUserRegistered(msg.Chat.Id);
@@ -113,10 +113,11 @@ namespace QueueManagerBot
                 await command.Execute(msg);
         }
 
+
         async Task OnUpdate(Update update)
         {
             if (update is { CallbackQuery: { } query })
-            {                
+            {
                 await bot.AnswerCallbackQuery(query.Id);
                 var httpClient = httpClientFactory.CreateClient("ApiClient");
                 var controllerUser = new ControllerUser(httpClient, apiBaseUrl);
@@ -147,7 +148,7 @@ namespace QueueManagerBot
                     var toIndex = Array.IndexOf(parts, "to");
 
 
-                    
+
                     if (fromIndex != -1 && toIndex != -1 && toIndex > fromIndex + 1)
                     {
                         var queueId = parts[fromIndex + 1];
@@ -165,13 +166,13 @@ namespace QueueManagerBot
                             pref = Domain.Entities.UserPreference.Start;
                         else
                             pref = Domain.Entities.UserPreference.End;
-                        
+
                         var participant = new WebApi.Controllers.BotEventController.ParticipationDto(
                             telegramId,
                             eventId,
                             pref
                         );
-                        await httpClient.PostAsJsonAsync($"{apiBaseUrl}/api/events/confirm", participant);
+                        await controllerUser.ConfirmQueue(participant);
                     }
                 }
 
@@ -183,38 +184,28 @@ namespace QueueManagerBot
             }
         }
 
+
         private async Task CheckAndSendNotificationsAsync()
         {
-            try
+            Console.WriteLine($"[{DateTime.Now:HH:mm:ss}] Проверяем очереди для уведомлений...");
+
+            var httpClient = httpClientFactory.CreateClient("ApiClient");
+            var controllerUser = new ControllerUser(httpClient, apiBaseUrl);
+            var notificationEvents = await controllerUser.DueEventsNotification();
+            if (notificationEvents != null)
             {
-                Console.WriteLine($"[{DateTime.Now:HH:mm:ss}] Проверяем очереди для уведомлений...");
-                
-                var httpClient = httpClientFactory.CreateClient("ApiClient");
-                
-                var notificationResponse = await httpClient.GetAsync($"{apiBaseUrl}/api/events/due-events-notification");
-                
-                if (notificationResponse.IsSuccessStatusCode)
+                if (notificationEvents.Any())
                 {
-                    var notificationEvents = await notificationResponse.Content.ReadFromJsonAsync<List<WebApi.Controllers.BotEventController.BotEventDto>>();
-                    
-                    if (notificationEvents != null && notificationEvents.Any())
+                    Console.WriteLine($"Найдено {notificationEvents.Count} очередей для уведомления");
+
+                    foreach (var eventDto in notificationEvents)
                     {
-                        Console.WriteLine($"Найдено {notificationEvents.Count} очередей для уведомления");
-                        
-                        foreach (var eventDto in notificationEvents)
-                        {
-                            await SendNotificationsForEventAsync(eventDto);
-                        }
-                        
-                        var eventIds = notificationEvents.Select(e => e.EventId).ToList();
-                        await httpClient.PostAsJsonAsync($"{apiBaseUrl}/api/events/mark-notified", 
-                            new { Ids = eventIds });
+                        await SendNotificationsForEventAsync(eventDto);
                     }
+
+                    var eventIds = notificationEvents.Select(e => e.EventId).ToList();
+                    await controllerUser.MarkNotified(eventIds);
                 }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Ошибка при проверке уведомлений: {ex.Message}");
             }
         }
 
@@ -238,7 +229,7 @@ namespace QueueManagerBot
                             )
                         }
                     });
-                    
+
                     await bot.SendMessage(
                         telegramId,
                         $"📋 Уведомление о очереди!\n\n" +
@@ -247,7 +238,7 @@ namespace QueueManagerBot
                         $"Нажмите кнопку, чтобы записаться:",
                         replyMarkup: keyboard
                     );
-                    
+
                     Console.WriteLine($"Уведомление отправлено пользователю {telegramId}");
                 }
             }
@@ -257,64 +248,50 @@ namespace QueueManagerBot
             }
         }
 
+
         private async Task SendFormationNotificationAsync(WebApi.Controllers.BotEventController.BotEventDto eventDto)
         {
             try
             {
                 var httpClient = httpClientFactory.CreateClient("ApiClient");
                 var participantsInfo = new List<(long Id, string Username, string FullName)>();
-                
+                var controllerUser = new ControllerUser(httpClient, apiBaseUrl);
+
                 foreach (var telegramId in eventDto.TelegramId)
                 {
-                    try
+                    var userInfo = await controllerUser.GetUser(telegramId);
+                    if (userInfo != null)
                     {
-                        var userResponse = await httpClient.GetAsync($"{apiBaseUrl}/api/users/user-info?telegramId={telegramId}");
-                        
-                        if (userResponse.IsSuccessStatusCode)
-                        {
-                            var userInfo = await userResponse.Content.ReadFromJsonAsync<WebApi.Controllers.BotUserController.InfoUserDto>();
-                            if (userInfo != null)
-                            {
-                                var displayName = !string.IsNullOrEmpty(userInfo.Username) 
-                                    ? $"@{userInfo.Username}" 
-                                    : userInfo.FullName;
-                                
-                                participantsInfo.Add((telegramId, displayName, userInfo.FullName));
-                            }
-                            else
-                            {
-                                participantsInfo.Add((telegramId, $"Пользователь #{telegramId}", "Неизвестно"));
-                            }
-                        }
-                        else
-                        {
-                            participantsInfo.Add((telegramId, $"Пользователь #{telegramId}", "Неизвестно"));
-                        }
+                        var displayName = !string.IsNullOrEmpty(userInfo.Username)
+                            ? $"@{userInfo.Username}"
+                            : userInfo.FullName;
+
+                        participantsInfo.Add((telegramId, displayName, userInfo.FullName));
                     }
-                    catch
+                    else
                     {
                         participantsInfo.Add((telegramId, $"Пользователь #{telegramId}", "Неизвестно"));
                     }
                 }
-                
+
                 var participantsList = new StringBuilder();
                 participantsList.AppendLine("📋 *Список участников очереди:*\n");
-                
+
                 for (int i = 0; i < participantsInfo.Count; i++)
                 {
                     var position = i + 1;
                     var (id, username, fullName) = participantsInfo[i];
-                    
+
                     participantsList.AppendLine($"{position}. {username}");
                 }
-                
+
                 foreach (var telegramId in eventDto.TelegramId)
                 {
                     var userInfo = participantsInfo.FirstOrDefault(p => p.Id == telegramId);
 
                     var userPosition = participantsInfo.FindIndex(p => p.Id == telegramId) + 1;
                     var displayName = userInfo.Username ?? $"Пользователь #{telegramId}";
-                    
+
                     await bot.SendMessage(
                         telegramId,
                         $"🏁 *Очередь сформирована!*\n\n" +
@@ -327,7 +304,7 @@ namespace QueueManagerBot
                         $"\n_Не опаздывайте!_ ⏰",
                         parseMode: ParseMode.Markdown
                     );
-                    
+
                     Console.WriteLine($"Уведомление о формировании отправлено пользователю {displayName} (ID: {telegramId})");
                 }
             }
@@ -338,21 +315,13 @@ namespace QueueManagerBot
         }
         private async Task<bool> IsUserRegistered(long telegramId)
         {
-            try
-            {
-                Console.WriteLine("2");
-                var httpClient = httpClientFactory.CreateClient("ApiClient");
-                Console.WriteLine("1");
-                var userResponse = await httpClient.GetAsync($"{apiBaseUrl}/api/users/user-info?telegramId={telegramId}");
-                return userResponse.IsSuccessStatusCode;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                return false;
-            }
+            var httpClient = httpClientFactory.CreateClient("ApiClient");
+            var controllerUser = new ControllerUser(httpClient, apiBaseUrl);
+            var user = await controllerUser.GetUser(telegramId);
+            if (user != null)
+                return true;
+            return false;
         }
 
     }
 }
-

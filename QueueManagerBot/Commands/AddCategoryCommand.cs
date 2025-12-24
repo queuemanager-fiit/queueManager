@@ -5,6 +5,7 @@ using Telegram.Bot.Types.ReplyMarkups;
 using WebApi.Controllers;
 using System.Net.Http.Json;
 using Microsoft.Extensions.Configuration;
+using Table;
 
 namespace QueueManagerBot
 {
@@ -19,8 +20,8 @@ namespace QueueManagerBot
         private readonly string apiBaseUrl;
 
         public AddCategoryCommand(
-            string name, 
-            TelegramBotClient tgBot, 
+            string name,
+            TelegramBotClient tgBot,
             StateManager stateManager,
             IHttpClientFactory httpClientFactory,
             IConfiguration configuration)
@@ -31,9 +32,10 @@ namespace QueueManagerBot
             AllowedStates = new UserState[]
             {
                 UserState.None,
+                UserState.WaitingForAutoOrNot,
                 UserState.WaitingForNewCategoryName,
                 UserState.WaitingForGroupIdCategory,
-                
+
             };
 
 
@@ -66,26 +68,42 @@ namespace QueueManagerBot
             if (!CategoriesData.ContainsKey(msg.Chat.Id))
             {
                 CategoriesData.Add(msg.Chat.Id, new Dictionary<string, string>());
+                CategoriesData[msg.Chat.Id].Add("IsAutomatic", "");
                 CategoriesData[msg.Chat.Id].Add("CategotyName", "");
-                CategoriesData[msg.Chat.Id].Add("GroupId", ""); 
+                CategoriesData[msg.Chat.Id].Add("GroupId", "");
             }
+
 
             switch (StateManager.GetState(msg.Chat.Id))
             {
                 case UserState.None:
-                    await Bot.SendMessage(msg.Chat.Id, "Введите имя для новой категории");
-                    StateManager.SetState(msg.Chat.Id, UserState.WaitingForNewCategoryName);
+                    await Bot.SendMessage(
+                        msg.Chat.Id,
+                        "Хотите ли вы, чтобы категория была автоматической?",
+                        replyMarkup: new string[] { "Да", "Нет" }
+                        );
+                    StateManager.SetState(msg.Chat.Id, UserState.WaitingForAutoOrNot);
                     break;
-                case UserState.WaitingForNewCategoryName:
-                    CategoriesData[msg.Chat.Id]["CategotyName"] = msg.Text;
-                    StateManager.SetState(msg.Chat.Id, UserState.WaitingForGroupIdCategory);
+                case UserState.WaitingForAutoOrNot:
+                    if (msg.Text == "Да")
+                    {
+                        CategoriesData[msg.Chat.Id]["IsAutomatic"] = "true";
+                    }
+                    else if (msg.Text == "Нет")
+                        CategoriesData[msg.Chat.Id]["IsAutomatic"] = "";
+                    else
+                    {
+                        await Bot.SendMessage(msg.Chat.Id, "Воспользуйтесь клавитурой ниже");
+                        return;
+                    }
                     await Bot.SendMessage(
                         msg.Chat.Id,
                         "Для кого хотите создать категорию?",
-                        replyMarkup : new string[] { "Для всей группы", "Для своей половинки" }
+                        replyMarkup: new string[] { "Для всей группы", "Для своей половинки" }
                         );
+                    StateManager.SetState(msg.Chat.Id, UserState.WaitingForNewCategoryName);
                     break;
-                case UserState.WaitingForGroupIdCategory:                    
+                case UserState.WaitingForNewCategoryName:
                     if (msg.Text == "Для всей группы")
                         CategoriesData[msg.Chat.Id]["GroupId"] = user.GroupCode;
                     else if (msg.Text == "Для своей половинки")
@@ -95,12 +113,34 @@ namespace QueueManagerBot
                         await Bot.SendMessage(msg.Chat.Id, "Воспользуйтесь клавитурой ниже");
                         return;
                     }
+                    await Bot.SendMessage(msg.Chat.Id, "Введите имя для новой категории", replyMarkup: new ReplyKeyboardRemove());
+                    StateManager.SetState(msg.Chat.Id, UserState.WaitingForGroupIdCategory);
+                    break;
+                case UserState.WaitingForGroupIdCategory:
+                    if (CategoriesData[msg.Chat.Id]["IsAutomatic"] != "")
+                    {
+                        var sch = new Table.Schedule("https://docs.google.com/spreadsheets/d/1pj8fzVqrZVkNssSJiInxy_Cm54ddC8tm8eluMdV-XvM/edit?usp=sharing");
+                        var cats = sch.GetSubjectsByGroup(CategoriesData[msg.Chat.Id]["GroupId"]);
+                        Console.WriteLine(cats);
+                        if (!cats.Contains(msg.Text))
+                        {
+                            await Bot.SendMessage(msg.Chat.Id, "Введите название предмета из расписания");
+                            return;
+                        }
+                    }
+                    CategoriesData[msg.Chat.Id]["CategotyName"] = msg.Text;
+                    StateManager.SetState(msg.Chat.Id, UserState.WaitingForGroupIdCategory);
+
+                    var flag = false;
+                    if (CategoriesData[msg.Chat.Id]["IsAutomatic"] != "")
+                        flag = true;
 
                     var category = new WebApi.Controllers.BotGroupController.CategoryDto(
                         CategoriesData[msg.Chat.Id]["GroupId"],
-                        false,
+                        flag,
                         CategoriesData[msg.Chat.Id]["CategotyName"]);
                     var response = await controllerUser.CreateCategory(category);
+
 
                     if (response)
                     {

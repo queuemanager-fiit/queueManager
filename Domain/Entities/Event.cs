@@ -74,51 +74,6 @@ public class Event
     public bool CanUserJoin(User user) =>
         user is not null && user.GroupCodes.Contains(GroupCode);
 
-    public void FormQueue()
-    {
-        if (IsFormed) return;
-
-        var unfinished = Category.UnfinishedUsersTelegramIds;
-
-        var participantPreferences = new List<(User, UserPreference)>();
-        for (int i = 0; i < ParticipantsTelegramIds.Count; i++)
-        {
-            participantPreferences.Add((ParticipantsTelegramIds[i], Preferences[i]));
-        }
-
-        var sortedParticipants = participantPreferences
-            .OrderBy(p => p.Item2)
-            .ThenBy(p => p.Item1.AveragePosition)
-            .Select(p => p.Item1)
-            .ToList();
-
-        var finalQueue = new List<User>();
-
-        foreach (var user in unfinished)
-        {
-            int index = ParticipantsTelegramIds.IndexOf(user);
-            if (index != -1 && Preferences[index] != UserPreference.End)
-            {
-                finalQueue.Add(user);
-                sortedParticipants.Remove(user);
-            }
-        }
-
-        finalQueue.AddRange(sortedParticipants);
-
-        ParticipantsTelegramIds.Clear();
-        ParticipantsTelegramIds.AddRange(finalQueue);
-        IsFormed = true;
-
-        for (int i = 0; i < ParticipantsTelegramIds.Count; i++)
-        {
-            var user = ParticipantsTelegramIds[i];
-            user.UpdateAveragePosition(i + 1);
-        }
-
-        Category.UnfinishedUsersTelegramIds.Clear();
-    }
-
     public void MarkAsNotified() =>
         IsNotified = true;
 

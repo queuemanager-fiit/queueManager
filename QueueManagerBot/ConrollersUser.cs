@@ -44,7 +44,7 @@ namespace QueueManagerBot
         {
             try
             {
-                var response = await httpClient.PostAsJsonAsync($"{apiBaseUrl}/api/users/update-userinfo", user);  
+                var response = await httpClient.PostAsJsonAsync($"{apiBaseUrl}/api/users/update-userinfo", user);
                 if (response.IsSuccessStatusCode)
                 {
                     return true;
@@ -66,13 +66,13 @@ namespace QueueManagerBot
             try
             {
                 var categoriesResponse = await httpClient.GetAsync($"{apiBaseUrl}/api/groups/category-list?groupCode={groupCode}");
-    
+
                 if (!categoriesResponse.IsSuccessStatusCode)
                 {
                     Console.WriteLine("Ошибка при получении категорий");
                     return null;
                 }
-                    
+
                 var categories = await categoriesResponse.Content.ReadFromJsonAsync<List<string>>();
                 return categories;
             }
@@ -89,12 +89,12 @@ namespace QueueManagerBot
             {
                 var response = await httpClient.GetAsync(
                 $"{apiBaseUrl}/api/events/user-info-events?telegramId={tgId}");
-                
+
                 if (response.IsSuccessStatusCode)
                 {
                     var json = await response.Content.ReadAsStringAsync();
                     var events = JsonSerializer.Deserialize<List<BotEventController.BotEventDto>>(
-                        json, 
+                        json,
                         new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
                     return events;
                 }
@@ -107,18 +107,19 @@ namespace QueueManagerBot
             }
         }
 
+
         public async Task<List<WebApi.Controllers.BotEventController.BotEventDto>?> GetQueueListForGroup(string group)
         {
             try
             {
                 var response = await httpClient.GetAsync(
                 $"{apiBaseUrl}/api/events/events-for-group?groupCode={group}");
-                
+
                 if (response.IsSuccessStatusCode)
                 {
                     var json = await response.Content.ReadAsStringAsync();
                     var events = JsonSerializer.Deserialize<List<BotEventController.BotEventDto>>(
-                        json, 
+                        json,
                         new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
                     return events;
                 }
@@ -208,6 +209,47 @@ namespace QueueManagerBot
                 {
                     return false;
                 }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+        }
+
+
+        public async Task<List<WebApi.Controllers.BotEventController.BotEventDto>?> DueEventsNotification()
+        {
+            try
+            {
+                var response = await httpClient.GetAsync($"{apiBaseUrl}/api/events/due-events-notification");
+                if (response.IsSuccessStatusCode)
+                {
+                    var notificationEvents = await response.Content.ReadFromJsonAsync<List<WebApi.Controllers.BotEventController.BotEventDto>>();
+                    return notificationEvents;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return null;
+            }
+        }
+
+        public async Task<bool> MarkNotified(List<Guid> eventIds)
+        {
+            try
+            {
+                var response = await httpClient.PostAsJsonAsync($"{apiBaseUrl}/api/events/mark-notified",
+                        new { Ids = eventIds });
+                if (response.IsSuccessStatusCode)
+                    return true;
+                else
+                    return false;
             }
             catch (Exception ex)
             {
