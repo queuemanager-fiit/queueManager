@@ -1,5 +1,6 @@
-﻿using Domain.Entities;
-using Application.Interfaces;
+﻿using Application.Interfaces;
+using Domain.Entities;
+using Infrastructure.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers;
@@ -58,6 +59,76 @@ public class BotEventController : ControllerBase
     
     public sealed record MarkUnfinishedUsers(Guid EventId, int FirstUnfinishedPosition);
 
+    private async Task FormQueueAsync(
+    Event eventItem,
+    CancellationToken ct)
+    {
+        if (eventItem.IsFormed) return;
+
+        var category = await eventCategories.GetByIdAsync(eventItem.CategoryId, ct);
+        if (category == null)
+        {
+            Console.WriteLine($"Категория не найдена для события {eventItem.Id}. Пропускаем формирование очереди.");
+            return;
+        }
+
+        var unfinishedIds = category.UnfinishedUsersTelegramIds;
+        var participantIds = eventItem.ParticipantsTelegramIds;
+        var preferences = eventItem.Preferences;
+
+        var participantPreferenceList = new List<(long TelegramId, UserPreference Preference)>();
+        for (int i = 0; i < participantIds.Count; i++)
+        {
+            participantPreferenceList.Add((participantIds[i], preferences[i]));
+        }
+
+        var participants = await Task.WhenAll(
+        (
+            from id in participantIds
+            select users.GetByTelegramIdAsync(id, ct)
+        ));
+
+        var userDict = participants
+            .Where(u => u != null)
+            .ToDictionary(u => u.TelegramId, u => u);
+
+        var sortedParticipantIds = participantPreferenceList
+            .OrderBy(p => p.Preference)
+            .ThenBy(p => userDict.ContainsKey(p.TelegramId)
+                ? userDict[p.TelegramId].AveragePosition
+                : 0.0)
+            .Select(p => p.TelegramId)
+            .ToList();
+
+        var finalQueue = new List<long>();
+
+        foreach (var unfinishedId in unfinishedIds)
+        {
+            int index = participantIds.IndexOf(unfinishedId);
+            if (index != -1 && preferences[index] != UserPreference.End)
+            {
+                finalQueue.Add(unfinishedId);
+                sortedParticipantIds.Remove(unfinishedId);
+            }
+        }
+
+        finalQueue.AddRange(sortedParticipantIds);
+
+        eventItem.ParticipantsTelegramIds.Clear();
+        eventItem.ParticipantsTelegramIds.AddRange(finalQueue);
+        eventItem.IsFormed = true;
+        category.UnfinishedUsersTelegramIds.Clear();
+
+        for (int i = 0; i < eventItem.ParticipantsTelegramIds.Count; i++)
+        {
+            var userId = eventItem.ParticipantsTelegramIds[i];
+            if (userDict.ContainsKey(userId))
+            {
+                userDict[userId].UpdateAveragePosition(i + 1);
+            }
+        }
+    }
+
     private async Task<List<BotEventDto>> ToDtoList(List<Event> list, CancellationToken ct)
     {
         var dtoList = new List<BotEventDto>();
@@ -84,8 +155,20 @@ public class BotEventController : ControllerBase
 
     //вызывается раз в определенный срок, чтобы узнать, есть ли события, по которым сформировалась очередь
     [HttpGet("due-events-formation")]
-    public async Task<ActionResult<List<BotEventDto>>> GetDueFormation(CancellationToken ct) =>
-        Ok(await ToDtoList(await events.GetDueFormationAsync(DateTimeOffset.UtcNow, ct), ct));
+    public async Task<ActionResult<List<BotEventDto>>> GetDueFormation(CancellationToken ct)
+    {
+        var now = DateTimeOffset.UtcNow;
+        var pendingFormation = await events.GetDueFormationAsync(now, ct);
+
+        foreach (var eventItem in pendingFormation)
+        {
+            await FormQueueAsync(eventItem, ct);
+        }
+
+        await uow.SaveChangesAsync(ct);
+
+        return Ok(await ToDtoList(pendingFormation, ct));
+    }
 
     //используется, чтобы отметить события, по которым были высланы уведомления
     [HttpPost("mark-notified")]

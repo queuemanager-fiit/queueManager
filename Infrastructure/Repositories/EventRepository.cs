@@ -24,6 +24,14 @@ public class EventRepository : BaseRepository<Event>, IEventRepository
             .ConfigureAwait(false);
     }
 
+    public async Task<List<Event>> GetExpiredEventsAsync(DateTimeOffset now, CancellationToken ct)
+    {
+        return await Context.Set<Event>()
+            .Where(e => e.DeletionTime <= now)
+            .ToListAsync(ct)
+            .ConfigureAwait(false);
+    }
+
     public async Task<Event?> GetByIdAsync(Guid id, CancellationToken ct)
     {
         return await Context.Set<Event>()

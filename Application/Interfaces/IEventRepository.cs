@@ -15,4 +15,6 @@ public interface IEventRepository : IRepository<Event>
     Task<List<Event>> GetDueFormationAsync(DateTimeOffset now, CancellationToken ct);
     
     Task<Event?> GetByIdAsync(Guid eventId, CancellationToken ct);
+
+    Task<List<Event>> GetExpiredEventsAsync(DateTimeOffset now, CancellationToken ct);
 }
