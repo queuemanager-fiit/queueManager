@@ -60,8 +60,8 @@ public class BotEventController : ControllerBase
     public sealed record MarkUnfinishedUsers(Guid EventId, int FirstUnfinishedPosition);
 
     private async Task FormQueueAsync(
-    Event eventItem,
-    CancellationToken ct)
+        Event eventItem,
+        CancellationToken ct)
     {
         if (eventItem.IsFormed) return;
 
@@ -82,15 +82,15 @@ public class BotEventController : ControllerBase
             participantPreferenceList.Add((participantIds[i], preferences[i]));
         }
 
-        var participants = await Task.WhenAll(
-        (
-            from id in participantIds
-            select users.GetByTelegramIdAsync(id, ct)
-        ));
-
-        var userDict = participants
-            .Where(u => u != null)
-            .ToDictionary(u => u.TelegramId, u => u);
+        var userDict = new Dictionary<long, User>();
+        foreach (var id in participantIds)
+        {
+            var user = await users.GetByTelegramIdAsync(id, ct);
+            if (user != null)
+            {
+                userDict[user.TelegramId] = user;
+            }
+        }
 
         var sortedParticipantIds = participantPreferenceList
             .OrderBy(p => p.Preference)

@@ -116,17 +116,17 @@ namespace QueueManagerBot
                     StateManager.SetState(msg.Chat.Id, UserState.WaitingForGroupIdCategory);
                     break;
                 case UserState.WaitingForGroupIdCategory:
-                    if (CategoriesData[msg.Chat.Id]["IsAutomatic"] != "")
-                    {
-                        var sch = new Table.Schedule("C:\\пезда\\queueManager\\Infrastructure\\Parser\\РасписаниеФИИТ2025осень.xlsx");
+                    // if (CategoriesData[msg.Chat.Id]["IsAutomatic"] != "")
+                    // {
+                    //     var sch = new Table.Schedule("C:\\пезда\\queueManager\\Infrastructure\\Parser\\РасписаниеФИИТ2025осень.xlsx");
 
-                        var cats = sch.GetSubjectsByGroup(CategoriesData[msg.Chat.Id]["GroupId"]);
-                        if (!cats.Contains(msg.Text))
-                        {
-                            await Bot.SendMessage(msg.Chat.Id, "Введите название предмета из расписания");
-                            return;
-                        }
-                    }
+                    //     var cats = sch.GetSubjectsByGroup(CategoriesData[msg.Chat.Id]["GroupId"]);
+                    //     if (!cats.Contains(msg.Text))
+                    //     {
+                    //         await Bot.SendMessage(msg.Chat.Id, "Введите название предмета из расписания");
+                    //         return;
+                    //     }
+                    // }
                     CategoriesData[msg.Chat.Id]["CategotyName"] = msg.Text;
                     StateManager.SetState(msg.Chat.Id, UserState.WaitingForGroupIdCategory);
 

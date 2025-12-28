@@ -186,6 +186,7 @@ namespace QueueManagerBot
                             pref
                         );
                         await controllerUser.ConfirmQueue(participant);
+                        await bot.SendMessage(query.Message.Chat.Id, "Вы записались в очередь✅");
                     }
                 }
 

@@ -93,7 +93,7 @@ namespace QueueManagerBot
                         
 
                     var categories = await controllerUser.GetCategoryList(QueuesData[msg.Chat.Id]["GroupId"]);
-
+                    Console.WriteLine(categories[0]);
                     if (categories == null || !categories.Any())
                     {
                         await Bot.SendMessage(
