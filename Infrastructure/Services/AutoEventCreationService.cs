@@ -98,15 +98,22 @@ namespace Infrastructure.Services
                     if (!groupInfo.Lessons.TryGetValue(today.DayOfWeek, out var lessons))
                         continue;
 
+
                     foreach (var lesson in lessons)
                     {
                         if (string.Equals(lesson.Name, category.SubjectName, StringComparison.OrdinalIgnoreCase))
                         {
+                            DateTime utcTime = TimeZoneInfo.ConvertTimeToUtc(
+                                lesson.DateTime,
+                                TimeZoneInfo.FindSystemTimeZoneById("Ekaterinburg Standard Time")
+                                );
+
                             var eventItem = new Event(
                                 category.Id,
-                                new DateTimeOffset(lesson.DateTime, TimeSpan.FromHours(5)),
+                                new DateTimeOffset(utcTime, TimeSpan.Zero),
                                 category.GroupCode
                             );
+
 
                             await eventRepo.AddAsync(eventItem, ct);
 
