@@ -19,7 +19,7 @@ builder.Services.AddScoped<Application.Interfaces.IEventRepository, Infrastructu
 builder.Services.AddScoped<Application.Interfaces.IEventCategoryRepository, Infrastructure.Repositories.EventCategoryRepository>(); 
 builder.Services.AddHostedService<Infrastructure.Services.ExpiredEventService>();
 builder.Services.AddSingleton<Schedule>(new Schedule("C:\\Users\\Пользователь\\queueManager\\Infrastructure\\Parser\\РасписаниеФИИТ2025осень.xlsx"));
-builder.Services.AddHostedService<AutoEventCreationService>();
+builder.Services.AddHostedService<Infrastructure.Services.AutoEventCreationService>();
 
 var app = builder.Build();
 

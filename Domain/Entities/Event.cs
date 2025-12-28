@@ -27,8 +27,8 @@ public class Event
     {
         CategoryId = category;
         OccurredOn = occurredOn;
-        FormationTime = occurredOn.Subtract(TimeSpan.FromDays(1));
-        NotificationTime = FormationTime.Subtract(TimeSpan.FromDays(1));
+        FormationTime = occurredOn.Subtract(TimeSpan.FromHours(12));
+        NotificationTime = FormationTime.Subtract(TimeSpan.FromHours(12));
         DeletionTime = occurredOn.Add(TimeSpan.FromDays(1));
         GroupCode = groupCode ?? throw new ArgumentNullException(nameof(groupCode));
     }
