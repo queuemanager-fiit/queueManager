@@ -80,4 +80,37 @@ public class Schedule
             }
         }
     }
+
+    public List<string> GetSubjectsByGroup(string groupName)
+    {
+        var allSubGroups = CollectGroupInfo();
+        var computedGroups = allSubGroups.ExtractGroupData();
+
+        int dashCount = groupName.Count(c => c == '-');
+
+        GroupInfo targetGroup = null;
+
+        if (dashCount == 1)
+        {
+            targetGroup = computedGroups.FirstOrDefault(g => g.Name.Trim() == groupName.Trim());
+        }
+        else
+        {
+            targetGroup = allSubGroups.FirstOrDefault(g => g.Name.Trim() == groupName.Trim());
+        }
+
+        if (targetGroup == null)
+            return new List<string>();
+
+        var subjects = new HashSet<string>();
+        foreach (var lessonList in targetGroup.Lessons.Values)
+        {
+            foreach (var lesson in lessonList)
+            {
+                subjects.Add(lesson.Name);
+            }
+        }
+
+        return subjects.ToList();
+    }
 }
