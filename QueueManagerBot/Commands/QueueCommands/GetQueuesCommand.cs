@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.Text;
 using System.Text.Json;
 using Telegram.Bot;
 using Telegram.Bot.Types;
@@ -44,13 +45,24 @@ namespace QueueManagerBot
         {
             var controllerUser = new ControllerUser(httpClient, apiBaseUrl);
             var events = await controllerUser.GetQueueList(msg.Chat.Id);
-                
+            var participantsList = new StringBuilder();
+
+
             if (events != null)
             {       
                 if (events?.Any() == true)
                 {
                     foreach (var e in events)
                     {
+                        var counter = 0;
+                        foreach (var participantId in e.TelegramId)
+                        {
+                            var userInfo = await controllerUser.GetUser(participantId);
+                            var position = counter + 1;
+                            var fullName = userInfo.FullName;
+                            participantsList.AppendLine($"{position}. {fullName}");
+                        }
+                    
                         await Bot.SendMessage(
                             msg.Chat.Id,
                             $"🎯 Событие: {e.Category}\n\n" +

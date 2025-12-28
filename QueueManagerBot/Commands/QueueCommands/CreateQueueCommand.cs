@@ -206,6 +206,7 @@ namespace QueueManagerBot
         {
             var categoryName = categoryCallback.Remove(0, "select_category_".Length);
             QueuesData[tgId]["QueueCategory"] = categoryName;
+            await Bot.SendMessage(tgId, "Категория выбрана");
             await Bot.SendMessage(tgId, @"Введите время и дату в формате: ЧЧ:ММ ДД.ММ
 Пример: 19:00 22.12 — 22 декабря в 19:00");
             StateManager.SetState(tgId, UserState.WaitingForQueueDate);
