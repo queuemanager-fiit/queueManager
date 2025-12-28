@@ -50,6 +50,8 @@ namespace Infrastructure.Services
                             }
 
                             group.RemoveEvent(eventItem.Id);
+                            await groupRepository.UpdateAsync(group, stoppingToken);
+                            await eventRepository.DeleteAsync(eventItem, stoppingToken);
                         }
 
                         await unitOfWork.SaveChangesAsync(stoppingToken);

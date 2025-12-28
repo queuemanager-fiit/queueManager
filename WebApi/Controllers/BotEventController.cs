@@ -117,7 +117,10 @@ public class BotEventController : ControllerBase
         eventItem.ParticipantsTelegramIds.Clear();
         eventItem.ParticipantsTelegramIds.AddRange(finalQueue);
         eventItem.IsFormed = true;
+        await events.UpdateAsync(eventItem, ct);
+
         category.UnfinishedUsersTelegramIds.Clear();
+        await eventCategories.UpdateAsync(category, ct);
 
         for (int i = 0; i < eventItem.ParticipantsTelegramIds.Count; i++)
         {
@@ -125,6 +128,7 @@ public class BotEventController : ControllerBase
             if (userDict.ContainsKey(userId))
             {
                 userDict[userId].UpdateAveragePosition(i + 1);
+                await users.UpdateAsync(userDict[userId], ct);
             }
         }
     }
