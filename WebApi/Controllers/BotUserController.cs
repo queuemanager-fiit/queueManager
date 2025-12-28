@@ -37,8 +37,8 @@ public sealed class BotUserController : ControllerBase
         int ParticipationCount);
 
     public sealed record DeletionUserDto(
-        long telegramId,
-        string groupCode);
+        long TelegramId,
+        string GroupCode);
 
     //вызывается для регистрации пользователя или обновлении информации о нем
     [HttpPost("update-userinfo")]
@@ -102,10 +102,10 @@ public sealed class BotUserController : ControllerBase
     [HttpPost("delete-user")]
     public async Task<IActionResult> DeleteUserInfo([FromBody] DeletionUserDto dto, CancellationToken ct)
     {
-        var user = await users.GetByTelegramIdAsync(dto.telegramId, ct);
-        var group = await groups.GetByCodeAsync(dto.groupCode, ct);
+        var user = await users.GetByTelegramIdAsync(dto.TelegramId, ct);
+        var group = await groups.GetByCodeAsync(dto.GroupCode, ct);
         
-        user.GroupCodes.Remove(dto.groupCode);
+        user.GroupCodes.Remove(dto.GroupCode);
         group.RemoveUser(user.TelegramId);
 
 

@@ -217,3 +217,9 @@ C:\аааыыы\queueManager\Domain\obj\Debug\net8.0\refint\Domain.dll
 C:\аааыыы\queueManager\Domain\obj\Debug\net8.0\Domain.pdb
 C:\аааыыы\queueManager\Domain\obj\Debug\net8.0\Domain.genruntimeconfig.cache
 C:\аааыыы\queueManager\Domain\obj\Debug\net8.0\ref\Domain.dll
+C:\Users\1\source\repos\QueueManager\queueManager\Domain\bin\Debug\net8.0\Domain.deps.json
+C:\Users\1\source\repos\QueueManager\queueManager\Domain\bin\Debug\net8.0\Domain.runtimeconfig.json
+C:\Users\1\source\repos\QueueManager\queueManager\Domain\bin\Debug\net8.0\Domain.dll
+C:\Users\1\source\repos\QueueManager\queueManager\Domain\bin\Debug\net8.0\Domain.pdb
+C:\Users\1\source\repos\QueueManager\queueManager\Domain\obj\Debug\net8.0\Domain.genruntimeconfig.cache
+C:\Users\1\source\repos\QueueManager\queueManager\Domain\obj\Debug\net8.0\ref\Domain.dll

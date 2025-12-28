@@ -1,6 +1,5 @@
 ﻿using Application.Interfaces;
 using Domain.Entities;
-using Infrastructure.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers;
@@ -60,8 +59,8 @@ public class BotEventController : ControllerBase
     public sealed record MarkUnfinishedUsers(Guid EventId, int FirstUnfinishedPosition);
 
     private async Task FormQueueAsync(
-        Event eventItem,
-        CancellationToken ct)
+    Event eventItem,
+    CancellationToken ct)
     {
         if (eventItem.IsFormed) return;
 
@@ -82,15 +81,15 @@ public class BotEventController : ControllerBase
             participantPreferenceList.Add((participantIds[i], preferences[i]));
         }
 
-        var userDict = new Dictionary<long, User>();
-        foreach (var id in participantIds)
-        {
-            var user = await users.GetByTelegramIdAsync(id, ct);
-            if (user != null)
-            {
-                userDict[user.TelegramId] = user;
-            }
-        }
+        var participants = await Task.WhenAll(
+        (
+            from id in participantIds
+            select users.GetByTelegramIdAsync(id, ct)
+        ));
+
+        var userDict = participants
+            .Where(u => u != null)
+            .ToDictionary(u => u.TelegramId, u => u);
 
         var sortedParticipantIds = participantPreferenceList
             .OrderBy(p => p.Preference)
@@ -314,5 +313,29 @@ public class BotEventController : ControllerBase
             .ToList();
         
         return Ok(await ToDtoList(filteredEvents, ct));
+        /*var user = await users.GetByTelegramIdAsync(telegramId, ct);
+        
+        if (user == null)
+        {
+            return NotFound($"User with TelegramId {telegramId} not found");
+        }
+        
+        var group = await groups.GetByCodeAsync(user.GroupCodes.First(), ct);
+        var subGroup = await groups.GetByCodeAsync(user.GroupCodes.Last(), ct);
+        var eventsIds = group.EventsIds.Concat(subGroup.EventsIds).ToList();
+        var checks = await Task.WhenAll(
+            eventsIds.Select(async id =>
+            {
+                var ev = await events.GetByIdAsync(id, ct);
+                return (ev, ok: ev != null && ev.ParticipantsTelegramIds.Contains(user.TelegramId));
+            })
+        );
+        
+        var filteredIds = checks
+            .Where(x => x.ok)
+            .Select(x => x.ev)
+            .ToList();
+
+        return Ok(await ToDtoList(filteredIds, ct));*/
     }
 }
