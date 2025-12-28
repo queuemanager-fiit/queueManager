@@ -103,7 +103,16 @@ public sealed class BotUserController : ControllerBase
     public async Task<IActionResult> DeleteUserInfo([FromBody] DeletionUserDto dto, CancellationToken ct)
     {
         var user = await users.GetByTelegramIdAsync(dto.TelegramId, ct);
+        if (user == null)
+        {
+            return NotFound($"User with TelegramId {dto.TelegramId} not found");
+        }
+        
         var group = await groups.GetByCodeAsync(dto.GroupCode, ct);
+        if (group == null)
+        {
+            return NotFound($"Group with Group Code {dto.GroupCode} not found");
+        }
         
         user.GroupCodes.Remove(dto.GroupCode);
         group.RemoveUser(user.TelegramId);
