@@ -15,10 +15,10 @@ public class Schedule
     {
         package = new ExcelPackage(new FileInfo(filePath));
         excelParser = new ExcelParser();
-        textData = excelParser.ExtractData(package.Workbook.Worksheets[3]);
+        textData = excelParser.ExtractData(package.Workbook.Worksheets[5]);
         timeParser = new TimeParser(excelParser.ExtractData(package.Workbook.Worksheets[0]));
     }
-    
+
     public List<GroupInfo> CollectGroupInfo(DateTime dateTime = default)
     {
         if (dateTime == default)
@@ -28,7 +28,6 @@ public class Schedule
         var parity = timeParser.DetermineParity(dateTime) is Parity.Even ? 1 : 0;
         foreach (var position in groupPositionsList)
         {
-            var lessons = new List<Lesson>();
             var currentGroup = new GroupInfo(textData[position.Item1, position.Item2].Split(",")[0]);
             groups.Add(currentGroup);
             for (var i = position.Item1 + parity; i < RowCount;)
@@ -40,20 +39,22 @@ public class Schedule
                     var timeLesson = textData[i, 1].Split()[1].Split(":");
                     var difference = dateTime.DayOfWeek - (DayOfWeek)timeParser.DefineDayOfWeek(stringDayOfWeek)!;
                     var targetDate = dateTime.AddDays(-difference);
-                    targetDate = new DateTime(targetDate.Year, targetDate.Month, targetDate.Day, int.Parse(timeLesson[0]), int.Parse(timeLesson[1]), 0);
+                    targetDate = new DateTime(targetDate.Year, targetDate.Month, targetDate.Day,
+                        int.Parse(timeLesson[0]), int.Parse(timeLesson[1]), 0);
                     if (!currentGroup.Lessons.ContainsKey(targetDate.DayOfWeek))
                         currentGroup.Lessons[targetDate.DayOfWeek] = new List<Lesson>();
-                    currentGroup.Lessons[targetDate.DayOfWeek].Add(new Lesson(text.Split(",")[0], targetDate));
-                    lessons.Add(new Lesson(text.Split(",")[0], new DateTime()));
+                    var info = textData[i, position.Item2];
+                    currentGroup.Lessons[targetDate.DayOfWeek].Add(new Lesson(text.Split(",")[0], info, targetDate));
                 }
 
                 i = SkipTwoRows((i, position.Item2));
             }
         }
 
+        groups.ExtractGroupData();
         return groups;
     }
-    
+
     private int SkipTwoRows((int, int) position)
     {
         var skip = 0;
@@ -66,7 +67,7 @@ public class Schedule
 
         return position.Item1;
     }
-    
+
     private IEnumerable<(int, int)> FindGroupPositions()
     {
         for (var row = RowCount - 1; row >= 1; row--)
@@ -78,25 +79,5 @@ public class Schedule
                     yield return (row, col);
             }
         }
-    }
-
-    public List<string> GetSubjectsByGroup(string groupName)
-    {
-        var allGroups = CollectGroupInfo();
-
-        var targetGroup = allGroups.FirstOrDefault(g => g.Name.Trim() == groupName.Trim());
-
-        if (targetGroup == null)
-            return new List<string>();
-
-        var subjects = new HashSet<string>();
-        foreach (var lessonList in targetGroup.Lessons.Values)
-        {
-            foreach (var lesson in lessonList)
-            {
-                subjects.Add(lesson.Name);
-            }
-        }
-        return subjects.ToList();
     }
 }
