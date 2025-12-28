@@ -11,19 +11,16 @@ public static class GroupOnly
             .GroupBy(g => GetBaseGroup(g.Name))
             .ToDictionary(g => g.Key, g => g.Select(x => x.Name).ToList());
 
-        // Для каждой группы (ФТ-201, ФТ-202, ...)
         foreach (var (groupName, subGroups) in groupToSubGroups)
         {
             var groupInfo = new GroupInfo(groupName);
 
-            // Все возможные занятия этой группы (берём из первой подгруппы)
             var referenceSubGroup = subGroupDict[subGroups[0]];
 
             foreach (var (day, lessons) in referenceSubGroup.Lessons)
             {
                 foreach (var lesson in lessons)
                 {
-                    // Проверяем: это занятие есть у ВСЕХ подгрупп группы
                     if (!IsLessonForExactGroup(
                         lesson.DateTime,
                         lesson.Information,
@@ -39,8 +36,6 @@ public static class GroupOnly
                     );
                 }
             }
-
-            // Сортировка по времени
             foreach (var day in groupInfo.Lessons.Keys.ToList())
             {
                 groupInfo.Lessons[day] = groupInfo.Lessons[day]
@@ -55,11 +50,6 @@ public static class GroupOnly
         return result;
     }
 
-    /// <summary>
-    /// TRUE только если занятие:
-    /// - есть у всех подгрупп этой группы
-    /// - и отсутствует у подгрупп других групп
-    /// </summary>
     private static bool IsLessonForExactGroup(
         DateTime dateTime,
         string information,
@@ -80,8 +70,6 @@ public static class GroupOnly
                 foundIn.Add(name);
             }
         }
-
-        // Должно быть ровно совпадение с подгруппами этой группы
         return foundIn.SetEquals(groupSubGroups);
     }
 

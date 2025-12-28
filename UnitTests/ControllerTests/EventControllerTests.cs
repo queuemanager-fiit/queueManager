@@ -316,62 +316,6 @@ public class EventControllerTests
         uowMock.Verify(r => r.SaveChangesAsync(ct), Times.Once);
     }
     
-    /*[Test]
-    public async Task GetUserEventsInfo_UserNotFound_ReturnsNotFound()
-    {
-        var ct = CancellationToken.None;
-        usersMock.Setup(r => r.GetByTelegramIdAsync(1001, ct)).ReturnsAsync((User)null);
-
-        var result = await controller.GetUserEventsInfo(1001, ct);
-
-        Assert.That(result.Result, Is.InstanceOf<NotFoundObjectResult>());
-        var nf = (NotFoundObjectResult)result.Result!;
-        Assert.That(nf.Value, Is.EqualTo("User with TelegramId 1001 not found"));
-    }
-
-    [Test]
-    public async Task GetUserEventsInfo_UserFound_ReturnsOnlyEventsWhereUserParticipates()
-    {
-        var ct = CancellationToken.None;
-
-        var user = new User(1001, "U", "u", new List<string> { "G1", "SG1" });
-
-        var g = new Group("G1");
-        var sg = new Group("SG1");
-        
-
-        var ev1 = new Event(Guid.NewGuid(), DateTimeOffset.UtcNow, "G1");
-        ev1.ParticipantsTelegramIds.AddRange(new[] { 1001L, 777L });
-
-        var ev2 = new Event(Guid.NewGuid(), DateTimeOffset.UtcNow, "G1");
-        ev2.ParticipantsTelegramIds.AddRange(new[] { 777L });
-
-        var id3 = Guid.NewGuid();
-        
-        g.AddEvent(ev1.Id);
-        g.AddEvent(ev2.Id);
-        sg.AddEvent(id3);
-
-        usersMock.Setup(r => r.GetByTelegramIdAsync(1001, ct)).ReturnsAsync(user);
-        groupsMock.Setup(r => r.GetByCodeAsync("G1", ct)).ReturnsAsync(g);
-        groupsMock.Setup(r => r.GetByCodeAsync("SG1", ct)).ReturnsAsync(sg);
-
-        eventsMock.Setup(r => r.GetByIdAsync(ev1.Id, ct)).ReturnsAsync(ev1);
-        eventsMock.Setup(r => r.GetByIdAsync(ev2.Id, ct)).ReturnsAsync(ev2);
-        eventsMock.Setup(r => r.GetByIdAsync(id3, ct)).ReturnsAsync((Event)null);
-
-        categoriesMock.Setup(r => r.GetByIdAsync(ev1.CategoryId, ct)).ReturnsAsync(new EventCategory("Sport", false, "G1"));
-
-        var result = await controller.GetUserEventsInfo(1001, ct);
-
-        Assert.That(result.Result, Is.InstanceOf<OkObjectResult>());
-        var ok = (OkObjectResult)result.Result!;
-        var dtos = (List<BotEventController.BotEventDto>)ok.Value!;
-
-        Assert.That(dtos.Count, Is.EqualTo(1));
-        Assert.That(dtos[0].EventId, Is.EqualTo(ev1.Id));
-    }*/
-    
     [Test]
     public async Task GetUserEventsInfo_UserNotFound_ReturnsNotFound()
     {
