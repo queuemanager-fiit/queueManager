@@ -3,6 +3,10 @@
   "WorkspaceRootPath": "C:\\Users\\\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queueManager\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{5961456F-9FFD-4C09-AA16-FDA77E366E11}|QueueManagerBot\\QueueManagerBot.csproj|c:\\users\\\u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queuemanager\\queuemanagerbot\\commands\\queuecommands\\getqueuescommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5961456F-9FFD-4C09-AA16-FDA77E366E11}|QueueManagerBot\\QueueManagerBot.csproj|solutionrelative:queuemanagerbot\\commands\\queuecommands\\getqueuescommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{BE6C0D75-76F0-4A88-8A04-8024F44F3054}|WebApi\\WebApi.csproj|c:\\users\\\u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queuemanager\\webapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{BE6C0D75-76F0-4A88-8A04-8024F44F3054}|WebApi\\WebApi.csproj|solutionrelative:webapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -130,15 +134,28 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 20,
+          "SelectedChildIndex": 0,
           "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "GetQueuesCommand.cs",
+              "DocumentMoniker": "C:\\Users\\\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queueManager\\QueueManagerBot\\Commands\\QueueCommands\\GetQueuesCommand.cs",
+              "RelativeDocumentMoniker": "QueueManagerBot\\Commands\\QueueCommands\\GetQueuesCommand.cs",
+              "ToolTip": "C:\\Users\\\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queueManager\\QueueManagerBot\\Commands\\QueueCommands\\GetQueuesCommand.cs",
+              "RelativeToolTip": "QueueManagerBot\\Commands\\QueueCommands\\GetQueuesCommand.cs",
+              "ViewState": "AgIAAC8AAAAAAAAAAAAuwEQAAAA6AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-28T21:38:46.452Z",
+              "EditorCaption": ""
+            },
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{d78612c7-9962-4b83-95d9-268046dad23a}"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "AutoEventCreationService.cs",
               "DocumentMoniker": "C:\\Users\\\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queueManager\\Infrastructure\\Services\\AutoEventCreationService.cs",
               "RelativeDocumentMoniker": "Infrastructure\\Services\\AutoEventCreationService.cs",
@@ -146,12 +163,11 @@
               "RelativeToolTip": "Infrastructure\\Services\\AutoEventCreationService.cs",
               "ViewState": "AgIAAAYAAAAAAAAAAAAAAG8AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-28T20:44:53.57Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-28T20:44:53.57Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 7,
               "Title": "EventRepository.cs",
               "DocumentMoniker": "C:\\Users\\\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queueManager\\Infrastructure\\Repositories\\EventRepository.cs",
               "RelativeDocumentMoniker": "Infrastructure\\Repositories\\EventRepository.cs",
@@ -163,7 +179,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 4,
               "Title": "ExpiredEventService.cs",
               "DocumentMoniker": "C:\\Users\\\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queueManager\\Infrastructure\\Services\\ExpiredEventService.cs",
               "RelativeDocumentMoniker": "Infrastructure\\Services\\ExpiredEventService.cs",
@@ -175,7 +191,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 17,
+              "DocumentIndex": 18,
               "Title": "BotUserController.cs",
               "DocumentMoniker": "C:\\Users\\\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queueManager\\WebApi\\Controllers\\BotUserController.cs",
               "RelativeDocumentMoniker": "WebApi\\Controllers\\BotUserController.cs",
@@ -187,7 +203,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 19,
+              "DocumentIndex": 20,
               "Title": "UserPreference.cs",
               "DocumentMoniker": "C:\\Users\\\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queueManager\\Domain\\Entities\\UserPreference.cs",
               "RelativeDocumentMoniker": "Domain\\Entities\\UserPreference.cs",
@@ -199,7 +215,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 18,
+              "DocumentIndex": 19,
               "Title": "EventCategory.cs",
               "DocumentMoniker": "C:\\Users\\\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queueManager\\Domain\\Entities\\EventCategory.cs",
               "RelativeDocumentMoniker": "Domain\\Entities\\EventCategory.cs",
@@ -211,7 +227,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 8,
               "Title": "Lesson.cs",
               "DocumentMoniker": "C:\\Users\\\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queueManager\\Infrastructure\\Parser\\Lesson.cs",
               "RelativeDocumentMoniker": "Infrastructure\\Parser\\Lesson.cs",
@@ -223,7 +239,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 21,
+              "DocumentIndex": 22,
               "Title": "GroupInfo.cs",
               "DocumentMoniker": "C:\\Users\\\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queueManager\\Infrastructure\\Parser\\GroupInfo.cs",
               "RelativeDocumentMoniker": "Infrastructure\\Parser\\GroupInfo.cs",
@@ -235,7 +251,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 13,
               "Title": "IRepository.cs",
               "DocumentMoniker": "C:\\Users\\\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queueManager\\Application\\Interfaces\\IRepository.cs",
               "RelativeDocumentMoniker": "Application\\Interfaces\\IRepository.cs",
@@ -247,7 +263,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 14,
               "Title": "IGroupRepository.cs",
               "DocumentMoniker": "C:\\Users\\\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queueManager\\Application\\Interfaces\\IGroupRepository.cs",
               "RelativeDocumentMoniker": "Application\\Interfaces\\IGroupRepository.cs",
@@ -259,7 +275,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 6,
               "Title": "IEventRepository.cs",
               "DocumentMoniker": "C:\\Users\\\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queueManager\\Application\\Interfaces\\IEventRepository.cs",
               "RelativeDocumentMoniker": "Application\\Interfaces\\IEventRepository.cs",
@@ -271,7 +287,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 11,
               "Title": "ApplicationDbContext.cs",
               "DocumentMoniker": "C:\\Users\\\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queueManager\\Infrastructure\\Repositories\\ApplicationDbContext.cs",
               "RelativeDocumentMoniker": "Infrastructure\\Repositories\\ApplicationDbContext.cs",
@@ -283,7 +299,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 10,
               "Title": "GroupRepository.cs",
               "DocumentMoniker": "C:\\Users\\\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queueManager\\Infrastructure\\Repositories\\GroupRepository.cs",
               "RelativeDocumentMoniker": "Infrastructure\\Repositories\\GroupRepository.cs",
@@ -295,7 +311,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 9,
               "Title": "EventCategoryRepository.cs",
               "DocumentMoniker": "C:\\Users\\\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queueManager\\Infrastructure\\Repositories\\EventCategoryRepository.cs",
               "RelativeDocumentMoniker": "Infrastructure\\Repositories\\EventCategoryRepository.cs",
@@ -307,7 +323,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "Parser.cs",
               "DocumentMoniker": "C:\\Users\\\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queueManager\\Infrastructure\\Parser\\Parser.cs",
               "RelativeDocumentMoniker": "Infrastructure\\Parser\\Parser.cs",
@@ -315,12 +331,11 @@
               "RelativeToolTip": "Infrastructure\\Parser\\Parser.cs",
               "ViewState": "AgIAAGEAAAAAAAAAAAAUwHIAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-12-24T03:30:52.701Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-24T03:30:52.701Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 16,
               "Title": "TelegramBot.cs",
               "DocumentMoniker": "C:\\Users\\\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queueManager\\QueueManagerBot\\TelegramBot.cs",
               "RelativeDocumentMoniker": "QueueManagerBot\\TelegramBot.cs",
@@ -332,7 +347,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 22,
+              "DocumentIndex": 23,
               "Title": "AddCategoryCommand.cs",
               "DocumentMoniker": "C:\\Users\\\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queueManager\\QueueManagerBot\\Commands\\AddCategoryCommand.cs",
               "RelativeDocumentMoniker": "QueueManagerBot\\Commands\\AddCategoryCommand.cs",
@@ -344,7 +359,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 16,
+              "DocumentIndex": 17,
               "Title": "ConrollersUser.cs",
               "DocumentMoniker": "C:\\Users\\\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queueManager\\QueueManagerBot\\ConrollersUser.cs",
               "RelativeDocumentMoniker": "QueueManagerBot\\ConrollersUser.cs",
@@ -356,7 +371,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 23,
+              "DocumentIndex": 24,
               "Title": "UserStates.cs",
               "DocumentMoniker": "C:\\Users\\\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queueManager\\QueueManagerBot\\UserStates.cs",
               "RelativeDocumentMoniker": "QueueManagerBot\\UserStates.cs",
@@ -368,7 +383,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queueManager\\WebApi\\Program.cs",
               "RelativeDocumentMoniker": "WebApi\\Program.cs",
@@ -381,7 +396,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 28,
+              "DocumentIndex": 29,
               "Title": "QueueService.cs",
               "DocumentMoniker": "C:\\Users\\\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queueManager\\Application\\Services\\QueueService.cs",
               "RelativeDocumentMoniker": "Application\\Services\\QueueService.cs",
@@ -393,7 +408,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 5,
               "Title": "BotEventController.cs",
               "DocumentMoniker": "C:\\Users\\\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queueManager\\WebApi\\Controllers\\BotEventController.cs",
               "RelativeDocumentMoniker": "WebApi\\Controllers\\BotEventController.cs",
@@ -405,7 +420,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 25,
+              "DocumentIndex": 26,
               "Title": "IEventSchedulerService.cs",
               "DocumentMoniker": "C:\\Users\\\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queueManager\\Domain\\Interfaces\\IEventSchedulerService.cs",
               "RelativeDocumentMoniker": "Domain\\Interfaces\\IEventSchedulerService.cs",
@@ -417,7 +432,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 12,
               "Title": "User.cs",
               "DocumentMoniker": "C:\\Users\\\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queueManager\\Domain\\Entities\\User.cs",
               "RelativeDocumentMoniker": "Domain\\Entities\\User.cs",
@@ -429,7 +444,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 15,
               "Title": "Event.cs",
               "DocumentMoniker": "C:\\Users\\\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queueManager\\Domain\\Entities\\Event.cs",
               "RelativeDocumentMoniker": "Domain\\Entities\\Event.cs",
@@ -441,7 +456,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 24,
+              "DocumentIndex": 25,
               "Title": "QueueService.cs",
               "DocumentMoniker": "C:\\Users\\\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queueManager\\Domain\\Services\\QueueService.cs",
               "RelativeDocumentMoniker": "Domain\\Services\\QueueService.cs",
@@ -452,7 +467,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 26,
+              "DocumentIndex": 27,
               "Title": "IUnitOfWork.cs",
               "DocumentMoniker": "C:\\Users\\\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queueManager\\Domain\\Interfaces\\IUnitOfWork.cs",
               "RelativeDocumentMoniker": "Domain\\Interfaces\\IUnitOfWork.cs",
@@ -464,7 +479,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 27,
+              "DocumentIndex": 28,
               "Title": "IEventRepository.cs",
               "DocumentMoniker": "C:\\Users\\\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queueManager\\Domain\\Interfaces\\IEventRepository.cs",
               "RelativeDocumentMoniker": "Domain\\Interfaces\\IEventRepository.cs",
@@ -476,7 +491,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 20,
+              "DocumentIndex": 21,
               "Title": "Group.cs",
               "DocumentMoniker": "C:\\Users\\\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queueManager\\Domain\\Entities\\Group.cs",
               "RelativeDocumentMoniker": "Domain\\Entities\\Group.cs",
@@ -488,7 +503,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 29,
+              "DocumentIndex": 30,
               "Title": "QueueService.cs",
               "DocumentMoniker": "C:\\Users\\\u041F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u0435\u043B\u044C\\queueManager\\Infrastructure\\Services\\QueueService.cs",
               "RelativeDocumentMoniker": "Infrastructure\\Services\\QueueService.cs",

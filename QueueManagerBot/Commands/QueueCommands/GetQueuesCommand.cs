@@ -45,7 +45,6 @@ namespace QueueManagerBot
         {
             var controllerUser = new ControllerUser(httpClient, apiBaseUrl);
             var events = await controllerUser.GetQueueList(msg.Chat.Id);
-            var participantsList = new StringBuilder();
 
 
             if (events != null)
@@ -54,19 +53,22 @@ namespace QueueManagerBot
                 {
                     foreach (var e in events)
                     {
-                        var counter = 0;
+                        var position = 0;
+                        var participantsList = new StringBuilder();
                         foreach (var participantId in e.TelegramId)
                         {
                             var userInfo = await controllerUser.GetUser(participantId);
-                            var position = counter + 1;
+                            position++;
                             var fullName = userInfo.FullName;
                             participantsList.AppendLine($"{position}. {fullName}");
                         }
-                    
+
                         await Bot.SendMessage(
                             msg.Chat.Id,
                             $"🎯 Событие: {e.Category}\n\n" +
-                            $"⏰ Время: {e.OccurredOn:g}\n");
+                            $"⏰ Время: {e.OccurredOn:g}\n" +
+                            $"Список участников\n\n{participantsList}");
+
                     }
                 }
                 else

@@ -118,7 +118,7 @@ namespace QueueManagerBot
                 case UserState.WaitingForGroupIdCategory:
                     if (CategoriesData[msg.Chat.Id]["IsAutomatic"] != "")
                     {
-                        var sch = new Table.Schedule("C:\\ssss\\queueManager\\Infrastructure\\Parser\\РасписаниеФИИТ2025осень.xlsx");
+                        var sch = new Table.Schedule("C:\\Users\\Пользователь\\queueManager\\Infrastructure\\Parser\\РасписаниеФИИТ2025осень.xlsx");
 
                         var cats = sch.GetSubjectsByGroup(CategoriesData[msg.Chat.Id]["GroupId"]);
                         if (!cats.Contains(msg.Text))
