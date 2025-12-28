@@ -1,6 +1,7 @@
 using Application.Interfaces;
-using Microsoft.EntityFrameworkCore;
 using Infrastructure.Services;
+using Microsoft.EntityFrameworkCore;
+using Table;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,6 +18,9 @@ builder.Services.AddScoped<Application.Interfaces.IUnitOfWork, Infrastructure.Re
 builder.Services.AddScoped<Application.Interfaces.IEventRepository, Infrastructure.Repositories.EventRepository>();
 builder.Services.AddScoped<Application.Interfaces.IEventCategoryRepository, Infrastructure.Repositories.EventCategoryRepository>(); 
 builder.Services.AddHostedService<Infrastructure.Services.ExpiredEventService>();
+builder.Services.AddSingleton<Schedule>(new Schedule("C:\\Users\\Пользователь\\queueManager\\Infrastructure\\Parser\\РасписаниеФИИТ2025осень.xlsx"));
+builder.Services.AddHostedService<AutoEventCreationService>();
+
 var app = builder.Build();
 
 
