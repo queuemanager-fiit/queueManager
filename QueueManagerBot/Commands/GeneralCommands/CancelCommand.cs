@@ -37,6 +37,11 @@ namespace QueueManagerBot
 
         public async Task Execute(Message msg)
         {
+            if (StateManager.GetState(msg.Chat.Id) == UserState.None)
+            {
+                await Bot.SendMessage(msg.Chat.Id, "Сейчас не выполняется никакая команда");
+                return;
+            }
             StateManager.SetState(msg.Chat.Id, UserState.None);
             await Bot.SendMessage(msg.Chat, "Команда отменена");
         }

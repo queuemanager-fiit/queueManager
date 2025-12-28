@@ -53,9 +53,8 @@ namespace QueueManagerBot
                     {
                         await Bot.SendMessage(
                             msg.Chat.Id,
-                            $"Событие: {e.Category}\n" +
-                            $"Время: {e.OccurredOn:g}\n" +
-                            $"ID: {e.EventId}");
+                            $"🎯 Событие: {e.Category}\n\n" +
+                            $"⏰ Время: {e.OccurredOn:g}\n");
                     }
                 }
                 else
