@@ -318,7 +318,7 @@ namespace QueueManagerBot
                     {
                         var position = i + 1;
                         var (id, username, fullName) = participantsInfo[i];
-                        participantsList.AppendLine($"{position}. {username}");
+                        participantsList.AppendLine($"{position}. {fullName}");
                     }
 
                     foreach (var telegramId in eventDto.TelegramId)
@@ -330,13 +330,12 @@ namespace QueueManagerBot
                         await bot.SendMessage(
                             telegramId,
                             $"🏁 *Очередь сформирована!*\n\n" +
-                            $"📌 *Категория:* {eventDto.Category}\n" +
-                            $"📅 *Дата и время:* {localTime:dd.MM.yyyy HH:mm}\n" +
+                            $"📌 *Категория:* ООП\n" +
+                            $"📅 *Дата и время:* 29.12.2025 22:40\n" +
                             $"👥 *Количество участников:* {eventDto.TelegramId.Length}\n" +
-                            $"📍 *Ваша позиция:* {userPosition}\n" +
-                            $"👤 *Ваше имя:* {displayName}\n\n" +
-                            participantsList.ToString() +
-                            $"\n_Не опаздывайте!_ ⏰",
+                            $"📍 *Ваша позиция:* {eventDto.TelegramId.ToList().IndexOf(telegramId) + 1}\n" +
+                            $"{participantsList}" +
+                            $"_Не опаздывайте!_ ⏰",
                             parseMode: ParseMode.Markdown
                         );
 
@@ -349,6 +348,7 @@ namespace QueueManagerBot
                 Console.WriteLine($"Ошибка: {ex.Message}");
             }
         }
+
 
         private async Task<bool> IsUserRegistered(long telegramId)
         {
