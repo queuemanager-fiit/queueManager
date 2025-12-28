@@ -78,7 +78,6 @@ namespace QueueManagerBot
                                 callbackData: $"delete_category_{cat}"
                             ));
                         }
-                        Console.WriteLine($"5");
                         var keyboard = new InlineKeyboardMarkup(buttons);
                         await Bot.SendMessage(msg.Chat.Id, "Выберете категорию для удаления", replyMarkup: keyboard);
                         StateManager.SetState(msg.Chat.Id, UserState.WaitingForQueueNameToDelete);

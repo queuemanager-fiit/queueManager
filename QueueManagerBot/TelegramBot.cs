@@ -109,7 +109,7 @@ namespace QueueManagerBot
         async Task OnMessage(Message msg, UpdateType type)
         {
             var isUserRegistered = await IsUserRegistered(msg.Chat.Id);
-            Console.WriteLine(isUserRegistered);
+
             if (!isUserRegistered && msg.Text != "/start" && stateManager.GetState(msg.Chat.Id) != UserState.WaitingForStudentData)
             {
                 await bot.SendMessage(msg.Chat.Id, "Зарегистрируйтесь при помощи команды /start");
@@ -139,7 +139,6 @@ namespace QueueManagerBot
 
                 if (query.Data.StartsWith("delete_category_"))
                 {
-                    Console.WriteLine("deledte");
                     var catNameString = query.Data.Replace("delete_category_", "");
                     var catDeletionSubGroup = new WebApi.Controllers.BotGroupController.DeletionDto(user.SubGroupCode, catNameString);
                     var catDeletionGroup = new WebApi.Controllers.BotGroupController.DeletionDto(user.GroupCode, catNameString);
@@ -290,7 +289,6 @@ namespace QueueManagerBot
                 {
                     if (eventDto.TelegramId == null || eventDto.TelegramId.Length == 0)
                     {
-                        Console.WriteLine($"Очередь {eventDto.EventId} пустая. Пропускаем.");
                         continue;
                     }
                     

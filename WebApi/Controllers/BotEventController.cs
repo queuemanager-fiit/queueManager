@@ -302,19 +302,13 @@ public class BotEventController : ControllerBase
         var group = await groups.GetByCodeAsync(user.GroupCodes.First(), ct);
         var subGroup = await groups.GetByCodeAsync(user.GroupCodes.Last(), ct);
         var eventsIds = group.EventsIds.Concat(subGroup.EventsIds).ToList();
-        var checks = await Task.WhenAll(
-            eventsIds.Select(async id =>
-            {
-                var ev = await events.GetByIdAsync(id, ct);
-                return (ev, ok: ev != null && ev.ParticipantsTelegramIds.Contains(user.TelegramId));
-            })
-        );
         
-        var filteredIds = checks
-            .Where(x => x.ok)
-            .Select(x => x.ev)
+        var allEvents = await events.GetByIdsAsync(eventsIds, ct);
+        
+        var filteredEvents = allEvents
+            .Where(e => e.ParticipantsTelegramIds.Contains(user.TelegramId))
             .ToList();
-
-        return Ok(await ToDtoList(filteredIds, ct));
+        
+        return Ok(await ToDtoList(filteredEvents, ct));
     }
 }
