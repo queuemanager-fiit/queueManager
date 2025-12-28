@@ -1,13 +1,13 @@
 using Application.Interfaces;
 using Microsoft.EntityFrameworkCore;
-//using Infrastructure.Services;
+using Infrastructure.Services;
 
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-/*builder.Services.AddDbContext<ApplicationDbContext>(options =>
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddControllers();
@@ -16,7 +16,7 @@ builder.Services.AddScoped<Application.Interfaces.IGroupRepository, Infrastructu
 builder.Services.AddScoped<Application.Interfaces.IUnitOfWork, Infrastructure.Repositories.UnitOfWork>();
 builder.Services.AddScoped<Application.Interfaces.IEventRepository, Infrastructure.Repositories.EventRepository>();
 builder.Services.AddScoped<Application.Interfaces.IEventCategoryRepository, Infrastructure.Repositories.EventCategoryRepository>(); 
-builder.Services.AddHostedService<Infrastructure.Services.ExpiredEventService>();*/
+builder.Services.AddHostedService<Infrastructure.Services.ExpiredEventService>();
 var app = builder.Build();
 
 

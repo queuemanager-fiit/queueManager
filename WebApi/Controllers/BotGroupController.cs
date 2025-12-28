@@ -58,6 +58,11 @@ public class BotGroupController : ControllerBase
         CancellationToken ct)
     {
         var group = await groups.GetByCodeAsync(dto.GroupCode, ct);
+        if (group == null)
+        {
+            return NotFound($"Group with Group Code {dto.GroupCode} not found");
+        }
+        
         var newCategory = new EventCategory(dto.NewCategoryName, dto.IsAutoCreate, dto.GroupCode);
         group.AddCategory(newCategory.Id);
         await groups.UpdateAsync(group, ct);
@@ -74,7 +79,16 @@ public class BotGroupController : ControllerBase
         CancellationToken ct)
     {
         var group = await groups.GetByCodeAsync(dto.GroupCode, ct);
+        if (group == null)
+        {
+            return NotFound($"Group with Group Code {dto.GroupCode} not found");
+        }
+        
         var category = await eventCategories.GetByGroupIdAndNameAsync(dto.GroupCode, dto.CategoryName, ct);
+        if (category == null)
+        {
+            return NotFound($"category with Category Name {dto.CategoryName} not found in group {dto.GroupCode}");
+        }
 
         group.RemoveCategory(category.Id);
         
