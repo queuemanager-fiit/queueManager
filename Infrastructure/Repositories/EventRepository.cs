@@ -49,38 +49,4 @@ public class EventRepository : BaseRepository<Event>, IEventRepository
             .ToListAsync(ct)
             .ConfigureAwait(false);
     }
-
-    public async Task<List<Event>> GetEventsByParticipantAsync(long telegramId, CancellationToken ct)
-    {
-        return await Context.Set<Event>()
-            .Where(e => e.ParticipantsTelegramIds.Contains(telegramId))
-            .ToListAsync(ct)
-            .ConfigureAwait(false);
-    }
-
-    public async Task MarkAsNotifiedAsync(IEnumerable<Guid> ids, DateTimeOffset now, CancellationToken ct)
-    {
-        var events = await Context.Set<Event>()
-            .Where(e => ids.Contains(e.Id))
-            .ToListAsync(ct)
-            .ConfigureAwait(false);
-            
-        foreach (var eventItem in events)
-        {
-            eventItem.MarkAsNotified(now);
-        }
-    }
-    
-    public async Task MarkAsFormedAsync(IEnumerable<Guid> ids, DateTimeOffset now, CancellationToken ct)
-    {
-        var events = await Context.Set<Event>()
-            .Where(e => ids.Contains(e.Id))
-            .ToListAsync(ct)
-            .ConfigureAwait(false);
-            
-        foreach (var eventItem in events)
-        {
-            eventItem.MarkAsFormed(now);
-        }
-    }
 }
