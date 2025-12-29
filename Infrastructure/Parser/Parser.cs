@@ -11,8 +11,9 @@ public class Schedule
     private int RowCount => textData.GetLength(0);
     private int ColumnCount => textData.GetLength(1);
 
-    public Schedule(string filePath)
+    public Schedule()
     {
+        var filePath = "C:\\Users\\Пользователь\\queueManager\\Infrastructure\\Parser\\РасписаниеФИИТ2025осень.xlsx";
         package = new ExcelPackage(new FileInfo(filePath));
         excelParser = new ExcelParser();
         textData = excelParser.ExtractData(package.Workbook.Worksheets[5]);
