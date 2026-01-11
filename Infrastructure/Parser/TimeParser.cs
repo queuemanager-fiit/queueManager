@@ -41,9 +41,7 @@ internal class TimeParser(string[,] textData)
 
         if (parity[Parity.Even].Any(tupleDate => tupleDate.Item1 <= dateTime && dateTime <= tupleDate.Item2))
             return Parity.Even;
-        if (parity[Parity.Odd].Any(tupleDate => tupleDate.Item1 <= dateTime && dateTime <= tupleDate.Item2))
-            return Parity.Odd;
-        throw new ArgumentException("Date don't match any parity");
+        return Parity.Odd;
     }
     
     internal DayOfWeek? DefineDayOfWeek(string stringDate)
