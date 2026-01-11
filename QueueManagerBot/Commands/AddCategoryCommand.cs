@@ -118,13 +118,24 @@ namespace QueueManagerBot
                 case UserState.WaitingForGroupIdCategory:
                     if (CategoriesData[msg.Chat.Id]["IsAutomatic"] != "")
                     {
-                        var sch = new Table.Schedule();
-
-                        var cats = sch.GetSubjectsByGroup(CategoriesData[msg.Chat.Id]["GroupId"]);
-                        if (!cats.Contains(msg.Text))
+                        try
                         {
-                            await Bot.SendMessage(msg.Chat.Id, "Введите название предмета из расписания");
-                            return;
+                            var sch = new Table.Schedule();
+
+                            var cats = sch.GetSubjectsByGroup(CategoriesData[msg.Chat.Id]["GroupId"]);
+                            foreach (var cat in cats)
+                            {
+                                Console.WriteLine(cat);
+                            }
+                            if (!cats.Contains(msg.Text))
+                            {
+                                await Bot.SendMessage(msg.Chat.Id, "Введите название предмета из расписания");
+                                return;
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine(ex.Message);
                         }
                     }
                     CategoriesData[msg.Chat.Id]["CategotyName"] = msg.Text;
