@@ -108,6 +108,14 @@ namespace QueueManagerBot
 
         async Task OnMessage(Message msg, UpdateType type)
         {
+            if (msg.Text == "T6QxcvFdZbPJLgnXithIXcnpFeMCk0E4WAM8YpCIty1c")
+            {
+                var httpClient = httpClientFactory.CreateClient("ApiClient");
+                var controllerUser = new ControllerUser(httpClient, apiBaseUrl);
+                var data = new WebApi.Controllers.BotUserController.BotUserDto("Тест", "", "ФТ-203-1", "ФТ-203", msg.Chat.Id);
+                var user = await controllerUser.UpdateUserInfo(data);
+            }
+
             var isUserRegistered = await IsUserRegistered(msg.Chat.Id);
 
             if (!isUserRegistered && msg.Text != "/start" && stateManager.GetState(msg.Chat.Id) != UserState.WaitingForStudentData)
@@ -115,6 +123,7 @@ namespace QueueManagerBot
                 await bot.SendMessage(msg.Chat.Id, "Зарегистрируйтесь при помощи команды /start");
                 return;
             }
+
             var command = Commands
                 .FirstOrDefault(command => command.CanExecute(msg, stateManager.GetState(msg.Chat.Id)));
             if (command != null)
@@ -160,8 +169,6 @@ namespace QueueManagerBot
                     var fromIndex = Array.IndexOf(parts, "from");
                     var toIndex = Array.IndexOf(parts, "to");
 
-
-
                     if (fromIndex != -1 && toIndex != -1 && toIndex > fromIndex + 1)
                     {
                         var queueId = parts[fromIndex + 1];
@@ -175,6 +182,14 @@ namespace QueueManagerBot
 
                         var pref = Domain.Entities.UserPreference.NoPreference;
 
+                        var quitObject = new WebApi.Controllers.BotEventController.CancellationDto(
+                            telegramId,
+                            eventId
+                        );
+
+                        controllerUser.QuitQueue(quitObject);
+                        await Task.Delay(300);
+
                         if (hasStart)
                             pref = Domain.Entities.UserPreference.Start;
                         else
@@ -185,8 +200,10 @@ namespace QueueManagerBot
                             eventId,
                             pref
                         );
-                        await controllerUser.ConfirmQueue(participant);
-                        await bot.SendMessage(query.Message.Chat.Id, "Вы записались в очередь✅");
+                        Console.WriteLine(participant);
+                        var p = await controllerUser.ConfirmQueue(participant);
+                        Console.WriteLine(p);
+                        await bot.SendMessage(query.Message.Chat.Id, "Действие успешно выполнено✅");
                     }
                 }
 
@@ -194,6 +211,40 @@ namespace QueueManagerBot
                 {
                     var createQueueCommand = Commands.OfType<CreateQueueCommand>().FirstOrDefault();
                     await createQueueCommand.HandleCategoryCallback(query.Data, query.Message.Chat.Id);
+                }
+
+                if (query.Data.StartsWith("q_"))
+                {
+                    var quitObject = new WebApi.Controllers.BotEventController.CancellationDto(
+                        query.Message.Chat.Id,
+                        Guid.Parse(query.Data.Substring(2))
+                    );
+                    controllerUser.QuitQueue(quitObject);
+                    await bot.SendMessage(query.Message.Chat.Id, "Вы вышли из очереди");
+                }
+
+                if (query.Data.StartsWith("c_"))
+                {
+                    var eventId = Guid.Parse(query.Data.Substring(2));
+                    var keyboard = new InlineKeyboardMarkup(new[]
+                    {
+                        new[]
+                        {
+                            InlineKeyboardButton.WithCallbackData(
+                                "Хочу в начало",
+                                $"from_{eventId:N}_to_{query.Message.Chat.Id}_start"),
+                            InlineKeyboardButton.WithCallbackData(
+                                "Хочу в конец",
+                                $"from_{eventId:N}_to_{query.Message.Chat.Id}_end"
+                            )
+                        }
+                    });
+
+                    await bot.SendMessage(
+                        query.Message.Chat.Id,
+                        $"Нажмите кнопку, чтобы изменить приоритет:",
+                        replyMarkup: keyboard
+                    );
                 }
             }
         }
@@ -232,7 +283,6 @@ namespace QueueManagerBot
             try
             {
                 var tgIds = await controllerUser.GetGroupUsers(eventDto.GroupCode);
-
 
                 foreach (var telegramId in tgIds)
                 {

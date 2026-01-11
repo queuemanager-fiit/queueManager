@@ -302,5 +302,23 @@ namespace QueueManagerBot
             }
         }
 
+        public async Task<bool> QuitQueue(WebApi.Controllers.BotEventController.CancellationDto participant)
+        {
+            try
+            {
+                var response = await httpClient.PostAsJsonAsync($"{apiBaseUrl}/api/events/quit-queue",
+                        participant);
+                if (response.IsSuccessStatusCode)
+                    return true;
+                else
+                    return false;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+        }
+
     }
 }

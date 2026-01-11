@@ -1,10 +1,12 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.Net.NetworkInformation;
 using System.Text;
 using System.Text.Json;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using WebApi.Controllers;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace QueueManagerBot
 {
@@ -67,7 +69,13 @@ namespace QueueManagerBot
                             msg.Chat.Id,
                             $"🎯 Событие: {e.Category}\n\n" +
                             $"⏰ Время: {e.OccurredOn:g}\n" +
-                            $"Список участников\n\n{participantsList}");
+                            $"Список участников\n\n{participantsList}",
+                            replyMarkup: new InlineKeyboardMarkup(new[]
+                            {
+                                new[] { InlineKeyboardButton.WithCallbackData("Выйти из очереди", $"q_{e.EventId}") },
+                                new[] { InlineKeyboardButton.WithCallbackData("Изменить приоритет", $"c_{e.EventId}") }
+                            })
+                        );
 
                     }
                 }
