@@ -2,8 +2,9 @@ using Application.Interfaces;
 using Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Table;
+using OfficeOpenXml;
 
-
+ExcelPackage.License.SetNonCommercialPersonal("My Name");
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.

@@ -13,7 +13,7 @@ public class Schedule
 
     public Schedule()
     {
-        var filePath = "C:\\Users\\Пользователь\\queueManager\\Infrastructure\\Parser\\РасписаниеФИИТ2025осень.xlsx";
+        var filePath = @"C:\Users\Егор\Desktop\111\queueManager\Infrastructure\Parser\РасписаниеФИИТ2025осень.xlsx";
         package = new ExcelPackage(new FileInfo(filePath));
         excelParser = new ExcelParser();
         textData = excelParser.ExtractData(package.Workbook.Worksheets[5]);

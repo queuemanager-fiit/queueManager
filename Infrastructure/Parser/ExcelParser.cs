@@ -4,11 +4,6 @@ namespace Table;
 
 internal class ExcelParser
 {
-    static ExcelParser()
-    {
-        ExcelPackage.License.SetNonCommercialPersonal("My Name");
-    }
-
     internal string[,] ExtractData(ExcelWorksheet worksheet)
     {
         var startRow = worksheet.Dimension.Start.Row;
