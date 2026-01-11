@@ -1,4 +1,4 @@
-﻿﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using QueueManagerBot;
 
@@ -6,7 +6,7 @@ namespace QueueManagerBot
 {
     class Program
     {
-        static void Main()
+        static async Task Main()
         {
             var configuration = new ConfigurationBuilder()
                 .AddInMemoryCollection(new Dictionary<string, string>
@@ -27,7 +27,7 @@ namespace QueueManagerBot
                 httpClientFactory,
                 configuration);
             
-            Console.ReadLine();
+            await Task.Delay(Timeout.Infinite);
         }
     }
 }
