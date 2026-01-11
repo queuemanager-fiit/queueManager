@@ -13,7 +13,17 @@ public class Schedule
 
     public Schedule()
     {
-        var filePath = @"C:\Users\Егор\Desktop\111\queueManager\Infrastructure\Parser\РасписаниеФИИТ2025осень.xlsx";
+        var baseDir = AppContext.BaseDirectory;
+
+        var queueManagerRoot = Directory.GetParent(baseDir)!.Parent!.Parent!.Parent!.Parent!.FullName; // магия
+        Console.WriteLine(queueManagerRoot);
+        var filePath = Path.Combine(
+            queueManagerRoot,
+            "Infrastructure",
+            "Parser",
+            "РасписаниеФИИТ2025осень.xlsx"
+        );
+        
         package = new ExcelPackage(new FileInfo(filePath));
         excelParser = new ExcelParser();
         textData = excelParser.ExtractData(package.Workbook.Worksheets[5]);
