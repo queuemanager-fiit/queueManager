@@ -25,7 +25,8 @@ public sealed class BotUserController : ControllerBase
         string Username,
         string GroupCode,
         string SubGroupCode,
-        long TelegramId);
+        long TelegramId,
+        bool IsAdmin);
 
     public sealed record InfoUserDto(
         string FullName,
@@ -86,11 +87,13 @@ public sealed class BotUserController : ControllerBase
             }
             
             user.UpdateInfo(dto.FullName, dto.Username, new List<string> { dto.GroupCode, dto.SubGroupCode });
-            await users.UpdateAsync(user, ct);
             await groups.UpdateAsync(oldSubGroup, ct);
             await groups.UpdateAsync(oldGroup, ct);
         }
         
+        user.SetAdminStatus(dto.IsAdmin);
+        
+        await users.UpdateAsync(user, ct);
         await groups.UpdateAsync(subGroup, ct);
         await groups.UpdateAsync(group, ct);
         
@@ -141,7 +144,7 @@ public sealed class BotUserController : ControllerBase
             user.Username,
             user.GroupCodes.FirstOrDefault() ?? string.Empty,
             user.GroupCodes.LastOrDefault() ?? string.Empty,
-            user.IsAdmin,
+            user.IsAdministrator(),
             user.AveragePosition,
             user.ParticipationCount));
     }

@@ -190,7 +190,8 @@ public class UserControllerTests
             FullName: "Test User",
             Username: "test",
             GroupCode: "G1",
-            SubGroupCode: "G2"
+            SubGroupCode: "G2",
+            IsAdmin: false
         );
 
         groupsMock.Setup(r => r.GetByCodeAsync(dto.GroupCode, ct)).ReturnsAsync((Group)null);
@@ -222,7 +223,7 @@ public class UserControllerTests
         groupsMock.Verify(r => r.UpdateAsync(It.Is<Group>(g => g.Code == dto.GroupCode), ct), Times.Once);
         groupsMock.Verify(r => r.UpdateAsync(It.Is<Group>(g => g.Code == dto.SubGroupCode), ct), Times.Once);
 
-        usersMock.Verify(r => r.UpdateAsync(It.IsAny<User>(), It.IsAny<CancellationToken>()), Times.Never);
+        usersMock.Verify(r => r.UpdateAsync(It.Is<User>(u => u.TelegramId == dto.TelegramId), ct), Times.Once);
 
         uowMock.Verify(r => r.SaveChangesAsync(ct), Times.Once);
     }
@@ -237,7 +238,8 @@ public class UserControllerTests
             FullName: "Test User",
             Username: "test",
             GroupCode: "G1",
-            SubGroupCode: "G2"
+            SubGroupCode: "G2",
+            IsAdmin: false
         );
 
         var existingGroup = new Group(dto.GroupCode);
@@ -261,7 +263,7 @@ public class UserControllerTests
         groupsMock.Verify(r => r.AddAsync(It.Is<Group>(g => g.Code == dto.GroupCode), ct), Times.Never);
 
         usersMock.Verify(r => r.AddAsync(It.IsAny<User>(), ct), Times.Once);
-        usersMock.Verify(r => r.UpdateAsync(It.IsAny<User>(), It.IsAny<CancellationToken>()), Times.Never);
+        usersMock.Verify(r => r.UpdateAsync(It.IsAny<User>(), ct), Times.Once);
 
         groupsMock.Verify(r => r.UpdateAsync(It.Is<Group>(g => g.Code == dto.GroupCode), ct), Times.Once);
         groupsMock.Verify(r => r.UpdateAsync(It.Is<Group>(g => g.Code == dto.SubGroupCode), ct), Times.Once);
@@ -279,7 +281,8 @@ public class UserControllerTests
             FullName: "Test User",
             Username: "test",
             GroupCode: "G1",
-            SubGroupCode: "G2"
+            SubGroupCode: "G2",
+            IsAdmin: true
         );
 
         var newGroup = new Group(dto.GroupCode);
@@ -322,6 +325,7 @@ public class UserControllerTests
         Assert.That(user.Username, Is.EqualTo(dto.Username));
         Assert.That(user.GroupCodes[0], Is.EqualTo(dto.GroupCode));
         Assert.That(user.GroupCodes[1], Is.EqualTo(dto.SubGroupCode));
+        Assert.That(user.IsAdministrator(), Is.EqualTo(dto.IsAdmin));
 
         usersMock.Verify(r => r.AddAsync(It.IsAny<User>(), It.IsAny<CancellationToken>()), Times.Never);
         usersMock.Verify(r => r.UpdateAsync(user, ct), Times.Once);
