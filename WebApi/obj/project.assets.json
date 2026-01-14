@@ -4939,11 +4939,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\гыъ\\queueManager\\WebApi\\WebApi.csproj",
+      "projectUniqueName": "C:\\Users\\user\\Downloads\\geometryDash\\queueManager\\WebApi\\WebApi.csproj",
       "projectName": "WebApi",
-      "projectPath": "C:\\гыъ\\queueManager\\WebApi\\WebApi.csproj",
+      "projectPath": "C:\\Users\\user\\Downloads\\geometryDash\\queueManager\\WebApi\\WebApi.csproj",
       "packagesPath": "C:\\Users\\user\\.nuget\\packages\\",
-      "outputPath": "C:\\гыъ\\queueManager\\WebApi\\obj\\",
+      "outputPath": "C:\\Users\\user\\Downloads\\geometryDash\\queueManager\\WebApi\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\user\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -4958,14 +4958,14 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "C:\\гыъ\\queueManager\\Application\\Application.csproj": {
-              "projectPath": "C:\\гыъ\\queueManager\\Application\\Application.csproj"
+            "C:\\Users\\user\\Downloads\\geometryDash\\queueManager\\Application\\Application.csproj": {
+              "projectPath": "C:\\Users\\user\\Downloads\\geometryDash\\queueManager\\Application\\Application.csproj"
             },
-            "C:\\гыъ\\queueManager\\Domain\\Domain.csproj": {
-              "projectPath": "C:\\гыъ\\queueManager\\Domain\\Domain.csproj"
+            "C:\\Users\\user\\Downloads\\geometryDash\\queueManager\\Domain\\Domain.csproj": {
+              "projectPath": "C:\\Users\\user\\Downloads\\geometryDash\\queueManager\\Domain\\Domain.csproj"
             },
-            "C:\\гыъ\\queueManager\\Infrastructure\\Infrastructure.csproj": {
-              "projectPath": "C:\\гыъ\\queueManager\\Infrastructure\\Infrastructure.csproj"
+            "C:\\Users\\user\\Downloads\\geometryDash\\queueManager\\Infrastructure\\Infrastructure.csproj": {
+              "projectPath": "C:\\Users\\user\\Downloads\\geometryDash\\queueManager\\Infrastructure\\Infrastructure.csproj"
             }
           }
         }

@@ -5053,11 +5053,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\гыъ\\queueManager\\QueueManagerBot\\QueueManagerBot.csproj",
+      "projectUniqueName": "C:\\Users\\user\\Downloads\\geometryDash\\queueManager\\QueueManagerBot\\QueueManagerBot.csproj",
       "projectName": "QueueManagerBot",
-      "projectPath": "C:\\гыъ\\queueManager\\QueueManagerBot\\QueueManagerBot.csproj",
+      "projectPath": "C:\\Users\\user\\Downloads\\geometryDash\\queueManager\\QueueManagerBot\\QueueManagerBot.csproj",
       "packagesPath": "C:\\Users\\user\\.nuget\\packages\\",
-      "outputPath": "C:\\гыъ\\queueManager\\QueueManagerBot\\obj\\",
+      "outputPath": "C:\\Users\\user\\Downloads\\geometryDash\\queueManager\\QueueManagerBot\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\user\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -5072,8 +5072,8 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "C:\\гыъ\\queueManager\\WebApi\\WebApi.csproj": {
-              "projectPath": "C:\\гыъ\\queueManager\\WebApi\\WebApi.csproj"
+            "C:\\Users\\user\\Downloads\\geometryDash\\queueManager\\WebApi\\WebApi.csproj": {
+              "projectPath": "C:\\Users\\user\\Downloads\\geometryDash\\queueManager\\WebApi\\WebApi.csproj"
             }
           }
         }

@@ -8,11 +8,13 @@ namespace QueueManagerBot
     {
         static async Task Main()
         {
+            EnvLoader.Load();
+            var token = Environment.GetEnvironmentVariable("TELEGRAM_BOT_TOKEN");
             var configuration = new ConfigurationBuilder()
                 .AddInMemoryCollection(new Dictionary<string, string>
                 {
                     ["ApiBaseUrl"] = "http://localhost:5134",
-                    ["TelegramBotToken"] = "8239008677:AAEvfak7nVlO4zCWCgUQvbsqXHAdBsf7blA"
+                    ["TelegramBotToken"] = token
                 })
                 .Build();
             
@@ -28,6 +30,23 @@ namespace QueueManagerBot
                 configuration);
             
             await Task.Delay(Timeout.Infinite);
+        }
+    }
+
+    public static class EnvLoader
+    {
+        public static void Load(string filePath = ".env")
+        {
+            if (!File.Exists(filePath))
+                return;
+            
+            foreach (var line in File.ReadAllLines(filePath))
+            {
+                var parts = line.Split('=', 2);
+                if (parts.Length != 2) continue;
+                
+                Environment.SetEnvironmentVariable(parts[0].Trim(), parts[1].Trim());
+            }
         }
     }
 }

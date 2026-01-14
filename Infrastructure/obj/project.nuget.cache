@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "WzrIDg83hqI=",
+  "dgSpecHash": "xLp4eLrk5vA=",
   "success": true,
-  "projectFilePath": "C:\\гыъ\\queueManager\\Infrastructure\\Infrastructure.csproj",
+  "projectFilePath": "C:\\Users\\user\\Downloads\\geometryDash\\queueManager\\Infrastructure\\Infrastructure.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\user\\.nuget\\packages\\epplus\\8.3.1\\epplus.8.3.1.nupkg.sha512",
     "C:\\Users\\user\\.nuget\\packages\\epplus.interfaces\\8.1.0\\epplus.interfaces.8.1.0.nupkg.sha512",

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "6DaAe6V5gjE=",
+  "dgSpecHash": "Kkyfsof+vog=",
   "success": true,
-  "projectFilePath": "C:\\гыъ\\queueManager\\Domain\\Domain.csproj",
+  "projectFilePath": "C:\\Users\\user\\Downloads\\geometryDash\\queueManager\\Domain\\Domain.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\user\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\user\\.nuget\\packages\\microsoft.bcl.asyncinterfaces\\7.0.0\\microsoft.bcl.asyncinterfaces.7.0.0.nupkg.sha512",

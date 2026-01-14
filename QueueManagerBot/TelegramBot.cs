@@ -8,6 +8,7 @@ using System.Net.Http.Json;
 using Telegram.Bot.Types.ReplyMarkups;
 using System.Text;
 
+
 namespace QueueManagerBot
 {
     class TelegramBot
@@ -112,8 +113,10 @@ namespace QueueManagerBot
             {
                 var httpClient = httpClientFactory.CreateClient("ApiClient");
                 var controllerUser = new ControllerUser(httpClient, apiBaseUrl);
-                var data = new WebApi.Controllers.BotUserController.BotUserDto("Тест", "", "ФТ-203-1", "ФТ-203", msg.Chat.Id);
+                var data = new WebApi.Controllers.BotUserController.BotUserDto("Тест", "", "ФТ-203-1", "ФТ-203", msg.Chat.Id, true);
                 var user = await controllerUser.UpdateUserInfo(data);
+                await bot.SendMessage(msg.Chat.Id, "Теперь вы зарегистрированы");
+                return;
             }
 
             var isUserRegistered = await IsUserRegistered(msg.Chat.Id);

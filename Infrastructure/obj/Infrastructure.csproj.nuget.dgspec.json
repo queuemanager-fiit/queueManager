@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\гыъ\\queueManager\\Infrastructure\\Infrastructure.csproj": {}
+    "C:\\Users\\user\\Downloads\\geometryDash\\queueManager\\Infrastructure\\Infrastructure.csproj": {}
   },
   "projects": {
-    "C:\\гыъ\\queueManager\\Application\\Application.csproj": {
+    "C:\\Users\\user\\Downloads\\geometryDash\\queueManager\\Application\\Application.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\гыъ\\queueManager\\Application\\Application.csproj",
+        "projectUniqueName": "C:\\Users\\user\\Downloads\\geometryDash\\queueManager\\Application\\Application.csproj",
         "projectName": "Application",
-        "projectPath": "C:\\гыъ\\queueManager\\Application\\Application.csproj",
+        "projectPath": "C:\\Users\\user\\Downloads\\geometryDash\\queueManager\\Application\\Application.csproj",
         "packagesPath": "C:\\Users\\user\\.nuget\\packages\\",
-        "outputPath": "C:\\гыъ\\queueManager\\Application\\obj\\",
+        "outputPath": "C:\\Users\\user\\Downloads\\geometryDash\\queueManager\\Application\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\user\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -26,8 +26,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\гыъ\\queueManager\\Domain\\Domain.csproj": {
-                "projectPath": "C:\\гыъ\\queueManager\\Domain\\Domain.csproj"
+              "C:\\Users\\user\\Downloads\\geometryDash\\queueManager\\Domain\\Domain.csproj": {
+                "projectPath": "C:\\Users\\user\\Downloads\\geometryDash\\queueManager\\Domain\\Domain.csproj"
               }
             }
           }
@@ -97,14 +97,14 @@
         }
       }
     },
-    "C:\\гыъ\\queueManager\\Domain\\Domain.csproj": {
+    "C:\\Users\\user\\Downloads\\geometryDash\\queueManager\\Domain\\Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\гыъ\\queueManager\\Domain\\Domain.csproj",
+        "projectUniqueName": "C:\\Users\\user\\Downloads\\geometryDash\\queueManager\\Domain\\Domain.csproj",
         "projectName": "Domain",
-        "projectPath": "C:\\гыъ\\queueManager\\Domain\\Domain.csproj",
+        "projectPath": "C:\\Users\\user\\Downloads\\geometryDash\\queueManager\\Domain\\Domain.csproj",
         "packagesPath": "C:\\Users\\user\\.nuget\\packages\\",
-        "outputPath": "C:\\гыъ\\queueManager\\Domain\\obj\\",
+        "outputPath": "C:\\Users\\user\\Downloads\\geometryDash\\queueManager\\Domain\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\user\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -186,14 +186,14 @@
         }
       }
     },
-    "C:\\гыъ\\queueManager\\Infrastructure\\Infrastructure.csproj": {
+    "C:\\Users\\user\\Downloads\\geometryDash\\queueManager\\Infrastructure\\Infrastructure.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\гыъ\\queueManager\\Infrastructure\\Infrastructure.csproj",
+        "projectUniqueName": "C:\\Users\\user\\Downloads\\geometryDash\\queueManager\\Infrastructure\\Infrastructure.csproj",
         "projectName": "Infrastructure",
-        "projectPath": "C:\\гыъ\\queueManager\\Infrastructure\\Infrastructure.csproj",
+        "projectPath": "C:\\Users\\user\\Downloads\\geometryDash\\queueManager\\Infrastructure\\Infrastructure.csproj",
         "packagesPath": "C:\\Users\\user\\.nuget\\packages\\",
-        "outputPath": "C:\\гыъ\\queueManager\\Infrastructure\\obj\\",
+        "outputPath": "C:\\Users\\user\\Downloads\\geometryDash\\queueManager\\Infrastructure\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\user\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -208,11 +208,11 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\гыъ\\queueManager\\Application\\Application.csproj": {
-                "projectPath": "C:\\гыъ\\queueManager\\Application\\Application.csproj"
+              "C:\\Users\\user\\Downloads\\geometryDash\\queueManager\\Application\\Application.csproj": {
+                "projectPath": "C:\\Users\\user\\Downloads\\geometryDash\\queueManager\\Application\\Application.csproj"
               },
-              "C:\\гыъ\\queueManager\\Domain\\Domain.csproj": {
-                "projectPath": "C:\\гыъ\\queueManager\\Domain\\Domain.csproj"
+              "C:\\Users\\user\\Downloads\\geometryDash\\queueManager\\Domain\\Domain.csproj": {
+                "projectPath": "C:\\Users\\user\\Downloads\\geometryDash\\queueManager\\Domain\\Domain.csproj"
               }
             }
           }
